@@ -1,28 +1,27 @@
-﻿using Core.DbService;
+﻿using Core.BugService;
 using Core.DTOs.Bug;
+using Infrastructure.Models.Bug;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class BugsController : ControllerBase
-    {
-        private readonly ITrackerDbService dbService;
 
-        public BugsController(ITrackerDbService dbService)
+    public class BugsController : BaseController
+    {
+        private readonly IBugService bugService;
+
+        public BugsController(IBugService bugService)
         {
-            this.dbService = dbService;
+            this.bugService = bugService;
         }
 
         [HttpGet("{bugId}")]
-        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BugViewModel>> Get(int bugId)
         {
-            var bug = await dbService.GetBug(bugId);
+            var bug = await bugService.RetrieveBug(bugId);
 
             if (bug == null)
             {
@@ -35,47 +34,109 @@ namespace API.Controllers
             return Ok(bug);
         }
 
-        [HttpPatch]
-        public async Task<ActionResult<BugViewModel>> Edit(BugViewModel editedBug)
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BugViewModel>> Get()
         {
-            var bug = await dbService.EditBug(editedBug);
+            var bug = await bugService.RetrieveAllBugs();
+
+            if (bug == null)
+            {
+                return NotFound(new
+                {
+                    error = "No pending bugs left."
+                });
+            }
+
+            return Ok(bug);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BugViewModel>> Edit(EditBugViewModel editedBug)
+        {
+            if (!Enum.TryParse(editedBug.Status, true, out BugStatus _))
+            {
+                return BadRequest(new
+                {
+                    error = "Invalid status.",
+                    invalidBug = editedBug
+                });
+            }
+
+            if (!Enum.TryParse(editedBug.Priority, true, out BugPriority _))
+            {
+                return BadRequest(new
+                {
+                    error = "Invalid priority.",
+                    invalidBug = editedBug
+                });
+            }
+
+            var bug = await bugService.UpdateOrCreateBug(editedBug);
 
             return bug;
         }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BugViewModel>> Create(BugViewModel newBug)
+        public async Task<ActionResult<BugViewModel>> Create(AddBugViewModel newBug)
         {
-            var bug = await dbService.AddBug(newBug);
+            if (!Enum.TryParse(newBug.Status, true, out BugStatus _))
+            {
+                return BadRequest(new
+                {
+                    error = "Invalid status.",
+                    invalidBug = newBug
+                });
+            }
+
+            if (!Enum.TryParse(newBug.Priority, true, out BugPriority _))
+            {
+                return BadRequest(new
+                {
+                    error = "Invalid priority.",
+                    invalidBug = newBug
+                });
+            }
+
+            var bug = await bugService.AddBug(newBug);
 
             if (bug == null)
             {
-                return NotFound(new
+                return BadRequest(new
                 {
-                    error = "Could not be added to the list."
+                    error = "Could not be added to the list.",
+                    invalidBug = newBug
                 });
             }
 
             var uri = Url.Action("Get", "Bugs", new { bugId = bug.Id });
 
-            return Created(uri, bug);
+            return Created(uri!, bug);
         }
 
         [HttpDelete("{bugId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int bugId)
         {
-            bool success = await dbService.DeleteBug(bugId);
+            bool success = await bugService.DeleteBug(bugId);
 
             if (success)
             {
                 return Ok();
             }
 
-            return BadRequest();
+            return BadRequest(new
+            {
+                error = "Could not be deleted."
+            });
         }
     }
 }

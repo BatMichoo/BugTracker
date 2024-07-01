@@ -6,7 +6,6 @@
         Assigned,
         OnHold,
         InProgress,
-        Closed,
         Fixed
     }
 }

@@ -2,7 +2,8 @@
 {
     public enum BugPriority
     {
-        Low = 0,
+        None = 0,
+        Low,
         Normal,
         High,
         Critical

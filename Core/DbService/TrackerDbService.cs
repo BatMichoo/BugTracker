@@ -17,9 +17,11 @@ namespace Core.DbService
             this.mapper = mapper;
         }
 
-        public async Task<BugViewModel> AddBug(BugViewModel bugViewModel)
+        public async Task<BugModel> AddBug(BugModel bugModel)
         {
-            var bug = mapper.Map<Bug>(bugViewModel);
+            var bug = mapper.Map<Bug>(bugModel);
+
+            bug.CreatedOn = bug.LastUpdatedOn;
 
             await dbContext.Bugs.AddAsync(bug);
 
@@ -46,29 +48,55 @@ namespace Core.DbService
             return false;
         }
 
-        public async Task<BugViewModel> EditBug(BugViewModel bugViewModel)
+        public async Task<BugModel> UpdateBug(BugModel bugModel)
         {
-            var toBeEdited = await dbContext.Bugs.FirstOrDefaultAsync(b => b.Id == bugViewModel.Id);
+            var toBeEdited = await dbContext.Bugs.FirstOrDefaultAsync(b => b.Id == bugModel.Id);
 
-            mapper.Map(bugViewModel, toBeEdited);
+            mapper.Map(bugModel, toBeEdited);
 
             await dbContext.SaveChangesAsync();
 
             return await GetBug(toBeEdited.Id);
         }
 
-        public async Task<BugViewModel?> GetBug(int bugId)
+        public async Task<BugModel?> GetBug(int bugId)
         {
-            var bug = await dbContext.Bugs.FirstOrDefaultAsync(b => b.Id == bugId);
+            var bug = await dbContext.Bugs
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == bugId);
 
             if (bug != null)
             {
-                var viewModel = mapper.Map<BugViewModel>(bug);
+                var model = mapper.Map<BugModel>(bug);
 
-                return viewModel;
+                return model;
             } 
 
             return null;
         }
+
+        public async Task<List<BugModel>?> GetBugsWithStatus(BugStatus? status)
+        {
+            var bugQuery = dbContext.Bugs
+                .AsNoTracking();
+
+            if (status == null)
+            {
+                bugQuery.Where(b => b.Status != BugStatus.Fixed);
+            }
+            else
+            {
+                bugQuery.Where(b => b.Status == status);
+            }
+
+            var bugs = await bugQuery.ToListAsync();
+
+            if (bugs != null)
+            {
+                return mapper.Map<List<BugModel>>(bugs);
+            }
+
+            return null;
+        }        
     }
 }
