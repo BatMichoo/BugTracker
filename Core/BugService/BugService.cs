@@ -121,7 +121,7 @@ namespace Core.BugService
         {
             var bug = await dbService.GetBug(updatedBug.Id);
 
-            BugModel newBug = mapper.Map<BugModel>(updatedBug);            
+            BugModel newBug = mapper.Map<BugModel>(updatedBug);
 
             if (bug != null)
             {

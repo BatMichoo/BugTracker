@@ -15,9 +15,11 @@ namespace API
 
             // Add services to the container.
 
+            string dbAccessCreds = Environment.GetEnvironmentVariable("DbAccessCreds");
+
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("BugTracker"));
+                opt.UseSqlServer($"{builder.Configuration.GetConnectionString("BugTracker")}{dbAccessCreds}");
             });
 
             builder.Services.AddScoped<ITrackerDbService, TrackerDbService>();
@@ -33,6 +35,7 @@ namespace API
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

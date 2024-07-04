@@ -119,6 +119,7 @@ namespace API.Controllers
             var uri = Url.Action("Get", "Bugs", new { bugId = bug.Id });
 
             return Created(uri!, bug);
+            //return CreatedAtAction(nameof(Get), bug);
         }
 
         [HttpDelete("{bugId}")]
