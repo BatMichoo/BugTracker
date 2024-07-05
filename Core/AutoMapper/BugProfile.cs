@@ -8,9 +8,7 @@ namespace API.AutoMapper
     {
         public BugProfile()
         {
-            CreateMap<AddBugViewModel, BugModel>()
-                //.ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<BugStatus>(s.Status)))
-                //.ForMember(d => d.Priority, opt => opt.MapFrom(s => Enum.Parse<BugPriority>(s.Priority)))
+            CreateMap<AddBugViewModel, AddBugModel>()
                 .ForMember(d => d.Description, opt => opt.MapFrom(s => s.Description))
                 .AfterMap((s, d) => 
                 {
@@ -18,14 +16,22 @@ namespace API.AutoMapper
                     d.LastUpdatedOn = d.CreatedOn;
                 });
 
+            CreateMap<AddBugModel, BugModel>()
+                .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId));
+
+            CreateMap<BugModel, Bug>();
+
             CreateMap<EditBugViewModel, BugModel>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now));
 
             CreateMap<Bug, BugModel>()
-                .ReverseMap();
+                .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.UserName))
+                .ForMember(d => d.Assignee, opt => opt.MapFrom(s => s.Assignee.Name))
+                .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy.UserName));
 
             CreateMap<BugModel, BugViewModel>()
-                .ReverseMap();
+                .ForMember(d => d.CreatedBy, opt => opt.MapFrom(s => s.Creator))
+                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));
 
             CreateMap<Bug, BugViewModel>()
                 .ReverseMap();

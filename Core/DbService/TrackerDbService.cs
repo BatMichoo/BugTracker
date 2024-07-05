@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Bug;
+using Core.Models.Bug.BugEnums;
 using Infrastructure;
 using Infrastructure.Models.Bug;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace Core.DbService
 
             await dbContext.Bugs.AddAsync(bug);
 
-            var changesCount = await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
 
             var createdBug = await GetBug(bug.Id);
 
@@ -51,18 +52,24 @@ namespace Core.DbService
         public async Task<BugModel> UpdateBug(BugModel bugModel)
         {
             var toBeEdited = await dbContext.Bugs.FirstOrDefaultAsync(b => b.Id == bugModel.Id);
-
-            mapper.Map(bugModel, toBeEdited);
+            
+            if (toBeEdited != null)
+            {
+                mapper.Map(bugModel, toBeEdited);
+            }
 
             await dbContext.SaveChangesAsync();
 
-            return await GetBug(toBeEdited.Id);
+            return (await GetBug(toBeEdited.Id))!;
         }
 
         public async Task<BugModel?> GetBug(int bugId)
         {
             var bug = await dbContext.Bugs
                 .AsNoTracking()
+                .Include(b => b.Assignee)
+                .Include(b => b.Creator)
+                .Include(b => b.LastUpdatedBy)
                 .FirstOrDefaultAsync(b => b.Id == bugId);
 
             if (bug != null)
@@ -75,28 +82,40 @@ namespace Core.DbService
             return null;
         }
 
-        public async Task<List<BugModel>?> GetBugsWithStatus(BugStatus? status)
+        public async Task<List<BugModel>> GetBugsWithStatus(BugStatus status)
         {
-            var bugQuery = dbContext.Bugs
-                .AsNoTracking();
-
-            if (status == null)
-            {
-                bugQuery.Where(b => b.Status != BugStatus.Fixed);
-            }
-            else
-            {
-                bugQuery.Where(b => b.Status == status);
-            }
-
-            var bugs = await bugQuery.ToListAsync();
+            var bugs = await dbContext.Bugs
+                .AsNoTracking()
+                .Where(b => b.Status == (int) status)
+                .Include(b => b.Creator)
+                .Include(b => b.Assignee)
+                .Include(b => b.LastUpdatedBy)
+                .ToListAsync();
 
             if (bugs != null)
             {
                 return mapper.Map<List<BugModel>>(bugs);
             }
 
-            return null;
-        }        
+            return new List<BugModel>();
+        }
+
+        public async Task<List<BugModel>> GetActiveBugs()
+        {
+            var bugs = await dbContext.Bugs
+                .AsNoTracking()
+                .Where(b => b.Status != (int) BugStatus.Fixed)
+                .Include(b => b.Creator)
+                .Include(b => b.Assignee)
+                .Include(b => b.LastUpdatedBy)
+                .ToListAsync();
+
+            if (bugs != null)
+            {
+                return mapper.Map<List<BugModel>>(bugs);
+            }
+
+            return new List<BugModel>();
+        }
     }
 }

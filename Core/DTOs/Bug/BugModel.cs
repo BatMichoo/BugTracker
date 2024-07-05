@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.Bug;
+﻿using Core.Models.Bug.BugEnums;
 
 namespace Core.DTOs.Bug
 {
@@ -9,6 +9,13 @@ namespace Core.DTOs.Bug
         public BugStatus Status { get; set; }
         public DateTime LastUpdatedOn { get; set; }
         public BugPriority Priority { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
+        public string CreatorId { get; set; } = null!;
+        public string Creator { get; set; } = null!;
+        public bool IsAssigned => AssigneeId != null;
+        public string? AssigneeId { get; set; }
+        public string? Assignee { get; set; }
+        public string LastUpdatedById { get; set; } = null!;
+        public string LastUpdatedBy { get; set; } = null!;
     }
 }

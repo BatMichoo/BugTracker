@@ -1,6 +1,8 @@
-﻿using Core.BugService;
+﻿using AutoMapper;
+using Core.BugService;
 using Core.DTOs.Bug;
-using Infrastructure.Models.Bug;
+using Core.Models.Bug.BugEnums;
+using Core.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -13,10 +15,14 @@ namespace API.Controllers
     public class BugsController : BaseController
     {
         private readonly IBugService bugService;
+        private readonly IMapper mapper;
+        private readonly IUserService userService;
 
-        public BugsController(IBugService bugService)
+        public BugsController(IBugService bugService, IMapper mapper, IUserService userService)
         {
             this.bugService = bugService;
+            this.mapper = mapper;
+            this.userService = userService;
         }
 
         [HttpGet("{bugId}")]
@@ -42,7 +48,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BugViewModel>> Get()
         {
-            var bug = await bugService.RetrieveAllBugs();
+            var bug = await bugService.RetrieveAllActiveBugs();
 
             if (bug == null)
             {
@@ -108,7 +114,13 @@ namespace API.Controllers
                 });
             }
 
-            var bug = await bugService.AddBug(newBug);
+            var inputBug = mapper.Map<AddBugModel>(newBug);
+
+            var userId = userService.GetCurrentUserId(User);
+
+            inputBug.CreatorId = userId;
+
+            var bug = await bugService.AddBug(inputBug);
 
             if (bug == null)
             {

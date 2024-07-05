@@ -10,20 +10,21 @@ namespace API.Controllers
     [Route("users")]
     public class UsersController : BaseController
     {
-        private readonly IHttpContextAccessor contextAccessor;
         private readonly IUserService userService;
         private readonly UserManager<BugUser> _userManager;
         private readonly SignInManager<BugUser> _signInManager;
 
-        public UsersController(IHttpContextAccessor contextAccessor, IUserService userService, UserManager<BugUser> userManager, SignInManager<BugUser> signInManager)
+        public UsersController(IUserService userService, UserManager<BugUser> userManager, SignInManager<BugUser> signInManager)
         {
-            this.contextAccessor = contextAccessor;
             this.userService = userService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
         [HttpPost("login")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> LogIn(LoginUserModel loginUserModel)
         {
             var user = await _userManager.FindByEmailAsync(loginUserModel.Email);
@@ -41,20 +42,21 @@ namespace API.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterUserModel newUser)
         {
             var user = await _userManager.GetUserAsync(User);
-            
+
             if (user == null)
             {
                 var toBeCreated = new BugUser()
                 {
                     Email = newUser.Email,
-                    UserName = newUser.FirstName + newUser.LastName,
+                    Name = newUser.FirstName + newUser.LastName,
+                    UserName = newUser.UserName
                 };
 
                 var result = await _userManager.CreateAsync(toBeCreated, newUser.Password);
@@ -72,7 +74,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
-        [HttpGet]
+        [HttpGet("logout")]
         public async Task<IActionResult> LogOut()
         {
             var currentUser = await _userManager.GetUserAsync(User);

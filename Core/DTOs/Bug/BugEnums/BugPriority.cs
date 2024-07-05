@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models.Bug
+﻿namespace Core.Models.Bug.BugEnums
 {
     public enum BugPriority
     {

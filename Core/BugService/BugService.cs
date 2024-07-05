@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DbService;
 using Core.DTOs.Bug;
-using Infrastructure.Models.Bug;
+using Core.Models.Bug.BugEnums;
 
 namespace Core.BugService
 {
@@ -21,7 +21,7 @@ namespace Core.BugService
         /// </summary>
         /// <param name="bug"></param>
         /// <returns></returns>
-        public async Task<BugViewModel> AddBug(AddBugViewModel bug)
+        public async Task<BugViewModel> AddBug(AddBugModel bug)
         {
             var newBug = mapper.Map<BugModel>(bug);
 
@@ -71,16 +71,16 @@ namespace Core.BugService
         /// Retrieves a list of all yet to be fixed bugs.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<BugViewModel>> RetrieveAllBugs()
+        public async Task<List<BugViewModel>> RetrieveAllActiveBugs()
         {
-            var bugs = await dbService.GetBugsWithStatus(null);
+            var bugs = await dbService.GetActiveBugs();
 
             if (bugs != null)
             {
                 return mapper.Map<List<BugViewModel>>(bugs);
             }
 
-            return null;
+            return new List<BugViewModel>();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Core.BugService
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<bool> ReassignBug(int bugId, int userId)
+        public Task<bool> ReassignBug(int bugId, string userId)
         {
             throw new NotImplementedException();
         }
@@ -145,7 +145,7 @@ namespace Core.BugService
         {
             var bugList = await dbService.GetBugsWithStatus(status);
 
-            return mapper.Map<List<BugViewModel>>(bugList);
+            return mapper.Map<List<BugViewModel>>(bugList) ?? new List<BugViewModel>();
         }
     }
 }
