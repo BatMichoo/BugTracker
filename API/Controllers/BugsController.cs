@@ -1,12 +1,15 @@
 ﻿using Core.BugService;
 using Core.DTOs.Bug;
 using Infrastructure.Models.Bug;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
 namespace API.Controllers
 {
-
+    [Route("bugs")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BugsController : BaseController
     {
         private readonly IBugService bugService;
@@ -119,7 +122,6 @@ namespace API.Controllers
             var uri = Url.Action("Get", "Bugs", new { bugId = bug.Id });
 
             return Created(uri!, bug);
-            //return CreatedAtAction(nameof(Get), bug);
         }
 
         [HttpDelete("{bugId}")]

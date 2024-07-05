@@ -1,7 +1,10 @@
 using API.AutoMapper;
 using Core.BugService;
 using Core.DbService;
+using Core.UserService;
 using Infrastructure;
+using Infrastructure.Models.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -19,22 +22,47 @@ namespace API
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
-                opt.UseSqlServer($"{builder.Configuration.GetConnectionString("BugTracker")}{dbAccessCreds}");
-            });
+                opt.UseSqlServer(string.Format(builder.Configuration.GetConnectionString("BugTracker"), dbAccessCreds));
+            })
+                .AddIdentity<BugUser, IdentityRole>(opt =>
+                {
+                    opt.User.RequireUniqueEmail = true;
+                    opt.Password.RequireDigit = false;
+                    opt.Password.RequiredUniqueChars = 0;
+                    opt.Password.RequireNonAlphanumeric = false;
+                    opt.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<TrackerDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<BugUser>>()
+                .AddUserManager<UserManager<BugUser>>();
+
+            builder.Services.ConfigureApplicationCookie(opt =>
+                {
+                    opt.LoginPath = "/users/login";
+                    opt.LogoutPath = "/users";
+                    opt.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    opt.SlidingExpiration = true;
+                    opt.Cookie.HttpOnly = true;
+                    opt.Cookie.IsEssential = true;
+                });
 
             builder.Services.AddScoped<ITrackerDbService, TrackerDbService>();
             builder.Services.AddScoped<IBugService, BugService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddAutoMapper(opt =>
-            {
-                opt.AddProfile(typeof(BugProfile));
-            });
+                {
+                    opt.AddProfile(typeof(BugProfile));
+                });
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -49,8 +77,9 @@ namespace API
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthorization();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
             app.Run();
