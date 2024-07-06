@@ -3,6 +3,7 @@ using Core.BugService;
 using Core.DTOs.Bug;
 using Core.Models.Bug.BugEnums;
 using Core.UserService;
+using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -16,9 +17,9 @@ namespace API.Controllers
     {
         private readonly IBugService bugService;
         private readonly IMapper mapper;
-        private readonly IUserService userService;
+        private readonly IUserService<BugUser> userService;
 
-        public BugsController(IBugService bugService, IMapper mapper, IUserService userService)
+        public BugsController(IBugService bugService, IMapper mapper, IUserService<BugUser> userService)
         {
             this.bugService = bugService;
             this.mapper = mapper;
@@ -116,7 +117,7 @@ namespace API.Controllers
 
             var inputBug = mapper.Map<AddBugModel>(newBug);
 
-            var userId = userService.GetCurrentUserId(User);
+            var userId = userService.RetrieveUserId();
 
             inputBug.CreatorId = userId;
 

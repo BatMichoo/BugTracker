@@ -1,7 +1,6 @@
 ﻿using Core.DTOs.User;
 using Core.UserService;
 using Infrastructure.Models.User;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -10,15 +9,11 @@ namespace API.Controllers
     [Route("users")]
     public class UsersController : BaseController
     {
-        private readonly IUserService userService;
-        private readonly UserManager<BugUser> _userManager;
-        private readonly SignInManager<BugUser> _signInManager;
+        private readonly IUserService<BugUser> userService;
 
-        public UsersController(IUserService userService, UserManager<BugUser> userManager, SignInManager<BugUser> signInManager)
+        public UsersController(IUserService<BugUser> userService)
         {
             this.userService = userService;
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         [HttpPost("login")]
@@ -27,13 +22,13 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> LogIn(LoginUserModel loginUserModel)
         {
-            var user = await _userManager.FindByEmailAsync(loginUserModel.Email);
+            var user = await userService.RetrieveUserByEmail(loginUserModel.Email);
 
             if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, loginUserModel.Password, false, false);
+                var result = await userService.SignInUserWithPassword(user, loginUserModel.Password);
 
-                if (result.Succeeded)
+                if (result)
                 {
                     return Ok();
                 }
@@ -44,52 +39,34 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterUserModel newUser)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userService.RetrieveUser();
 
             if (user == null)
             {
-                var toBeCreated = new BugUser()
+                try
                 {
-                    Email = newUser.Email,
-                    Name = newUser.FirstName + newUser.LastName,
-                    UserName = newUser.UserName
-                };
-
-                var result = await _userManager.CreateAsync(toBeCreated, newUser.Password);
-
-                if (result.Succeeded)
-                {
-                    await _signInManager.PasswordSignInAsync(toBeCreated, newUser.Password, false, false);
-
-                    return Created(nameof(LogIn), newUser);
+                    user = await userService.RegisterNewUserWithPassword(newUser);
                 }
-
-                return BadRequest(result.Errors);
+                catch (ArgumentException ex) 
+                {
+                    return BadRequest(ex.Message);
+                }                
             }
 
-            return BadRequest();
+            return Ok();
         }
 
         [HttpGet("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> LogOut()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            await userService.SignOut();
 
-            if (currentUser != null)
-            {
-                await _signInManager.SignOutAsync();
-
-                return Ok();
-            }
-
-            return BadRequest(new
-            {
-                error = "No user to sign out."
-            });
+            return Ok();
         }
     }
 }

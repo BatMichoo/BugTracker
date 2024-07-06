@@ -49,7 +49,8 @@ namespace API
 
             builder.Services.AddScoped<ITrackerDbService, TrackerDbService>();
             builder.Services.AddScoped<IBugService, BugService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
+                .AddHttpContextAccessor();
 
             builder.Services.AddAutoMapper(opt =>
                 {
