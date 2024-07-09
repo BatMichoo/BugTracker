@@ -1,6 +1,8 @@
 ﻿using Core.DTOs.User;
+using Core.Other;
 using Core.UserService;
 using Infrastructure.Models.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -67,6 +69,16 @@ namespace API.Controllers
             await userService.SignOut();
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Authorize(Policy = AuthorizePolicy.User)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RetrieveUserList()
+        {
+            var users = await userService.RetrieveUserList();
+
+            return Ok(users);
         }
     }
 }

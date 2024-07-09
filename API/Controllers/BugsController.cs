@@ -2,6 +2,7 @@
 using Core.BugService;
 using Core.DTOs.Bug;
 using Core.Models.Bug.BugEnums;
+using Core.Other;
 using Core.UserService;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ using System.Net.Mime;
 namespace API.Controllers
 {
     [Route("bugs")]
-    [Authorize]
+    [Authorize(Policy = AuthorizePolicy.User)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BugsController : BaseController
     {
@@ -137,6 +138,7 @@ namespace API.Controllers
             return Created(uri!, bug);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{bugId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

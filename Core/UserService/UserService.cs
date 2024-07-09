@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Core.DTOs.User;
+using Core.Other;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Core.UserService
@@ -18,7 +20,7 @@ namespace Core.UserService
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
-            this.claimsPrincipal = httpContextAccessor.HttpContext.User;
+            claimsPrincipal = httpContextAccessor.HttpContext.User;
         }
 
         public string RetrieveUserId()
@@ -30,11 +32,18 @@ namespace Core.UserService
         {
             var toBeCreated = mapper.Map<T>(newUser);
 
-            var result = await userManager.CreateAsync(toBeCreated, newUser.Password);
+            var result = await userManager.CreateAsync(toBeCreated, newUser.Password);            
 
             if (result.Succeeded)
             {
-                return toBeCreated;
+                var roleSucceeded = await AddRolesToUser(toBeCreated, new List<string>() { UserRoles.User });
+
+                if (roleSucceeded)
+                {
+                    return toBeCreated;
+                }
+
+                throw new ArgumentException("Roles could not be added.");
             }
 
             throw new ArgumentException(string.Join(Environment.NewLine, result.Errors));
@@ -64,6 +73,27 @@ namespace Core.UserService
         public async Task SignOut()
         {
             await signInManager.SignOutAsync();
+        }
+
+        public async Task<bool> AddRolesToUser(T user, IEnumerable<string> roles)
+        {
+            var result = await userManager.AddToRolesAsync(user, roles);
+
+            return result.Succeeded;
+        }
+
+        public async Task<List<UserViewModel>> RetrieveUserList()
+        {
+            var users = await userManager.Users
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (users.Any())
+            {
+                return mapper.Map<List<UserViewModel>>(users);
+            }
+
+            return new List<UserViewModel>();
         }
     }
 }
