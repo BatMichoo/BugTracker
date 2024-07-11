@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.DbService;
 using Core.DTOs.Bug;
+using Core.DTOs.Comment;
 using Core.Models.Bug.BugEnums;
 
 namespace Core.BugService
@@ -90,9 +91,18 @@ namespace Core.BugService
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<bool> ReassignBug(int bugId, string userId)
+        public async Task<BugViewModel> ReassignBug(int bugId, string? userId)
         {
-            throw new NotImplementedException();
+            var bug = await dbService.GetBug(bugId);
+
+            if (bug != null)
+            {
+                bug.AssigneeId = userId;
+
+                bug = await dbService.UpdateBug(bug);
+            }
+
+            return mapper.Map<BugViewModel>(bug);
         }
 
         /// <summary>
@@ -146,6 +156,39 @@ namespace Core.BugService
             var bugList = await dbService.GetBugsWithStatus(status);
 
             return mapper.Map<List<BugViewModel>>(bugList) ?? new List<BugViewModel>();
+        }
+
+        public async Task<CommentViewModel> AddComment(AddCommentModel newComment)
+        {
+            var commentModel = mapper.Map<CommentModel>(newComment);
+
+            var comment = await dbService.AddComment(commentModel);
+
+            return mapper.Map<CommentViewModel>(comment);
+        }
+
+        public Task<CommentViewModel> EditComment(EditCommentModel editedComment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<CommentViewModel> EditLikes(int bugId, char? action)
+        {
+            int likes;
+
+            switch (action)
+            {
+                case '-':
+                    likes = -1;
+                    break;
+                default: 
+                    likes = 1; 
+                    break;
+            }
+
+            var updatedBug = await dbService.UpdateLikes(bugId, likes);
+
+            return mapper.Map<CommentViewModel>(updatedBug);
         }
     }
 }

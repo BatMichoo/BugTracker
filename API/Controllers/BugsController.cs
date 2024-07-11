@@ -1,18 +1,20 @@
 ﻿using AutoMapper;
 using Core.BugService;
 using Core.DTOs.Bug;
+using Core.DTOs.Comment;
 using Core.Models.Bug.BugEnums;
 using Core.Other;
 using Core.UserService;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using System.Net.Mime;
 
 namespace API.Controllers
 {
     [Route("bugs")]
-    [Authorize(Policy = AuthorizePolicy.User)]
+    [Authorize(Policy = AuthorizePolicy.BasicAccess)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BugsController : BaseController
     {
@@ -155,6 +157,56 @@ namespace API.Controllers
             {
                 error = "Could not be deleted."
             });
+        }
+
+        [HttpPost("{bugId}/comment")]
+        public async Task<IActionResult> AddComment(int bugId, AddCommentViewModel newComment)
+        {
+            string userId = userService.RetrieveUserId();
+
+            var commentToCreate = mapper.Map<AddCommentModel>(newComment);
+
+            commentToCreate.AuthorId = userId;
+            commentToCreate.BugId = bugId;
+
+            var comment = await bugService.AddComment(commentToCreate);
+
+            if (comment == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Could not create comment",
+                    comment = newComment
+                });
+            }
+
+            return Ok(comment);
+        }
+
+        [HttpPatch("{bugId}/comment/{commentId}/like")]
+        public async Task<IActionResult> AdjustLikes(int commentId, char? action)
+        {
+            var comment = await bugService.EditLikes(commentId, action);
+
+            if (comment != null)
+            {
+                return Ok(comment);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPatch("{bugId}/assign-to")]
+        public async Task<IActionResult> AssignBugTo(int bugId, string? userId)
+        {
+            var bug = await bugService.ReassignBug(bugId, userId); 
+
+            if (bug != null)
+            {
+                return Ok(bug);
+            }
+
+            return BadRequest();
         }
     }
 }

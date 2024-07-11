@@ -12,15 +12,17 @@ namespace Core.UserService
     {
         private readonly UserManager<T> userManager;
         private readonly SignInManager<T> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly IMapper mapper;
         private readonly ClaimsPrincipal claimsPrincipal;
 
-        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
             claimsPrincipal = httpContextAccessor.HttpContext.User;
+            this.roleManager = roleManager;
         }
 
         public string RetrieveUserId()
@@ -58,7 +60,7 @@ namespace Core.UserService
 
         public async Task<T> RetrieveUserByEmail(string email)
         {
-            T user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(email);
 
             return user;
         }       
@@ -85,6 +87,7 @@ namespace Core.UserService
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
             var users = await userManager.Users
+                .Where(u => u.UserName != "Admin")
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -94,6 +97,29 @@ namespace Core.UserService
             }
 
             return new List<UserViewModel>();
+        }
+
+        public async Task<List<string>> GetRoles()
+        {
+            var roles = await roleManager.Roles
+                .AsNoTracking()
+                .Where(r => r.Name != UserRoles.Admin)
+                .Select(r => r.Name)
+                .ToListAsync();
+
+            if (roles.Any())
+            {
+                return roles;
+            }
+
+            return new List<string>();
+        }
+
+        public async Task<T> RetrieveUserById(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            return user;
         }
     }
 }

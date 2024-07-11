@@ -4,6 +4,7 @@ using Core.BugService;
 using Core.DbService;
 using Core.Other;
 using Core.UserService;
+using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Identity;
@@ -28,11 +29,14 @@ namespace API
             })
                 .AddIdentity<BugUser, IdentityRole>(opt =>
                 {
+                    opt.SignIn.RequireConfirmedAccount = false;
+                    opt.SignIn.RequireConfirmedEmail = false;
                     opt.User.RequireUniqueEmail = true;
                     opt.Password.RequireDigit = false;
                     opt.Password.RequiredUniqueChars = 0;
                     opt.Password.RequireNonAlphanumeric = false;
                     opt.Password.RequireUppercase = false;
+                    opt.Password.RequireLowercase = false;
                 })
                 .AddEntityFrameworkStores<TrackerDbContext>()
                 .AddDefaultTokenProviders()
@@ -59,9 +63,13 @@ namespace API
 
             builder.Services.AddAuthorization(opt =>
             {
-                opt.AddPolicy(AuthorizePolicy.Admin, p => p.RequireRole(UserRoles.Admin));
-                opt.AddPolicy(AuthorizePolicy.Manager, p => p.RequireRole(UserRoles.Manager));
-                opt.AddPolicy(AuthorizePolicy.User, p => p.RequireRole(UserRoles.User));
+                opt.AddPolicy(AuthorizePolicy.AdminAccess, p => p.RequireRole(UserRoles.Admin));
+                opt.AddPolicy(AuthorizePolicy.ElevatedAccess, p =>
+                {
+                    p.RequireRole(UserRoles.Manager);
+                    p.RequireRole(UserRoles.Admin);
+                });
+                opt.AddPolicy(AuthorizePolicy.BasicAccess, p => p.RequireRole(UserRoles.User));
             });
 
             builder.Services.AddScoped<ITrackerDbService, TrackerDbService>();
@@ -73,12 +81,14 @@ namespace API
             {
                 opt.AddProfile(typeof(BugProfile));
                 opt.AddProfile(typeof(BugUserProfile));
+                opt.AddProfile(typeof(CommentProfile));
             });
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
                 });
 
             builder.Services.AddHttpContextAccessor();
@@ -103,7 +113,6 @@ namespace API
             app.UseAuthorization();
 
             app.MapControllers();
-
 
             app.Run();
         }

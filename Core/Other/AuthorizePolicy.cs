@@ -2,8 +2,8 @@
 {
     public static class AuthorizePolicy
     {
-        public const string Admin = "AdminPolicy";
-        public const string Manager = "ManagerPolicy";
-        public const string User = "UserPolicy";
+        public const string AdminAccess = "Admin";
+        public const string ElevatedAccess = "Elevated";
+        public const string BasicAccess = "Basic";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.Bug;
+using Core.DTOs.Comment;
 using Core.Models.Bug.BugEnums;
 
 namespace Core.BugService
@@ -8,10 +9,13 @@ namespace Core.BugService
         Task<BugViewModel> RetrieveBug(int bugId);
         Task<List<BugViewModel>> RetrieveAllActiveBugs();
         Task<List<BugViewModel>> RetrieveBugsByStatus(BugStatus status);
-        Task<BugViewModel> AddBug(AddBugModel bug);
+        Task<BugViewModel> AddBug(AddBugModel newBug);
         Task<bool> DeleteBug(int bugId);
         Task<BugViewModel> UpdateOrCreateBug(EditBugViewModel bug);
         Task<BugViewModel> CloseBugAfterFixing(int bugId);
-        Task<bool> ReassignBug(int bugId, string userId);
+        Task<BugViewModel> ReassignBug(int bugId, string? userId);
+        Task<CommentViewModel> AddComment(AddCommentModel newComment);
+        Task<CommentViewModel> EditComment(EditCommentModel editedComment);
+        Task<CommentViewModel> EditLikes(int commentId, char? action);
     }
 }

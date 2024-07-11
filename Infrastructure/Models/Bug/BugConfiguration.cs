@@ -22,6 +22,10 @@ namespace Infrastructure.Models.Bug
             builder.HasOne(b => b.Assignee)
                 .WithMany(a => a.AssignedBugs)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(b => b.Comments)
+                .WithOne(bc => bc.Bug)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

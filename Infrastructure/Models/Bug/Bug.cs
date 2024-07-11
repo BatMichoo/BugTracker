@@ -28,5 +28,7 @@ namespace Infrastructure.Models.Bug
         [ForeignKey(nameof(Assignee))]
         public string? AssigneeId { get; set; }
         public BugUser? Assignee { get; set; }
+
+        public ICollection<Comment.Comment> Comments { get; set; } = new List<Comment.Comment>();
     }
 }

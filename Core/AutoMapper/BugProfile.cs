@@ -19,7 +19,11 @@ namespace API.AutoMapper
             CreateMap<AddBugModel, BugModel>()
                 .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId));
 
-            CreateMap<BugModel, Bug>();
+            CreateMap<BugModel, Bug>()
+                .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())
+                .ForMember(d => d.Assignee, opt => opt.Ignore())
+                .ForMember(d => d.Creator, opt => opt.Ignore())
+                .ForMember(d => d.Comments, opt => opt.Ignore());
 
             CreateMap<EditBugViewModel, BugModel>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now));

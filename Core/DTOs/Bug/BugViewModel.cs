@@ -1,4 +1,5 @@
-﻿using Core.Models.Bug.BugEnums;
+﻿using Core.DTOs.Comment;
+using Core.Models.Bug.BugEnums;
 
 namespace Core.DTOs.Bug
 {
@@ -13,5 +14,6 @@ namespace Core.DTOs.Bug
         public string CreatedBy { get; set; } = null!;
         public string LastUpdatedBy { get; set; } = null!;
         public string? AssignedTo { get; set; }
+        public List<CommentViewModel> Comments { get; set; }
     }
 }

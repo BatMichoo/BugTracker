@@ -7,5 +7,6 @@ namespace Infrastructure.Models.User
         public string? Name { get; set; } 
         public ICollection<Bug.Bug> CreatedBugs { get; set; } = new List<Bug.Bug>();
         public ICollection<Bug.Bug> AssignedBugs { get; set; } = new List<Bug.Bug>();
+        public ICollection<Comment.Comment> Comments { get; set; } = new List<Comment.Comment>();
     }
 }

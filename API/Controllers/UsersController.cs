@@ -9,6 +9,7 @@ using System.Net.Mime;
 namespace API.Controllers
 {
     [Route("users")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UsersController : BaseController
     {
         private readonly IUserService<BugUser> userService;
@@ -45,7 +46,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterUserModel newUser)
         {
-            var user = await userService.RetrieveUser();
+            var user = await userService.RetrieveUserByEmail(newUser.Email);
 
             if (user == null)
             {
@@ -72,13 +73,59 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = AuthorizePolicy.User)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> RetrieveUserList()
         {
             var users = await userService.RetrieveUserList();
 
             return Ok(users);
+        }
+
+        [HttpGet("roles")]
+        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> RetrieveRoles()
+        {
+            var roles = await userService.GetRoles();
+
+            return Ok(roles);
+        }
+
+        [HttpPatch("assign-role")]
+        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AssignRole(string userId, string role)
+        {
+            var user = await userService.RetrieveUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    error = "User not found.",
+                    user
+                });
+            }
+
+            if (role == UserRoles.User || role == UserRoles.Manager)
+            {
+                var success = await userService.AddRolesToUser(user, new List<string> { role });
+
+                if (success)
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest(new
+            {
+                error = "Role assignment failed",
+                role
+            });
         }
     }
 }
