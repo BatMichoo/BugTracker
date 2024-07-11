@@ -21,7 +21,7 @@ namespace API
 
             // Add services to the container.
 
-            string dbAccessCreds = Environment.GetEnvironmentVariable("DbAccessCreds");
+            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ?? string.Empty;
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {

@@ -29,6 +29,7 @@ namespace API
             }
 
             string adminEmail = Config["RootAdmin:Email"];
+            string adminUserName = Config["RootAdmin:UserName"];
             var rootUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (rootUser == null)
@@ -36,8 +37,8 @@ namespace API
                 var user = new BugUser()
                 {
                     Email = adminEmail,
-                    UserName = Config["RootAdmin:UserName"],
-                    Name = Config["RootAdmin:UserName"]
+                    UserName = adminUserName,
+                    Name = adminUserName
                 };
 
                 var result = await userManager.CreateAsync(user, Config["RootAdmin:Password"]);

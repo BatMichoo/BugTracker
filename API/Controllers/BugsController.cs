@@ -8,7 +8,6 @@ using Core.UserService;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
 using System.Net.Mime;
 
 namespace API.Controllers
@@ -160,6 +159,9 @@ namespace API.Controllers
         }
 
         [HttpPost("{bugId}/comment")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddComment(int bugId, AddCommentViewModel newComment)
         {
             string userId = userService.RetrieveUserId();
@@ -183,7 +185,10 @@ namespace API.Controllers
             return Ok(comment);
         }
 
-        [HttpPatch("{bugId}/comment/{commentId}/like")]
+        [HttpPatch("/comment/{commentId}/like")]
+        [Consumes(MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AdjustLikes(int commentId, char? action)
         {
             var comment = await bugService.EditLikes(commentId, action);
@@ -197,6 +202,8 @@ namespace API.Controllers
         }
 
         [HttpPatch("{bugId}/assign-to")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AssignBugTo(int bugId, string? userId)
         {
             var bug = await bugService.ReassignBug(bugId, userId); 

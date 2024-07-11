@@ -85,7 +85,6 @@ namespace API.Controllers
         [HttpGet("roles")]
         [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> RetrieveRoles()
         {
             var roles = await userService.GetRoles();

@@ -20,8 +20,8 @@ namespace Core.BugService
         /// <summary>
         /// Enters a new bug in the system for tracking.
         /// </summary>
-        /// <param name="bug"></param>
-        /// <returns></returns>
+        /// <param name="bug">The bug to be created. <see cref="AddBugModel"/></param>
+        /// <returns>A view model of the created bug <see cref="BugViewModel"/></returns>
         public async Task<BugViewModel> AddBug(AddBugModel bug)
         {
             var newBug = mapper.Map<BugModel>(bug);
@@ -39,8 +39,8 @@ namespace Core.BugService
         /// <summary>
         /// Closes the bug after it's been fixed.
         /// </summary>
-        /// <param name="bugId"></param>
-        /// <returns></returns>
+        /// <param name="bugId">Id of the selected bug.</param>
+        /// <returns>An updated view model of the fixed bug. <see cref="BugViewModel"/></returns>
         public async Task<BugViewModel> CloseBugAfterFixing(int bugId)
         {
             var bug = await dbService.GetBug(bugId);
@@ -60,7 +60,7 @@ namespace Core.BugService
         /// Removes the selected bug by it's ID.
         /// </summary>
         /// <param name="bugId"></param>
-        /// <returns></returns>
+        /// <returns>A boolen value based on the success of the operation.</returns>
         public async Task<bool> DeleteBug(int bugId)
         {
             var success = await dbService.DeleteBug(bugId);
@@ -71,7 +71,7 @@ namespace Core.BugService
         /// <summary>
         /// Retrieves a list of all yet to be fixed bugs.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of bug view models. <see cref="BugViewModel"/></returns>
         public async Task<List<BugViewModel>> RetrieveAllActiveBugs()
         {
             var bugs = await dbService.GetActiveBugs();
@@ -87,10 +87,9 @@ namespace Core.BugService
         /// <summary>
         /// Reassigns a bug to another user for fixing.
         /// </summary>
-        /// <param name="bugId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="bugId">Bug to be reassigned.</param>
+        /// <param name="userId">An user ID to reassign the bug to</param>
+        /// <returns>A view model of the reassigned bug.</returns>
         public async Task<BugViewModel> ReassignBug(int bugId, string? userId)
         {
             var bug = await dbService.GetBug(bugId);
@@ -109,7 +108,7 @@ namespace Core.BugService
         /// Retrieves the selected bug by it's ID.
         /// </summary>
         /// <param name="bugId"></param>
-        /// <returns></returns>
+        /// <returns>A view model of the bug</returns>
         public async Task<BugViewModel> RetrieveBug(int bugId)
         {
             var bug = await dbService.GetBug(bugId);
