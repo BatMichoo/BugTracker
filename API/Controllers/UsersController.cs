@@ -1,4 +1,6 @@
-﻿using Core.DTOs.User;
+﻿using AutoMapper;
+using Core.BugService;
+using Core.DTOs.User;
 using Core.Other;
 using Core.UserService;
 using Infrastructure.Models.User;
@@ -13,10 +15,14 @@ namespace API.Controllers
     public class UsersController : BaseController
     {
         private readonly IUserService<BugUser> userService;
+        private readonly IBugService bugService;
+        private readonly IMapper mapper;
 
-        public UsersController(IUserService<BugUser> userService)
+        public UsersController(IUserService<BugUser> userService, IBugService bugService, IMapper mapper)
         {
             this.userService = userService;
+            this.bugService = bugService;
+            this.mapper = mapper;
         }
 
         [HttpPost("login")]
@@ -42,7 +48,7 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterUserModel newUser)
         {
@@ -57,10 +63,12 @@ namespace API.Controllers
                 catch (ArgumentException ex) 
                 {
                     return BadRequest(ex.Message);
-                }                
+                }
             }
 
-            return Ok();
+            string uri = Url.Action("GetUser", "Users", new { userId = user.Id })!;
+
+            return Created(uri, mapper.Map<UserViewModel>(user));
         }
 
         [HttpGet("logout")]
@@ -70,6 +78,22 @@ namespace API.Controllers
             await userService.SignOut();
 
             return Ok();
+        }
+
+        [HttpGet("{userId}")]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUser(string userId)
+        {
+            var user = await userService.RetrieveUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<UserViewModel>(user));
         }
 
         [HttpGet]
@@ -125,6 +149,50 @@ namespace API.Controllers
                 error = "Role assignment failed",
                 role
             });
+        }
+
+        [HttpGet("{userId}/assigned-bugs")]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAssignedBugs(string userId)
+        {
+            var user = await userService.RetrieveUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    error = "User does not exist",
+                    userId
+                });
+            }
+
+            var userWithBugs = await bugService.RetrieveAssignedBugs(userId);
+
+            return Ok(userWithBugs);
+        }
+
+        [HttpGet("{userId}/created-bugs")]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCreatedBugs(string userId)
+        {
+            var user = await userService.RetrieveUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    error = "User does not exist.",
+                    userId
+                });
+            }
+
+            var userWithBugs = await bugService.RetrieveCreatedBugs(user.Id);
+
+            return Ok(userWithBugs);
         }
     }
 }

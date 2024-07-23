@@ -20,6 +20,13 @@ namespace Core.AutoMapper
 
             CreateMap<AddCommentModel, CommentModel>()
                 .ForMember(d => d.PostedOn, opt => opt.MapFrom(s => DateTime.Now));
+
+            CreateMap<EditCommentViewModel, EditCommentModel>()
+                .ReverseMap();
+
+            CreateMap<EditCommentModel, CommentModel>()
+                .ForMember(d => d.Author, opt => opt.Ignore())
+                .ForMember(d => d.AuthorId, opt => opt.Ignore());
         }
     }
 }

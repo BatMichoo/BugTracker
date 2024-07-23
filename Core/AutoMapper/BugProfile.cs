@@ -26,7 +26,11 @@ namespace API.AutoMapper
                 .ForMember(d => d.Comments, opt => opt.Ignore());
 
             CreateMap<EditBugViewModel, BugModel>()
-                .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now));
+                .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
+                .ReverseMap()
+                .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null));
+
+            CreateMap<EditBugViewModel, AddBugViewModel>();
 
             CreateMap<Bug, BugModel>()
                 .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.UserName))

@@ -14,6 +14,6 @@ namespace Core.DTOs.Bug
         public string CreatedBy { get; set; } = null!;
         public string LastUpdatedBy { get; set; } = null!;
         public string? AssignedTo { get; set; }
-        public List<CommentViewModel> Comments { get; set; }
+        public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

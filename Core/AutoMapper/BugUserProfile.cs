@@ -12,6 +12,14 @@ namespace Core.AutoMapper
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.FirstName + " " + s.LastName));
 
             CreateMap<BugUser, UserViewModel>();
+
+            CreateMap<BugUser, UserAssignedBugsModel>();
+
+            CreateMap<BugUser, UserCreatedBugsModel>();
+
+            CreateMap<UserAssignedBugsModel, UserAssignedBugsViewModel>();
+
+            CreateMap<UserCreatedBugsModel, UserCreatedBugsViewModel>();
         }
     }
 }

@@ -3,6 +3,7 @@ using Core.AutoMapper;
 using Core.BugService;
 using Core.DbService;
 using Core.Other;
+using Core.Repository;
 using Core.UserService;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
@@ -95,6 +96,7 @@ namespace API
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
 
             var app = builder.Build();
 

@@ -1,8 +1,7 @@
 ﻿namespace Core.DTOs.Comment
 {
-    public class EditCommentModel
+    public class EditCommentViewModel
     {
-        public int Id { get; set; }
         public string Content { get; set; } = null!;
     }
 }

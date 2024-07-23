@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{BB4734CD-51C4-4A7E-B3C2-920D9CB80AA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{BB4734CD-51C4-4A7E-B3C2-920D9CB80AA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{0531C326-CA6F-4601-A894-A916B83468F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{0531C326-CA6F-4601-A894-A916B83468F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EB78CDAB-4470-4462-A31A-42B957375668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EB78CDAB-4470-4462-A31A-42B957375668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{F6633857-84B2-41E4-BDE4-0BBE6A44AD2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EB78CDAB-4470-4462-A31A-42B957375668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB78CDAB-4470-4462-A31A-42B957375668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB78CDAB-4470-4462-A31A-42B957375668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6633857-84B2-41E4-BDE4-0BBE6A44AD2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6633857-84B2-41E4-BDE4-0BBE6A44AD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6633857-84B2-41E4-BDE4-0BBE6A44AD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6633857-84B2-41E4-BDE4-0BBE6A44AD2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

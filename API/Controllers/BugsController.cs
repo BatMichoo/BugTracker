@@ -4,6 +4,7 @@ using Core.DTOs.Bug;
 using Core.DTOs.Comment;
 using Core.Models.Bug.BugEnums;
 using Core.Other;
+using Core.Repository;
 using Core.UserService;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Authorization;
@@ -20,12 +21,14 @@ namespace API.Controllers
         private readonly IBugService bugService;
         private readonly IMapper mapper;
         private readonly IUserService<BugUser> userService;
+        private readonly IBugRepository bugRepository;
 
-        public BugsController(IBugService bugService, IMapper mapper, IUserService<BugUser> userService)
+        public BugsController(IBugService bugService, IMapper mapper, IUserService<BugUser> userService, IBugRepository bugRepository)
         {
             this.bugService = bugService;
             this.mapper = mapper;
             this.userService = userService;
+            this.bugRepository = bugRepository;
         }
 
         [HttpGet("{bugId}")]
@@ -33,7 +36,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BugViewModel>> Get(int bugId)
         {
-            var bug = await bugService.RetrieveBug(bugId);
+            var bug = await bugService.RetrieveBugById(bugId);
 
             if (bug == null)
             {
@@ -48,18 +51,9 @@ namespace API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BugViewModel>> Get()
         {
-            var bug = await bugService.RetrieveAllActiveBugs();
-
-            if (bug == null)
-            {
-                return NotFound(new
-                {
-                    error = "No pending bugs left."
-                });
-            }
+            var bug = await bugService.RetrieveAllActiveBugs();            
 
             return Ok(bug);
         }
@@ -67,9 +61,19 @@ namespace API.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<BugViewModel>> Edit(EditBugViewModel editedBug)
         {
+            var existingBug = await bugService.RetrieveBugById(editedBug.Id);
+
+            if (existingBug == null)
+            {
+                var newBug = mapper.Map<AddBugViewModel>(editedBug);
+
+                return await Create(newBug);
+            }
+
             if (!Enum.TryParse(editedBug.Status, true, out BugStatus _))
             {
                 return BadRequest(new
@@ -86,11 +90,11 @@ namespace API.Controllers
                     error = "Invalid priority.",
                     invalidBug = editedBug
                 });
-            }
+            }            
 
-            var bug = await bugService.UpdateOrCreateBug(editedBug);
+            var bug = await bugService.UpdateBug(editedBug);
 
-            return bug;
+            return Ok(bug);
         }
 
         [HttpPost]
@@ -158,9 +162,15 @@ namespace API.Controllers
             });
         }
 
+        [HttpGet("{bugId}/comment/{commentId}")]
+        public async Task<IActionResult> GetComment(int bugId, int commentId)
+        {
+            return Ok();
+        }
+
         [HttpPost("{bugId}/comment")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddComment(int bugId, AddCommentViewModel newComment)
         {
@@ -182,7 +192,59 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(comment);
+            string uri = Url.Action(nameof(GetComment), "Bugs", new { commentId = comment.Id, bugId })!;
+
+            return Created(uri, comment);
+        }
+
+        [HttpPut("{bugId}/comment/{commentId}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> EditorCreateComment(int bugId, int commentId, EditCommentViewModel editCommentViewModel)
+        {
+            var user = await userService.RetrieveUser();
+
+            var bug = await bugService.RetrieveBugById(bugId);
+
+            if (bug == null)
+            {
+                return BadRequest();
+            }
+
+            var comment = bug.Comments.Where(c => c.Id == commentId).FirstOrDefault();
+
+            if (comment == null)
+            {
+                return await AddComment(bugId, new AddCommentViewModel
+                {
+                    Content = editCommentViewModel.Content
+                });
+            }
+
+            if (comment.AuthorName != user.UserName)
+            {
+                return BadRequest();
+            }
+
+            var editedComment = await bugService.EditComment(new EditCommentModel()
+            {
+                Id = comment.Id,
+                Content = editCommentViewModel.Content
+            });
+
+            if (editedComment == null)
+            {
+                return BadRequest();
+            }
+
+            if (editedComment.Id == commentId)
+            {
+                return Ok(editedComment);
+            }
+
+            return CreatedAtAction(nameof(AddComment), editedComment);
         }
 
         [HttpPatch("/comment/{commentId}/like")]
@@ -214,6 +276,15 @@ namespace API.Controllers
             }
 
             return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            var bugs = await bugRepository.ApplyFilters(b => b.Status == 1, b => b.Priority == 1);
+
+            return Ok(bugs);
         }
     }
 }
