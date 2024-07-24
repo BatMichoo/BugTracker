@@ -8,16 +8,12 @@ namespace API.AutoMapper
     {
         public BugProfile()
         {
-            CreateMap<AddBugViewModel, AddBugModel>()
-                .ForMember(d => d.Description, opt => opt.MapFrom(s => s.Description))
-                .AfterMap((s, d) => 
-                {
-                    d.CreatedOn = DateTime.Now;
-                    d.LastUpdatedOn = d.CreatedOn;
-                });
-
-            CreateMap<AddBugModel, BugModel>()
-                .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId));
+            CreateMap<AddBugModel, Bug>()
+                .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId))
+                .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())
+                .ForMember(d => d.Assignee, opt => opt.Ignore())
+                .ForMember(d => d.Creator, opt => opt.Ignore())
+                .ForMember(d => d.Comments, opt => opt.Ignore());
 
             CreateMap<BugModel, Bug>()
                 .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())

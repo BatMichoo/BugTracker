@@ -168,7 +168,7 @@ namespace API.Controllers
                 });
             }
 
-            var userWithBugs = await bugService.RetrieveAssignedBugs(userId);
+            var userWithBugs = await bugService.FetchBugById(int.Parse(userId));
 
             return Ok(userWithBugs);
         }
@@ -190,7 +190,7 @@ namespace API.Controllers
                 });
             }
 
-            var userWithBugs = await bugService.RetrieveCreatedBugs(user.Id);
+            var userWithBugs = await bugService.FetchBugById(int.Parse(userId));
 
             return Ok(userWithBugs);
         }

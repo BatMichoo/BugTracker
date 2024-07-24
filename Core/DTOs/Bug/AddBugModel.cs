@@ -1,14 +1,20 @@
-﻿using Core.Models.Bug.BugEnums;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Core.DTOs.Bug
 {
     public class AddBugModel
     {
-        public DateTime CreatedOn { get; set; }
-        public BugStatus Status { get; set; }
-        public DateTime LastUpdatedOn { get; set; }
-        public BugPriority Priority { get; set; }
+        [Required]
+        public string Status { get; set; } = null!;
+
+        [Required]
+        public string Priority { get; set; } = null!;
+
+        [Required]
+        [MaxLength(500)]
         public string Description { get; set; } = null!;
-        public string? CreatorId { get; set; }
+
+        [Required]
+        public string CreatorId { get; set; } = null!;
     }
 }

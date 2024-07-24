@@ -1,12 +1,13 @@
 using API.AutoMapper;
 using Core.AutoMapper;
 using Core.BugService;
-using Core.DbService;
 using Core.Other;
 using Core.Repository;
 using Core.UserService;
+using Core.Utilities.Bugs;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
+using Infrastructure.Models.Bug;
 using Infrastructure.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -73,8 +74,9 @@ namespace API
                 opt.AddPolicy(AuthorizePolicy.BasicAccess, p => p.RequireRole(UserRoles.User));
             });
 
-            builder.Services.AddScoped<ITrackerDbService, TrackerDbService>();
             builder.Services.AddScoped<IBugService, BugService>();
+            builder.Services.AddScoped(typeof(IAdvancedRepository<Bug>), typeof(BugRepository));
+            builder.Services.AddScoped<IFilterFactory<Bug>, BugFilterFactory>();
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
 
@@ -90,6 +92,7 @@ namespace API
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
             builder.Services.AddHttpContextAccessor();

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         private readonly TrackerDbContext dbContext;
         private readonly DbSet<T> dbSet;
@@ -14,9 +14,13 @@ namespace Core.Repository
             dbSet = dbContext.Set<T>();
         }
 
-        public async Task Create(T entity)
+        public async Task<T> Create(T entity)
         {
             await dbSet.AddAsync(entity);
+
+            await SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task DeleteById(int id)
@@ -26,21 +30,25 @@ namespace Core.Repository
             if (entity != null)
             {
                 dbSet.Remove(entity);
+
+                await SaveChangesAsync();
             }
         }
 
-        public async Task<T?> GetById(int id)
-        {
+        public async virtual Task<T?> GetById(int id)
+        {           
             T? entity = await dbSet.FindAsync(id);
 
             return entity;
         }
 
-        public Task Update(T entity)
+        public async Task<T> Update(T entity)
         {
             dbSet.Update(entity);
 
-            return Task.CompletedTask;
+            await SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task SaveChangesAsync()
@@ -49,6 +57,13 @@ namespace Core.Repository
         }
 
         public IQueryable<T> AsQueryable()
-            => dbSet.AsQueryable().AsNoTracking();
+            => dbSet.AsNoTracking();
+
+        public async Task Delete(T entity)
+        {
+            dbSet.Remove(entity);
+
+            await SaveChangesAsync();
+        }
     }
 }

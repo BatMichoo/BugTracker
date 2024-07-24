@@ -1,0 +1,18 @@
+﻿using Infrastructure.Models.Bug;
+using System.Linq.Expressions;
+
+namespace Core.Utilities.Bugs
+{
+    public class BugAssignedToFilter : IFilter<Bug>
+    {
+        private readonly string userId;
+
+        public BugAssignedToFilter(string userId)
+        {
+            this.userId = userId;
+        }
+
+        public Expression<Func<Bug, bool>> ToExpression()
+            => b => b.AssigneeId == userId;
+    }
+}
