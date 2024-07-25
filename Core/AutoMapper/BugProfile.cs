@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.DTOs;
 using Core.DTOs.Bug;
 using Infrastructure.Models.Bug;
 
@@ -8,7 +9,12 @@ namespace API.AutoMapper
     {
         public BugProfile()
         {
+            CreateMap<PagedList<BugModel>, PagedList<BugViewModel>>()
+                .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items));
+            CreateMap<AddBugViewModel, AddBugModel>();
+
             CreateMap<AddBugModel, Bug>()
+                .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId))
                 .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())
                 .ForMember(d => d.Assignee, opt => opt.Ignore())
@@ -21,10 +27,9 @@ namespace API.AutoMapper
                 .ForMember(d => d.Creator, opt => opt.Ignore())
                 .ForMember(d => d.Comments, opt => opt.Ignore());
 
-            CreateMap<EditBugViewModel, BugModel>()
+            CreateMap<EditBugViewModel, Bug>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
-                .ReverseMap()
-                .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null));
+                .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null || sm is not null));
 
             CreateMap<EditBugViewModel, AddBugViewModel>();
 
@@ -35,10 +40,7 @@ namespace API.AutoMapper
 
             CreateMap<BugModel, BugViewModel>()
                 .ForMember(d => d.CreatedBy, opt => opt.MapFrom(s => s.Creator))
-                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));
-
-            CreateMap<Bug, BugViewModel>()
-                .ReverseMap();
+                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.DTOs.Bug;
+﻿using Core.DTOs;
+using Core.DTOs.Bug;
 
 namespace Core.BugService
 {
@@ -7,7 +8,7 @@ namespace Core.BugService
         Task<PagedList<BugModel>> FetchBugs(int page, int pageSize, string searchTerm, string sortOptions, string filter);
         Task<BugModel?> FetchBugById(int id);
         Task<BugModel> CreateBug(AddBugModel model);
-        Task<BugModel> UpdateBug(BugViewModel model);
+        Task<BugModel> UpdateBug(EditBugViewModel model);
         Task DeleteBug(int id);
     }
 }

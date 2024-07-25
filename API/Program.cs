@@ -4,6 +4,7 @@ using Core.BugService;
 using Core.Other;
 using Core.Repository;
 using Core.UserService;
+using Core.Utilities;
 using Core.Utilities.Bugs;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
@@ -77,6 +78,8 @@ namespace API
             builder.Services.AddScoped<IBugService, BugService>();
             builder.Services.AddScoped(typeof(IAdvancedRepository<Bug>), typeof(BugRepository));
             builder.Services.AddScoped<IFilterFactory<Bug>, BugFilterFactory>();
+            builder.Services.AddScoped<ISortingOptionsFactory<Bug>, BugSortOptionsFactory>();
+
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
 

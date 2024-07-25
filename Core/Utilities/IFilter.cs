@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Core.Utilities.Bugs
+namespace Core.Utilities
 {
     public interface IFilter<T> where T : class
     {

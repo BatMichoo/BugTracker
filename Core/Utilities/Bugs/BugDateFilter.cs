@@ -18,7 +18,7 @@ namespace Core.Utilities.Bugs
         {
             switch (_operation)
             {
-                case ">=":
+                case "=>":
                     return b => b.CreatedOn >= _targetDate;
                 case "<=":
                     return b => b.CreatedOn <= _targetDate;

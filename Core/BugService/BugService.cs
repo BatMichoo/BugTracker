@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using Core.DTOs;
 using Core.DTOs.Bug;
 using Core.Repository;
-using Core.Utilities.Bugs;
+using Core.Utilities;
 using Infrastructure.Models.Bug;
 
 namespace Core.BugService
@@ -9,19 +10,25 @@ namespace Core.BugService
     public class BugService : IBugService
     {
         private readonly IAdvancedRepository<Bug> bugRepository;
-        private readonly IMapper mapper;
         private readonly IFilterFactory<Bug> filterFactory;
+        private readonly ISortingOptionsFactory<Bug> sortingFactory;
+        private readonly IMapper mapper;
 
-        public BugService(IAdvancedRepository<Bug> bugRepository, IMapper mapper, IFilterFactory<Bug> filterFactory)
+        public BugService(IAdvancedRepository<Bug> bugRepository, IFilterFactory<Bug> filterFactory,
+            ISortingOptionsFactory<Bug> sortingFactory, IMapper mapper)
         {
             this.bugRepository = bugRepository;
-            this.mapper = mapper;
             this.filterFactory = filterFactory;
+            this.sortingFactory = sortingFactory;
+            this.mapper = mapper;
         }
 
         public async Task<BugModel> CreateBug(AddBugModel model)
         {
             var bugDbModel = mapper.Map<Bug>(model);
+
+            bugDbModel.LastUpdatedOn = bugDbModel.CreatedOn;
+            bugDbModel.LastUpdatedById = bugDbModel.CreatorId;
 
             var newBug = await bugRepository.Create(bugDbModel);
 
@@ -49,23 +56,9 @@ namespace Core.BugService
         {
             var filters = await filterFactory.CreateFilters(filter);
 
-            BugSortingOptions sortingOptions = new BugSortingOptions();
+            var sortingOptions = sortingFactory.CreateSortingOptions(sortOptions);
 
-            if (sortOptions != null)
-            {
-                string[] sortingInfo = sortOptions.Split('_');
-
-                if (Enum.TryParse(sortingInfo[0], true, out BugSortBy sortBy))
-                {
-                    sortingOptions.SortBy = sortBy;
-                }
-                if (Enum.TryParse(sortingInfo[1], true, out BugSortOrder sortOrder))
-                { 
-                    sortingOptions.SortOrder = sortOrder;
-                }
-            }
-
-            var pageInfo = new PagingInfo() { CurrentPage = page, ElementsPerPage = pageSize };
+            var pageInfo = PagingInfo.CreatePage(page, pageSize);
 
             var bugList = await bugRepository.RetrieveData(filters, sortingOptions, searchTerm, pageInfo);
 
@@ -73,22 +66,27 @@ namespace Core.BugService
             {
                 CurrentPage = page,
                 PageSize = pageSize,
-                Items = mapper.Map<List<BugModel>>(bugList)
+                Items = mapper.Map<List<BugModel>>(bugList),
+                TotalCount = await bugRepository.CountTotal()
             };
         }
 
-        public async Task<BugModel> UpdateBug(BugViewModel model)
+        public async Task<BugModel> UpdateBug(EditBugViewModel model)
         {
             var bug = await bugRepository.GetById(model.Id);
 
             if (bug != null)
             {
-                var updateBug = await bugRepository.Update(mapper.Map<Bug>(model));
+                mapper.Map(model, bug);
 
-                return mapper.Map<BugModel>(updateBug);
+                bug = await bugRepository.Update(bug);
+            }
+            else
+            {
+                bug = await bugRepository.Create(mapper.Map<Bug>(model));
             }
 
-            return null;
+            return mapper.Map<BugModel>(bug);
         }
     }
 }

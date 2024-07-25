@@ -1,4 +1,4 @@
-﻿namespace Core.Utilities.Bugs
+﻿namespace Core.Utilities
 {
     public interface IFilterFactory<T> where T : class
     {

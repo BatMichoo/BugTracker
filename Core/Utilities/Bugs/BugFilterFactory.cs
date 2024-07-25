@@ -1,11 +1,12 @@
 ﻿using Core.Other;
 using Infrastructure.Models.Bug;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Core.Utilities.Bugs
 {
     public class BugFilterFactory : IFilterFactory<Bug>
     {
-        public async Task<IList<IFilter<Bug>>> CreateFilters(string filterInput)
+        public Task<IList<IFilter<Bug>>> CreateFilters(string filterInput)
         {
             var filters = new List<IFilter<Bug>>();
 
@@ -17,21 +18,30 @@ namespace Core.Utilities.Bugs
                 {
                     string[] filterInfo = filterData.Split("_");
 
-                    string propertyName = filterInfo[0];
+                    if (!Enum.TryParse(filterInfo[0], true, out BugFilterType type) )
+                    {
+                        continue;
+                    }
+
                     string propertyValue = filterInfo[1];
 
                     IFilter<Bug> filter;
 
-                    switch (propertyName)
+                    switch (type)
                     {
-                        case "createdon":
+                        case BugFilterType.CreatedOn:
                             string operation = filterInfo[2];
-                            filter = new BugDateFilter(DateTime.Parse(propertyValue), operation);
+                            var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
+
+                            if (!success)
+                                createdOn = DateTime.UtcNow;
+
+                            filter = new BugDateFilter(createdOn, operation);
                             break;
-                        case "assignedto":
+                        case BugFilterType.AssignedTo:
                             filter = new BugAssignedToFilter(propertyValue);
                             break;
-                        case "createdby":
+                        case BugFilterType.CreatedBy:
                             filter = new BugCreatedByFilter(propertyValue);
                             break;
                         default:
@@ -43,7 +53,7 @@ namespace Core.Utilities.Bugs
                 }
             }
 
-            return filters;
+            return Task.FromResult((IList<IFilter<Bug>>) filters);
         }
     }
 }

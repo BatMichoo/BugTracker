@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Models.Bug
 {
-    public class Bug
+    public class Bug : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public DateTime CreatedOn { get; set; }
         public int Status { get; set; }
         public DateTime LastUpdatedOn { get; set; }

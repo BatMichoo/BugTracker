@@ -13,6 +13,7 @@ namespace Core.DTOs.Bug
         public string Description { get; set; } = null!;
         public string CreatedBy { get; set; } = null!;
         public string LastUpdatedBy { get; set; } = null!;
+        public bool IsAssigned => !string.IsNullOrEmpty(AssignedTo);
         public string? AssignedTo { get; set; }
         public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }

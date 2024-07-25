@@ -1,9 +1,10 @@
 ﻿using Infrastructure;
+using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Repository
 {
-    public abstract class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly TrackerDbContext dbContext;
         private readonly DbSet<T> dbSet;
@@ -20,7 +21,7 @@ namespace Core.Repository
 
             await SaveChangesAsync();
 
-            return entity;
+            return await GetById(entity.Id);
         }
 
         public async Task DeleteById(int id)
@@ -35,9 +36,12 @@ namespace Core.Repository
             }
         }
 
-        public async virtual Task<T?> GetById(int id)
-        {           
-            T? entity = await dbSet.FindAsync(id);
+        public async Task<T?> GetById(int id)
+        {
+            var query = AddInclusions(AsQueryable());
+
+            T? entity = await query
+                .FirstOrDefaultAsync(b => b.Id == id);
 
             return entity;
         }
@@ -48,22 +52,31 @@ namespace Core.Repository
 
             await SaveChangesAsync();
 
-            return entity;
+            return await GetById(entity.Id)!;
         }
 
-        public async Task SaveChangesAsync()
+        private async Task SaveChangesAsync()
         {
             await dbContext.SaveChangesAsync();
         }
 
-        public IQueryable<T> AsQueryable()
-            => dbSet.AsNoTracking();
+        internal IQueryable<T> AsQueryable()
+            => dbSet.AsQueryable();
 
         public async Task Delete(T entity)
         {
             dbSet.Remove(entity);
 
             await SaveChangesAsync();
+        }
+
+        internal abstract IQueryable<T> AddInclusions(IQueryable<T> query);
+
+        public async Task<int> CountTotal()
+        {
+            var count = await dbSet.CountAsync();
+
+            return count;
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Core.Utilities.Bugs;
-using Infrastructure.Models.Bug;
+﻿using Core.Utilities;
+using Infrastructure.Models;
 
 namespace Core.Repository
 {
-    public interface IAdvancedRepository<T> : IRepository<T> where T : class
-    {
-        Task<IList<Bug>> RetrieveData(IList<IFilter<T>> filters, BugSortingOptions sortingOptions, string? searchTerm, PagingInfo? pagingInfo);
+    public interface IAdvancedRepository<T> : IRepository<T> where T : BaseEntity
+    {        
+        Task<IList<T>> RetrieveData(IList<IFilter<T>> filters, ISortingOptions<T> sortingOptions, string? searchTerm, PagingInfo? pagingInfo);
     }
 }

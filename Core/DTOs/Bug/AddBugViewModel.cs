@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Infrastructure.Models.Bug;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.DTOs.Bug
 {
@@ -11,7 +12,7 @@ namespace Core.DTOs.Bug
         public string Priority { get; set; } = null!;
 
         [Required]
-        [MaxLength(500)]
+        [MaxLength(BugValidation.MaxLength)]
         public string Description { get; set; } = null!;
     }
 }
