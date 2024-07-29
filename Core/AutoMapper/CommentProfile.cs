@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Core.DTOs.Comment;
-using Infrastructure.Models.Comment;
+using Core.DTOs.Comments;
+using Infrastructure.Models.CommentEntity;
 
 namespace Core.AutoMapper
 {
@@ -18,7 +18,7 @@ namespace Core.AutoMapper
 
             CreateMap<AddCommentViewModel, AddCommentModel>();
 
-            CreateMap<AddCommentModel, CommentModel>()
+            CreateMap<AddCommentModel, Comment>()
                 .ForMember(d => d.PostedOn, opt => opt.MapFrom(s => DateTime.Now));
 
             CreateMap<EditCommentViewModel, EditCommentModel>()

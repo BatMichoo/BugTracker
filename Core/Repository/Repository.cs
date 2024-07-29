@@ -6,18 +6,18 @@ namespace Core.Repository
 {
     public abstract class Repository<T> : IRepository<T> where T : BaseEntity
     {
-        private readonly TrackerDbContext dbContext;
-        private readonly DbSet<T> dbSet;
+        private readonly TrackerDbContext _dbContext;
+        private readonly DbSet<T> _dbSet;
 
         public Repository(TrackerDbContext dbContext)
         {
-            this.dbContext = dbContext;
-            dbSet = dbContext.Set<T>();
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<T>();
         }
 
         public async Task<T> Create(T entity)
         {
-            await dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity);
 
             await SaveChangesAsync();
 
@@ -30,7 +30,7 @@ namespace Core.Repository
 
             if (entity != null)
             {
-                dbSet.Remove(entity);
+                _dbSet.Remove(entity);
 
                 await SaveChangesAsync();
             }
@@ -48,7 +48,7 @@ namespace Core.Repository
 
         public async Task<T> Update(T entity)
         {
-            dbSet.Update(entity);
+            _dbSet.Update(entity);
 
             await SaveChangesAsync();
 
@@ -57,15 +57,15 @@ namespace Core.Repository
 
         private async Task SaveChangesAsync()
         {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         internal IQueryable<T> AsQueryable()
-            => dbSet.AsQueryable();
+            => _dbSet.AsQueryable();
 
         public async Task Delete(T entity)
         {
-            dbSet.Remove(entity);
+            _dbSet.Remove(entity);
 
             await SaveChangesAsync();
         }
@@ -74,9 +74,14 @@ namespace Core.Repository
 
         public async Task<int> CountTotal()
         {
-            var count = await dbSet.CountAsync();
+            var count = await _dbSet.CountAsync();
 
             return count;
         }
+
+        public async Task<bool> DoesExist(int id)
+            => await _dbSet.AsNoTracking()
+            .Where(e => e.Id == id)
+            .AnyAsync();
     }
 }

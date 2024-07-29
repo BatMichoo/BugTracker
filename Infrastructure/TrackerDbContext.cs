@@ -1,6 +1,6 @@
-﻿using Infrastructure.Models.Bug;
-using Infrastructure.Models.Comment;
-using Infrastructure.Models.User;
+﻿using Infrastructure.Models.BugEntity;
+using Infrastructure.Models.CommentEntity;
+using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +13,6 @@ namespace Infrastructure
         }
 
         public DbSet<Bug> Bugs { get; set; } = null!;
-        public DbSet<BugUser> Users { get; set; } = null!;
         public DbSet<Comment> Comments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

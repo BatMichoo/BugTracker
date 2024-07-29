@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs;
-using Core.DTOs.Bug;
-using Infrastructure.Models.Bug;
+using Core.DTOs.Bugs;
+using Infrastructure.Models.BugEntity;
 
 namespace API.AutoMapper
 {
@@ -28,6 +28,7 @@ namespace API.AutoMapper
                 .ForMember(d => d.Comments, opt => opt.Ignore());
 
             CreateMap<EditBugViewModel, Bug>()
+                .ForMember(s => s.Id, opt => opt.Ignore())
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null || sm is not null));
 

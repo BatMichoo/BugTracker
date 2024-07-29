@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.Bug;
+﻿using Infrastructure.Models.BugEntity;
 using System.Linq.Expressions;
 
 namespace Core.Utilities.Bugs

@@ -1,15 +1,16 @@
 using API.AutoMapper;
 using Core.AutoMapper;
 using Core.BugService;
+using Core.CommentService;
 using Core.Other;
-using Core.Repository;
+using Core.Repository.BugRepo;
+using Core.Repository.CommentRepo;
 using Core.UserService;
-using Core.Utilities;
 using Core.Utilities.Bugs;
+using Core.Utilities.Comments;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
-using Infrastructure.Models.Bug;
-using Infrastructure.Models.User;
+using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -76,9 +77,14 @@ namespace API
             });
 
             builder.Services.AddScoped<IBugService, BugService>();
-            builder.Services.AddScoped(typeof(IAdvancedRepository<Bug>), typeof(BugRepository));
-            builder.Services.AddScoped<IFilterFactory<Bug>, BugFilterFactory>();
-            builder.Services.AddScoped<ISortingOptionsFactory<Bug>, BugSortOptionsFactory>();
+            builder.Services.AddScoped<IBugRepository, BugRepository>();
+            builder.Services.AddScoped<IBugFilterFactory, BugFilterFactory>();
+            builder.Services.AddScoped<IBugSortingOptionsFactory, BugSortingOptionsFactory>();
+
+            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
+            builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();

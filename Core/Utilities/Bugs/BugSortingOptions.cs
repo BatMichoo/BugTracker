@@ -1,28 +1,28 @@
-﻿using Infrastructure.Models.Bug;
+﻿using Infrastructure.Models.BugEntity;
 using System.Linq.Expressions;
 
 namespace Core.Utilities.Bugs
 {
     public class BugSortingOptions : ISortingOptions<Bug>
     {
-        public BugSortingOptions(SortOrder sortOrder, BugSortBy sortBy)
+        public BugSortingOptions(SortOrder sortOrder, BugOrderBy sortBy)
         {
             SortOrder = sortOrder;
             SortBy = sortBy;
         }
 
         public SortOrder SortOrder { get; private set; }
-        public BugSortBy SortBy { get; private set; }
+        public BugOrderBy SortBy { get; private set; }
 
         public Expression<Func<Bug, object>> Sort()
         {
             switch (SortBy)
             {
-                case BugSortBy.CreatedOn:
+                case BugOrderBy.CreatedOn:
                     return b => b.CreatedOn;
-                case BugSortBy.LastModifiedOn:
+                case BugOrderBy.LastModifiedOn:
                     return b => b.LastUpdatedOn;
-                case BugSortBy.Comments:
+                case BugOrderBy.Comments:
                     return b => b.Comments.Count;
                 default:
                     return b => b.Id;

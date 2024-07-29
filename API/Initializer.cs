@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.User;
+﻿using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Identity;
 
 namespace API

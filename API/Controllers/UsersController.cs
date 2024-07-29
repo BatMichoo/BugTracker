@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Core.BugService;
-using Core.DTOs.User;
+using Core.DTOs.Users;
 using Core.Other;
 using Core.UserService;
-using Infrastructure.Models.User;
+using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -14,15 +14,15 @@ namespace API.Controllers
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UsersController : BaseController
     {
-        private readonly IUserService<BugUser> userService;
-        private readonly IBugService bugService;
-        private readonly IMapper mapper;
+        private readonly IUserService<BugUser> _userService;
+        private readonly IBugService _bugService;
+        private readonly IMapper _mapper;
 
         public UsersController(IUserService<BugUser> userService, IBugService bugService, IMapper mapper)
         {
-            this.userService = userService;
-            this.bugService = bugService;
-            this.mapper = mapper;
+            this._userService = userService;
+            this._bugService = bugService;
+            this._mapper = mapper;
         }
 
         [HttpPost("login")]
@@ -31,11 +31,11 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> LogIn(LoginUserModel loginUserModel)
         {
-            var user = await userService.RetrieveUserByEmail(loginUserModel.Email);
+            var user = await _userService.RetrieveUserByEmail(loginUserModel.Email);
 
             if (user != null)
             {
-                var result = await userService.SignInUserWithPassword(user, loginUserModel.Password);
+                var result = await _userService.SignInUserWithPassword(user, loginUserModel.Password);
 
                 if (result)
                 {
@@ -52,13 +52,13 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterUserModel newUser)
         {
-            var user = await userService.RetrieveUserByEmail(newUser.Email);
+            var user = await _userService.RetrieveUserByEmail(newUser.Email);
 
             if (user == null)
             {
                 try
                 {
-                    user = await userService.RegisterNewUserWithPassword(newUser);
+                    user = await _userService.RegisterNewUserWithPassword(newUser);
                 }
                 catch (ArgumentException ex) 
                 {
@@ -68,14 +68,14 @@ namespace API.Controllers
 
             string uri = Url.Action("GetUser", "Users", new { userId = user.Id })!;
 
-            return Created(uri, mapper.Map<UserViewModel>(user));
+            return Created(uri, _mapper.Map<UserViewModel>(user));
         }
 
         [HttpGet("logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> LogOut()
         {
-            await userService.SignOut();
+            await _userService.SignOut();
 
             return Ok();
         }
@@ -86,14 +86,14 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUser(string userId)
         {
-            var user = await userService.RetrieveUserById(userId);
+            var user = await _userService.RetrieveUserById(userId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(mapper.Map<UserViewModel>(user));
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
 
         [HttpGet]
@@ -101,7 +101,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> RetrieveUserList()
         {
-            var users = await userService.RetrieveUserList();
+            var users = await _userService.RetrieveUserList();
 
             return Ok(users);
         }
@@ -111,7 +111,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RetrieveRoles()
         {
-            var roles = await userService.GetRoles();
+            var roles = await _userService.GetRoles();
 
             return Ok(roles);
         }
@@ -123,7 +123,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AssignRole(string userId, string role)
         {
-            var user = await userService.RetrieveUserById(userId);
+            var user = await _userService.RetrieveUserById(userId);
 
             if (user == null)
             {
@@ -136,7 +136,7 @@ namespace API.Controllers
 
             if (role == UserRoles.User || role == UserRoles.Manager)
             {
-                var success = await userService.AddRolesToUser(user, new List<string> { role });
+                var success = await _userService.AddRolesToUser(user, new List<string> { role });
 
                 if (success)
                 {
@@ -157,7 +157,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAssignedBugs(string userId)
         {
-            var user = await userService.RetrieveUserById(userId);
+            var user = await _userService.RetrieveUserById(userId);
 
             if (user == null)
             {
@@ -168,7 +168,7 @@ namespace API.Controllers
                 });
             }
 
-            var userWithBugs = await bugService.FetchBugById(int.Parse(userId));
+            var userWithBugs = await _bugService.GetBugById(int.Parse(userId));
 
             return Ok(userWithBugs);
         }
@@ -179,7 +179,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCreatedBugs(string userId)
         {
-            var user = await userService.RetrieveUserById(userId);
+            var user = await _userService.RetrieveUserById(userId);
 
             if (user == null)
             {
@@ -190,7 +190,7 @@ namespace API.Controllers
                 });
             }
 
-            var userWithBugs = await bugService.FetchBugById(int.Parse(userId));
+            var userWithBugs = await _bugService.GetBugById(int.Parse(userId));
 
             return Ok(userWithBugs);
         }

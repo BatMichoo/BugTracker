@@ -1,12 +1,16 @@
-﻿using Core.Other;
-using Infrastructure.Models.Bug;
-using System.Reflection.Metadata.Ecma335;
+﻿using Core.Utilities.Comments;
+using Infrastructure.Models.BugEntity;
 
 namespace Core.Utilities.Bugs
 {
-    public class BugFilterFactory : IFilterFactory<Bug>
+    public class BugFilterFactory : IBugFilterFactory
     {
-        public Task<IList<IFilter<Bug>>> CreateFilters(string filterInput)
+        public Task<IFilter<Bug>> CreateFilter(CommentFilterType filterBy, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<IFilter<Bug>>> CreateFilters(string? filterInput)
         {
             var filters = new List<IFilter<Bug>>();
 

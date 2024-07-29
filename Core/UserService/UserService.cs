@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTOs.User;
+using Core.DTOs.Users;
 using Core.Other;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -10,31 +10,31 @@ namespace Core.UserService
 {
     public class UserService<T> : IUserService<T> where T : IdentityUser
     {
-        private readonly UserManager<T> userManager;
-        private readonly SignInManager<T> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IMapper mapper;
-        private readonly ClaimsPrincipal claimsPrincipal;
+        private readonly UserManager<T> _userManager;
+        private readonly SignInManager<T> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
+        private readonly ClaimsPrincipal _claimsPrincipal;
 
         public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.mapper = mapper;
-            claimsPrincipal = httpContextAccessor.HttpContext.User;
-            this.roleManager = roleManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _mapper = mapper;
+            _claimsPrincipal = httpContextAccessor.HttpContext.User;
+            _roleManager = roleManager;
         }
 
         public string RetrieveUserId()
         {
-            return userManager.GetUserId(claimsPrincipal);
+            return _userManager.GetUserId(_claimsPrincipal);
         }
 
         public async Task<T> RegisterNewUserWithPassword(RegisterUserModel newUser)
         {
-            var toBeCreated = mapper.Map<T>(newUser);
+            var toBeCreated = _mapper.Map<T>(newUser);
 
-            var result = await userManager.CreateAsync(toBeCreated, newUser.Password);            
+            var result = await _userManager.CreateAsync(toBeCreated, newUser.Password);            
 
             if (result.Succeeded)
             {
@@ -53,47 +53,47 @@ namespace Core.UserService
 
         public async Task<T> RetrieveUser()
         {
-            var user = await userManager.GetUserAsync(claimsPrincipal);
+            var user = await _userManager.GetUserAsync(_claimsPrincipal);
 
             return user;
         }
 
         public async Task<T> RetrieveUserByEmail(string email)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
 
             return user;
         }       
 
         public async Task<bool> SignInUserWithPassword(T user, string password)
         {
-            var result = await signInManager.PasswordSignInAsync(user, password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
 
             return result.Succeeded;
         }
 
         public async Task SignOut()
         {
-            await signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
         }
 
         public async Task<bool> AddRolesToUser(T user, IEnumerable<string> roles)
         {
-            var result = await userManager.AddToRolesAsync(user, roles);
+            var result = await _userManager.AddToRolesAsync(user, roles);
 
             return result.Succeeded;
         }
 
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
-            var users = await userManager.Users
+            var users = await _userManager.Users
                 .Where(u => u.UserName != "Admin")
                 .AsNoTracking()
                 .ToListAsync();
 
             if (users.Any())
             {
-                return mapper.Map<List<UserViewModel>>(users);
+                return _mapper.Map<List<UserViewModel>>(users);
             }
 
             return new List<UserViewModel>();
@@ -101,7 +101,7 @@ namespace Core.UserService
 
         public async Task<List<string>> GetRoles()
         {
-            var roles = await roleManager.Roles
+            var roles = await _roleManager.Roles
                 .AsNoTracking()
                 .Where(r => r.Name != UserRoles.Admin)
                 .Select(r => r.Name)
@@ -117,7 +117,7 @@ namespace Core.UserService
 
         public async Task<T> RetrieveUserById(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             return user;
         }

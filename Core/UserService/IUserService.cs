@@ -1,4 +1,4 @@
-﻿using Core.DTOs.User;
+﻿using Core.DTOs.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.UserService

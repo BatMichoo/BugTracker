@@ -1,92 +1,121 @@
 ﻿using AutoMapper;
 using Core.DTOs;
-using Core.DTOs.Bug;
-using Core.Repository;
+using Core.DTOs.Bugs;
+using Core.Repository.BugRepo;
 using Core.Utilities;
-using Infrastructure.Models.Bug;
+using Core.Utilities.Bugs;
+using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService
 {
     public class BugService : IBugService
     {
-        private readonly IAdvancedRepository<Bug> bugRepository;
-        private readonly IFilterFactory<Bug> filterFactory;
-        private readonly ISortingOptionsFactory<Bug> sortingFactory;
-        private readonly IMapper mapper;
+        private readonly IBugRepository _bugRepository;
+        private readonly IBugFilterFactory _filterFactory;
+        private readonly IBugSortingOptionsFactory _sortingFactory;
+        private readonly IMapper _mapper;
 
-        public BugService(IAdvancedRepository<Bug> bugRepository, IFilterFactory<Bug> filterFactory,
-            ISortingOptionsFactory<Bug> sortingFactory, IMapper mapper)
+        public BugService(IBugRepository bugRepository, IBugFilterFactory filterFactory,
+            IBugSortingOptionsFactory sortingFactory, IMapper mapper)
         {
-            this.bugRepository = bugRepository;
-            this.filterFactory = filterFactory;
-            this.sortingFactory = sortingFactory;
-            this.mapper = mapper;
+            _bugRepository = bugRepository;
+            _filterFactory = filterFactory;
+            _sortingFactory = sortingFactory;
+            _mapper = mapper;
         }
 
         public async Task<BugModel> CreateBug(AddBugModel model)
         {
-            var bugDbModel = mapper.Map<Bug>(model);
+            var bugDbModel = _mapper.Map<Bug>(model);
 
             bugDbModel.LastUpdatedOn = bugDbModel.CreatedOn;
             bugDbModel.LastUpdatedById = bugDbModel.CreatorId;
 
-            var newBug = await bugRepository.Create(bugDbModel);
+            var newBug = await _bugRepository.Create(bugDbModel);
 
-            return mapper.Map<BugModel>(newBug);
+            return _mapper.Map<BugModel>(newBug);
         }
 
         public async Task DeleteBug(int id)
         {
-            await bugRepository.DeleteById(id);
+            await _bugRepository.DeleteById(id);
         }
 
-        public async Task<BugModel?> FetchBugById(int id)
+        public async Task<bool> DoesExist(int id)
+            => await _bugRepository.DoesExist(id);
+
+        public async Task<BugModel?> GetBugById(int id)
         {
-            var bug = await bugRepository.GetById(id);
+            var bug = await _bugRepository.GetById(id);
 
             if (bug != null)
             {
-                return mapper.Map<BugModel>(bug);
+                return _mapper.Map<BugModel>(bug);
             }
 
             return null;
         }
 
-        public async Task<PagedList<BugModel>> FetchBugs(int page, int pageSize, string searchTerm, string sortOptions, string filter)
+        public async Task<PagedList<BugModel>> GetBugs(int page, int pageSize, string? searchTerm, string? sortOptions, string? filter)
         {
-            var filters = await filterFactory.CreateFilters(filter);
+            var filters = await _filterFactory.CreateFilters(filter);
 
-            var sortingOptions = sortingFactory.CreateSortingOptions(sortOptions);
+            var sortingOptions = _sortingFactory.CreateSortingOptions(sortOptions);
 
-            var pageInfo = PagingInfo.CreatePage(page, pageSize);
+            int totalElements = await _bugRepository.CountTotal();
 
-            var bugList = await bugRepository.RetrieveData(filters, sortingOptions, searchTerm, pageInfo);
+            var pageInfo = PagingInfo.CreatePage(page, pageSize, totalElements);
+
+            var bugList = await _bugRepository.RetrieveData(filters, sortingOptions, searchTerm, pageInfo);
 
             return new PagedList<BugModel>
             {
-                CurrentPage = page,
-                PageSize = pageSize,
-                Items = mapper.Map<List<BugModel>>(bugList),
-                TotalCount = await bugRepository.CountTotal()
+                PageInfo = pageInfo,
+                Items = _mapper.Map<List<BugModel>>(bugList),
             };
+        }
+
+        public Task<PagedList<BugModel>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PagedList<BugModel>> GetAll(DateTime startDate, DateTime endDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PagedList<BugModel>> GetAssignedToUserId(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PagedList<BugModel>> GetCreatedByUserId(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PagedList<BugModel>> GetUnassigned()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<BugModel> UpdateBug(EditBugViewModel model)
         {
-            var bug = await bugRepository.GetById(model.Id);
+            var bug = await _bugRepository.GetById(model.Id);
 
             if (bug != null)
             {
-                mapper.Map(model, bug);
+                _mapper.Map(model, bug);
 
-                bug = await bugRepository.Update(bug);
+                bug = await _bugRepository.Update(bug);
             }
             else
             {
-                bug = await bugRepository.Create(mapper.Map<Bug>(model));
+                bug = await _bugRepository.Create(_mapper.Map<Bug>(model));
             }
 
-            return mapper.Map<BugModel>(bug);
+            return _mapper.Map<BugModel>(bug);
         }
     }
 }
