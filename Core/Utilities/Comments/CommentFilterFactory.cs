@@ -4,14 +4,14 @@ namespace Core.Utilities.Comments
 {
     public class CommentFilterFactory : ICommentFilterFactory
     {
-        public Task<IFilter<Comment>> CreateFilter(CommentFilterType filterBy, object value)
+        public IFilter<Comment> CreateFilter(CommentFilterType filterBy, string? value)
         {
             switch (filterBy)
             {
                 case CommentFilterType.BugId:
-                    return Task.FromResult((IFilter<Comment>) new CommentByBugIdFilter((int)value));
-                    default:
-                    return Task.FromResult(default(IFilter<Comment>));
+                    return new CommentByBugIdFilter(int.Parse(value));
+                default:
+                    return default;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Core.DTOs;
+using Core.BaseService;
 using Core.DTOs.Bugs;
+using Core.QueryParameters;
 using Core.Repository.BugRepo;
 using Core.Utilities;
 using Core.Utilities.Bugs;
@@ -8,114 +9,73 @@ using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService
 {
-    public class BugService : IBugService
+    public class BugService : AdvancedService<Bug, BugOrderBy, BugFilterType, BugModel, AddBugModel, EditBugModel>, IBugService
     {
-        private readonly IBugRepository _bugRepository;
-        private readonly IBugFilterFactory _filterFactory;
-        private readonly IBugSortingOptionsFactory _sortingFactory;
-        private readonly IMapper _mapper;
-
         public BugService(IBugRepository bugRepository, IBugFilterFactory filterFactory,
-            IBugSortingOptionsFactory sortingFactory, IMapper mapper)
+            IBugSortingOptionsFactory sortingFactory, IMapper mapper) : base(bugRepository, mapper, sortingFactory, filterFactory)
         {
-            _bugRepository = bugRepository;
-            _filterFactory = filterFactory;
-            _sortingFactory = sortingFactory;
-            _mapper = mapper;
-        }
-
-        public async Task<BugModel> CreateBug(AddBugModel model)
-        {
-            var bugDbModel = _mapper.Map<Bug>(model);
-
-            bugDbModel.LastUpdatedOn = bugDbModel.CreatedOn;
-            bugDbModel.LastUpdatedById = bugDbModel.CreatorId;
-
-            var newBug = await _bugRepository.Create(bugDbModel);
-
-            return _mapper.Map<BugModel>(newBug);
-        }
-
-        public async Task DeleteBug(int id)
-        {
-            await _bugRepository.DeleteById(id);
-        }
+        }        
 
         public async Task<bool> DoesExist(int id)
-            => await _bugRepository.DoesExist(id);
+            => await _repository.DoesExist(id);
 
-        public async Task<BugModel?> GetBugById(int id)
+        public async Task<List<BugModel>> GetAllBetweenTwoDates(DateTime startDate, DateTime endDate)
         {
-            var bug = await _bugRepository.GetById(id);
+            var startDateFilter = _filterFactory.CreateFilter(BugFilterType.CreatedOn, $"{startDate};>=");
+            var endDateFilter = _filterFactory.CreateFilter(BugFilterType.CreatedOn, $"{endDate};<=");
 
-            if (bug != null)
-            {
-                return _mapper.Map<BugModel>(bug);
-            }
+            var filtersList = new List<IFilter<Bug>> { startDateFilter, endDateFilter };
 
-            return null;
+            var queryParameters = new QueryParameters<Bug>(filtersList);
+
+            var allBugsInPeriod = await _advancedRepository.RunQuery(queryParameters);
+
+            return _mapper.Map<List<BugModel>>(allBugsInPeriod);
         }
 
-        public async Task<PagedList<BugModel>> GetBugs(int page, int pageSize, string? searchTerm, string? sortOptions, string? filter)
+        public async Task<List<BugModel>> GetAssignedToUserId(string userId)
         {
-            var filters = await _filterFactory.CreateFilters(filter);
+            QueryParameters<Bug> queryParameters = NewMethod(userId);
 
-            var sortingOptions = _sortingFactory.CreateSortingOptions(sortOptions);
+            var bugs = await _advancedRepository.RunQuery(queryParameters);
 
-            int totalElements = await _bugRepository.CountTotal();
-
-            var pageInfo = PagingInfo.CreatePage(page, pageSize, totalElements);
-
-            var bugList = await _bugRepository.RetrieveData(filters, sortingOptions, searchTerm, pageInfo);
-
-            return new PagedList<BugModel>
-            {
-                PageInfo = pageInfo,
-                Items = _mapper.Map<List<BugModel>>(bugList),
-            };
+            return _mapper.Map<List<BugModel>>(bugs);
         }
 
-        public Task<PagedList<BugModel>> GetAll()
+        private QueryParameters<Bug> NewMethod(string userId)
         {
-            throw new NotImplementedException();
+            var filter = _filterFactory.CreateFilter(BugFilterType.AssignedTo, userId);
+
+            var filterList = new List<IFilter<Bug>> { filter };
+
+            var queryParameters = new QueryParameters<Bug>(filterList);
+            return queryParameters;
         }
 
-        public Task<PagedList<BugModel>> GetAll(DateTime startDate, DateTime endDate)
+        public async Task<List<BugModel>> GetCreatedByUserId(string userId)
         {
-            throw new NotImplementedException();
+            var filter = _filterFactory.CreateFilter(BugFilterType.CreatedBy, userId);
+
+            var filterList = new List<IFilter<Bug>> { filter };
+
+            var queryParameters = new QueryParameters<Bug>(filterList);
+
+            var bugs = await _advancedRepository.RunQuery(queryParameters);
+
+            return _mapper.Map<List<BugModel>>(bugs);
         }
 
-        public Task<PagedList<BugModel>> GetAssignedToUserId(string userId)
+        public async Task<List<BugModel>> GetUnassigned()
         {
-            throw new NotImplementedException();
-        }
+            var filter = _filterFactory.CreateFilter(BugFilterType.AssignedTo);
 
-        public Task<PagedList<BugModel>> GetCreatedByUserId(string userId)
-        {
-            throw new NotImplementedException();
-        }
+            var filterList = new List<IFilter<Bug>> { filter };
 
-        public Task<PagedList<BugModel>> GetUnassigned()
-        {
-            throw new NotImplementedException();
-        }
+            var queryParameters = new QueryParameters<Bug>(filterList);
 
-        public async Task<BugModel> UpdateBug(EditBugViewModel model)
-        {
-            var bug = await _bugRepository.GetById(model.Id);
+            var bugs = await _advancedRepository.RunQuery(queryParameters);
 
-            if (bug != null)
-            {
-                _mapper.Map(model, bug);
-
-                bug = await _bugRepository.Update(bug);
-            }
-            else
-            {
-                bug = await _bugRepository.Create(_mapper.Map<Bug>(model));
-            }
-
-            return _mapper.Map<BugModel>(bug);
-        }
+            return _mapper.Map<List<BugModel>>(bugs);
+        }        
     }
 }

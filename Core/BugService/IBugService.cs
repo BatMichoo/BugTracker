@@ -1,20 +1,17 @@
-﻿using Core.DTOs;
+﻿using Core.BaseService;
+using Core.DTOs;
 using Core.DTOs.Bugs;
+using Core.Utilities.Bugs;
+using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService
 {
-    public interface IBugService
+    public interface IBugService : IAdvancedService<Bug, BugOrderBy, BugFilterType, BugModel, AddBugModel, EditBugModel>
     {
-        Task<PagedList<BugModel>> GetBugs(int page, int pageSize, string? searchTerm, string? sortOptions, string? filter);
-        Task<BugModel?> GetBugById(int id);
         Task<bool> DoesExist(int id);
-        Task<PagedList<BugModel>> GetAll();
-        Task<PagedList<BugModel>> GetAssignedToUserId(string userId);
-        Task<PagedList<BugModel>> GetCreatedByUserId(string userId);
-        Task<PagedList<BugModel>> GetUnassigned();
-        Task<PagedList<BugModel>> GetAll(DateTime startDate, DateTime endDate);
-        Task<BugModel> CreateBug(AddBugModel model);
-        Task<BugModel> UpdateBug(EditBugViewModel model);
-        Task DeleteBug(int id);
+        Task<List<BugModel>> GetAssignedToUserId(string userId);
+        Task<List<BugModel>> GetCreatedByUserId(string userId);
+        Task<List<BugModel>> GetUnassigned();
+        Task<List<BugModel>> GetAllBetweenTwoDates(DateTime startDate, DateTime endDate);
     }
 }

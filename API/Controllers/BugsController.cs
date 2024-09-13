@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Core.BugService;
-using Core.CommentService;
 using Core.DTOs;
 using Core.DTOs.Bugs;
-using Core.DTOs.Comments;
 using Core.Other;
 using Core.UserService;
 using Infrastructure.Models.UserEntity;
@@ -19,15 +17,13 @@ namespace API.Controllers
     {
         private readonly IBugService _bugService;        
         private readonly IUserService<BugUser> _userService;
-        private readonly IMapper _mapper;
-        private readonly ICommentService _commentService;
+        private readonly IMapper _mapper;        
 
-        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper, ICommentService commentService)
+        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper)
         {
-            this._bugService = bugService;
-            this._userService = userService;
-            this._mapper = mapper;
-            this._commentService = commentService;
+            _bugService = bugService;
+            _userService = userService;
+            _mapper = mapper;           
         }
 
         [HttpGet("{id}")]
@@ -35,9 +31,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(int id)
         {
-            var bug = await _bugService.GetBugById(id);
+            var bug = await _bugService.GetById(id);
 
-            if (bug != null)
+            if (bug is not null)
             {
                 return Ok(_mapper.Map<BugViewModel>(bug));
             }
@@ -53,16 +49,24 @@ namespace API.Controllers
             int pageSize;
 
             if (pageInput == null)
+            {
                 page = 1;
-            else 
+            }
+            else
+            {
                 page = int.Parse(pageInput);
+            }
 
             if (pageSizeInput == null)
+            {
                 pageSize = 50;
+            }
             else
+            {
                 pageSize = int.Parse(pageSizeInput);
+            }
 
-            var bugs = await _bugService.GetBugs(page, pageSize, searchTerm, sortOptions, filter);
+            var bugs = await _bugService.Fetch(page, pageSize, searchTerm, sortOptions, filter);
 
             return Ok(_mapper.Map<PagedList<BugViewModel>>(bugs));
         }
@@ -76,9 +80,9 @@ namespace API.Controllers
 
             newBugModel.CreatorId = _userService.RetrieveUserId();
 
-            var bug = await _bugService.CreateBug(newBugModel);
+            var bug = await _bugService.Create(newBugModel);
 
-            if (bug != null)
+            if (bug is not null)
             {
                 string uri = Url.Action(nameof(Get), "Bugs", new { bug.Id })!;
 
@@ -104,11 +108,11 @@ namespace API.Controllers
                 });
             }
 
-            var bug = await _bugService.GetBugById(editBugViewModel.Id);
+            var bug = await _bugService.GetById(editBugViewModel.Id);
             
-            if (bug != null)
+            if (bug is not null)
             {
-                bug = await _bugService.UpdateBug(editBugViewModel);
+                bug = await _bugService.Update(_mapper.Map<EditBugModel>(editBugViewModel));
                 return Ok(_mapper.Map<BugViewModel>(bug));
             }
             else
@@ -121,77 +125,53 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int id)
         {
-            await _bugService.DeleteBug(id);
+            await _bugService.Delete(id);
 
             return Ok();
         }
 
-        [HttpGet("{bugId}/comments/{id}")]
-        public async Task<IActionResult> GetComment(int bugId, int id)
+        [HttpGet("assigned-to/{userId}")]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAssignedBugs(string userId)
         {
-            var comment = await _commentService.GetById(id);
+            var user = await _userService.RetrieveUserById(userId);
 
-            if (comment != null)
+            if (user is null)
             {
-                if (comment.BugId != bugId)
+                return NotFound(new
                 {
-                    return BadRequest();
-                }
-
-                return Ok(_mapper.Map<CommentViewModel>(comment));
+                    error = "User does not exist",
+                    userId
+                });
             }
 
-            return NotFound();
+            var userWithBugs = await _bugService.GetAssignedToUserId(userId);
+
+            return Ok(userWithBugs);
         }
 
-        [HttpGet("{bugId}/comments")]
-        public async Task<IActionResult> GetCommentsByBugId(int bugId)
+        [HttpGet("created-by/{userId}")]
+        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCreatedByBugs(string userId)
         {
-            var comments = await _commentService.GetCommentsByBugId(bugId);
+            var user = await _userService.RetrieveUserById(userId);
 
-            return Ok(comments);
-        }
-
-        [HttpPost("{bugId}/comments")]
-        public async Task<IActionResult> PostComment(int bugId, AddCommentViewModel comment)
-        {
-            if (!await _bugService.DoesExist(bugId))
+            if (user is null)
             {
-                return BadRequest();
+                return NotFound(new
+                {
+                    error = "User does not exist.",
+                    userId
+                });
             }
 
-            string userId = _userService.RetrieveUserId();
+            var userWithBugs = await _bugService.GetCreatedByUserId(userId);
 
-            var newComment = new AddCommentModel()
-            {
-                AuthorId = userId,
-                BugId = bugId,
-                Content = comment.Content
-            };
-
-            var createdComment = await _commentService.Create(newComment);
-
-            if (createdComment != null)
-            {
-                string uri = Url.Action(nameof(GetComment), "Bugs", new { bugId = createdComment.BugId, createdComment.Id})!;
-
-                return Created(uri, createdComment);
-            }
-
-            return BadRequest();
-        }
-
-        [HttpDelete("{bugId}/comments/{id}")]
-        public async Task<IActionResult> DeleteCommentById(int bugId, int commentId)
-        {
-            if (!await _bugService.DoesExist(bugId))
-            {
-                return BadRequest();
-            }
-
-            await _commentService.Delete(commentId);
-
-            return Ok();
+            return Ok(userWithBugs);
         }
     }
 }

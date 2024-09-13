@@ -12,7 +12,7 @@ namespace Core.Utilities.Comments
             this.bugId = bugId;
         }
 
-        public Expression<Func<Comment, bool>> ToExpression()
+        public Expression<Func<Comment, bool>> Apply()
             => c => c.BugId == bugId;
     }
 }

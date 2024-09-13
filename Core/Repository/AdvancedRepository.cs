@@ -1,4 +1,5 @@
-﻿using Core.Utilities;
+﻿using Core.QueryParameters;
+using Core.Utilities;
 using Infrastructure;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace Core.Repository
         {
             foreach (var filter in filters)
             {
-                query = query.Where(filter.ToExpression());
+                query = query.Where(filter.Apply());
             }
 
             return query;
@@ -48,41 +49,46 @@ namespace Core.Repository
                     query = query.OrderBy(sortOptions.Sort());
                     break;
             }
+
             return query;
         }
 
-        private IQueryable<T> BuildQuery(IList<IFilter<T>> filters, ISortingOptions<T> sortOptions, string? searchTerm, PagingInfo? pagingInfo)
+        private IQueryable<T> BuildQuery(QueryParameters<T>? queryParameters)
         {
             var query = AsQueryable().AsNoTracking();
 
-            if (filters.Any())
+            if (queryParameters is not null)
             {
-                query = ApplyFilter(query, filters);
+                if (queryParameters.Filters != null && queryParameters.Filters.Any())
+                {
+                    query = ApplyFilter(query, queryParameters.Filters);
+                }
+
+                if (queryParameters.SearchTerm != null)
+                {
+                    query = ApplySearch(query, queryParameters.SearchTerm);
+                }
+
+                if (queryParameters.SortOptions != null)
+                {
+                    query = ApplySort(query, queryParameters.SortOptions);
+                }
             }
 
-            if (searchTerm != null)
-            {
-                query = ApplySearch(query, searchTerm);
-            }
-
-            if (sortOptions != null)
-            {
-                query = ApplySort(query, sortOptions);
-            }
-
-            if (pagingInfo != null)
-            {
-                query = ApplyPagination(query, pagingInfo);
-            }
+            query = ApplyPagination(query, queryParameters.PagingInfo);
 
             return query;
         }
 
-        public async Task<IList<T>> RetrieveData(IList<IFilter<T>> filters, ISortingOptions<T> sortOptions, string? searchTerm, PagingInfo? pagingInfo)
+        public async Task<IList<T>> RunQuery(QueryParameters<T>? queryParameters = null)
         {
-            var query = BuildQuery(filters, sortOptions, searchTerm, pagingInfo);
+            var query = BuildQuery(queryParameters);
 
             query = AddInclusions(query);
+            
+            var count = await query.CountAsync();
+
+            queryParameters.PagingInfo.TotalElementCount = count;
 
             return await query.ToListAsync();
         }

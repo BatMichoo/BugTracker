@@ -12,7 +12,7 @@ namespace Core.Utilities.Comments
             this.userId = userId;
         }
 
-        public Expression<Func<Comment, bool>> ToExpression()
+        public Expression<Func<Comment, bool>> Apply()
             => c => c.AuthorId == userId;
     }
 }

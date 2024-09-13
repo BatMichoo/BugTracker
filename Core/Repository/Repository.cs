@@ -46,6 +46,13 @@ namespace Core.Repository
             return entity;
         }
 
+        public async Task<List<T>> GetAll()
+        {
+            var entityList = await AsQueryable().ToListAsync();
+
+            return entityList;
+        }
+
         public async Task<T> Update(T entity)
         {
             _dbSet.Update(entity);
@@ -70,7 +77,8 @@ namespace Core.Repository
             await SaveChangesAsync();
         }
 
-        internal abstract IQueryable<T> AddInclusions(IQueryable<T> query);
+        internal virtual IQueryable<T> AddInclusions(IQueryable<T> query)
+            => query;
 
         public async Task<int> CountTotal()
         {

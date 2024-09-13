@@ -14,11 +14,11 @@ namespace Core.Utilities.Bugs
             _operation = operation;
         }
 
-        public Expression<Func<Bug, bool>> ToExpression()
+        public Expression<Func<Bug, bool>> Apply()
         {
             switch (_operation)
             {
-                case "=>":
+                case ">=":
                     return b => b.CreatedOn >= _targetDate;
                 case "<=":
                     return b => b.CreatedOn <= _targetDate;

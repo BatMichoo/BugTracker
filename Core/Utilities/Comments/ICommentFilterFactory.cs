@@ -2,7 +2,7 @@
 
 namespace Core.Utilities.Comments
 {
-    public interface ICommentFilterFactory : IFilterFactory<Comment>
+    public interface ICommentFilterFactory : IFilterFactory<Comment, CommentFilterType>
     {
     }
 }

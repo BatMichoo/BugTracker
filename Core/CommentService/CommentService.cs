@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Core.BaseService;
 using Core.DTOs;
 using Core.DTOs.Comments;
+using Core.QueryParameters;
 using Core.Repository.CommentRepo;
 using Core.Utilities;
 using Core.Utilities.Comments;
@@ -8,55 +10,47 @@ using Infrastructure.Models.CommentEntity;
 
 namespace Core.CommentService
 {
-    public class CommentService : ICommentService
+    public class CommentService : AdvancedService<Comment, CommentOrderBy, CommentFilterType, CommentModel, AddCommentModel, EditCommentModel>, ICommentService
     {
-        private readonly ICommentRepository _repository;
-        private readonly ICommentFilterFactory _filterFactory;
-        private readonly ICommentSortingOptionsFactory _sortingOptionsFactory;
-        private readonly IMapper _mapper;
-
-        public CommentService(ICommentRepository commentRepository, ICommentFilterFactory commentFilterFactory, ICommentSortingOptionsFactory commentSortingOptionsFactory, IMapper mapper)
+        public CommentService(ICommentRepository repository, ICommentFilterFactory filterFactory, ICommentSortingOptionsFactory sortingOptionsFactory, IMapper mapper) : base(repository, mapper, sortingOptionsFactory, filterFactory)
         {
-            _repository = commentRepository;
-            _filterFactory = commentFilterFactory;
-            _sortingOptionsFactory = commentSortingOptionsFactory;
-            _mapper = mapper;
-        }
-
-        public async Task<CommentViewModel> Create(AddCommentModel comment)
-        {
-            var newComment = await _repository.Create(_mapper.Map<Comment>(comment));
-
-            return _mapper.Map<CommentViewModel>(newComment);
-        }
-
-        public async Task Delete(int id)
-        {
-            await _repository.DeleteById(id);
-        }
-
-        public async Task<CommentViewModel?> GetById(int id)
-        {
-            var comment = await _repository.GetById(id);
-
-            if (comment != null)
-            {
-                return _mapper.Map<CommentViewModel>(comment);
-            }
-
-            return null;
         }
 
         public async Task<PagedList<CommentViewModel>> GetCommentsByBugId(int bugId)
         {
-            var filter = await _filterFactory.CreateFilter(CommentFilterType.BugId, bugId);
+            var filter = _filterFactory.CreateFilter(CommentFilterType.BugId, bugId.ToString());
             var sortingOptions = _sortingOptionsFactory.CreateSortingOptions(SortOrder.Ascending, CommentOrderBy.Id);
 
-            var filterList = filter == null ? new List<IFilter<Comment>>() : new List<IFilter<Comment>>() { filter };
+            var filterList = new List<IFilter<Comment>>() { filter };
 
-            var comments = await _repository.RetrieveData(filterList, sortingOptions, null, null);
+            var queryParameters = new QueryParameters<Comment>(filterList, sortOptions: sortingOptions);
+
+            var comments = await _advancedRepository.RunQuery(queryParameters);
 
             return new PagedList<CommentViewModel> { Items = _mapper.Map<List<CommentViewModel>>(comments)};
         }
+
+        public async Task<int> Interact(int commentId, char operation)
+        {
+            var comment = await _repository.GetById(commentId);
+
+            if (comment is null)
+            {
+                return -1;
+            }
+
+            if (operation == '-')
+            {
+                comment.Likes--;
+            }
+            else
+            {
+                comment.Likes++;
+            }
+
+            comment = await _repository.Update(comment);
+
+            return comment.Likes;
+        }        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Models.BugEntity;
+using Infrastructure.Models.ReplyEntity;
 using Infrastructure.Models.UserEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,5 +23,7 @@ namespace Infrastructure.Models.CommentEntity
         [ForeignKey(nameof(Author))]
         public string AuthorId { get; set; } = null!;
         public BugUser Author { get; set; } = null!;
+
+        public List<Reply> Replies { get; set; } = new List<Reply>(); 
     }
 }

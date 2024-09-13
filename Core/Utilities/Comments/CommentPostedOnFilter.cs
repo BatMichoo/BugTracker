@@ -14,7 +14,7 @@ namespace Core.Utilities.Comments
             this.operation = operation;
         }
 
-        public Expression<Func<Comment, bool>> ToExpression()
+        public Expression<Func<Comment, bool>> Apply()
         {
             switch (operation)
             {

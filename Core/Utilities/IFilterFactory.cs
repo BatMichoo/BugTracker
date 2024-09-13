@@ -1,11 +1,12 @@
-﻿using Core.Utilities.Comments;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 
 namespace Core.Utilities
 {
-    public interface IFilterFactory<T> where T : BaseEntity
+    public interface IFilterFactory<TEntity, TFilterByEnum> 
+        where TEntity : BaseEntity
+        where TFilterByEnum : struct, Enum
     {
-        Task<IList<IFilter<T>>> CreateFilters(string? filter);
-        Task<IFilter<T>> CreateFilter(CommentFilterType filterBy, object value);
+        Task<IList<IFilter<TEntity>>> CreateFilters(string? filter = null);
+        IFilter<TEntity> CreateFilter(TFilterByEnum filterBy, string? value = null);
     }
 }

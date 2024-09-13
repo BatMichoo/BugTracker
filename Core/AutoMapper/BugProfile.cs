@@ -36,7 +36,7 @@ namespace API.AutoMapper
 
             CreateMap<Bug, BugModel>()
                 .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.UserName))
-                .ForMember(d => d.Assignee, opt => opt.MapFrom(s => s.Assignee.Name))
+                .ForMember(d => d.Assignee, opt => opt.MapFrom(s => s.Assignee.Name ?? string.Empty))
                 .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy.UserName));
 
             CreateMap<BugModel, BugViewModel>()

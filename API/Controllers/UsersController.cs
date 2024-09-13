@@ -15,13 +15,11 @@ namespace API.Controllers
     public class UsersController : BaseController
     {
         private readonly IUserService<BugUser> _userService;
-        private readonly IBugService _bugService;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserService<BugUser> userService, IBugService bugService, IMapper mapper)
+        public UsersController(IUserService<BugUser> userService, IMapper mapper)
         {
             this._userService = userService;
-            this._bugService = bugService;
             this._mapper = mapper;
         }
 
@@ -33,7 +31,7 @@ namespace API.Controllers
         {
             var user = await _userService.RetrieveUserByEmail(loginUserModel.Email);
 
-            if (user != null)
+            if (user is not null)
             {
                 var result = await _userService.SignInUserWithPassword(user, loginUserModel.Password);
 
@@ -54,7 +52,7 @@ namespace API.Controllers
         {
             var user = await _userService.RetrieveUserByEmail(newUser.Email);
 
-            if (user == null)
+            if (user is null)
             {
                 try
                 {
@@ -88,7 +86,7 @@ namespace API.Controllers
         {
             var user = await _userService.RetrieveUserById(userId);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound();
             }
@@ -125,7 +123,7 @@ namespace API.Controllers
         {
             var user = await _userService.RetrieveUserById(userId);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new
                 {
@@ -149,50 +147,6 @@ namespace API.Controllers
                 error = "Role assignment failed",
                 role
             });
-        }
-
-        [HttpGet("{userId}/assigned-bugs")]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAssignedBugs(string userId)
-        {
-            var user = await _userService.RetrieveUserById(userId);
-
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    error = "User does not exist",
-                    userId
-                });
-            }
-
-            var userWithBugs = await _bugService.GetBugById(int.Parse(userId));
-
-            return Ok(userWithBugs);
-        }
-
-        [HttpGet("{userId}/created-bugs")]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCreatedBugs(string userId)
-        {
-            var user = await _userService.RetrieveUserById(userId);
-
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    error = "User does not exist.",
-                    userId
-                });
-            }
-
-            var userWithBugs = await _bugService.GetBugById(int.Parse(userId));
-
-            return Ok(userWithBugs);
         }
     }
 }

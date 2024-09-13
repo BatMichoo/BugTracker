@@ -2,10 +2,11 @@
 
 namespace Core.Utilities
 {
-    public interface ISortingOptionsFactory<T, U> where T : BaseEntity
-        where U : Enum
+    public interface ISortingOptionsFactory<T, TOrderByEnum>
+        where T : BaseEntity
+        where TOrderByEnum : Enum
     {
-        ISortingOptions<T> CreateSortingOptions(string? sortOptions);
-        ISortingOptions<T> CreateSortingOptions(SortOrder order, U orderBy);
+        ISortingOptions<T> CreateSortingOptions(string? sortOptions = null);
+        ISortingOptions<T> CreateSortingOptions(SortOrder order, TOrderByEnum orderBy);
     }
 }

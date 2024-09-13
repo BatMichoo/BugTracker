@@ -8,7 +8,7 @@ namespace Core.AutoMapper
     {
         public CommentProfile()
         {
-            CreateMap<Comment, CommentViewModel>();
+            CreateMap<Comment, CommentModel>();
 
             CreateMap<CommentModel, Comment>()
                 .ReverseMap();
@@ -23,6 +23,8 @@ namespace Core.AutoMapper
 
             CreateMap<EditCommentViewModel, EditCommentModel>()
                 .ReverseMap();
+
+            CreateMap<EditCommentViewModel, AddCommentViewModel>();
 
             CreateMap<EditCommentModel, CommentModel>()
                 .ForMember(d => d.Author, opt => opt.Ignore())

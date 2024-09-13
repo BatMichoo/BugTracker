@@ -12,7 +12,7 @@ namespace Core.Utilities.Bugs
             this.userId = userId;
         }
 
-        public Expression<Func<Bug, bool>> ToExpression()
+        public Expression<Func<Bug, bool>> Apply()
             => b => b.CreatorId == userId;
     }
 }

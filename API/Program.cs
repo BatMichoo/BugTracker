@@ -1,10 +1,14 @@
 using API.AutoMapper;
 using Core.AutoMapper;
+using Core.BaseService;
 using Core.BugService;
 using Core.CommentService;
 using Core.Other;
+using Core.ReplyService;
+using Core.Repository;
 using Core.Repository.BugRepo;
 using Core.Repository.CommentRepo;
+using Core.Repository.ReplyRepo;
 using Core.UserService;
 using Core.Utilities.Bugs;
 using Core.Utilities.Comments;
@@ -86,6 +90,9 @@ namespace API
             builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
             builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
 
+            builder.Services.AddScoped<IReplyService, ReplyService>();
+            builder.Services.AddScoped<IReplyRepository, ReplyRepository>();
+
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
 
@@ -94,6 +101,7 @@ namespace API
                 opt.AddProfile(typeof(BugProfile));
                 opt.AddProfile(typeof(BugUserProfile));
                 opt.AddProfile(typeof(CommentProfile));
+                opt.AddProfile(typeof(ReplyProfile));
             });
 
             builder.Services.AddControllers()

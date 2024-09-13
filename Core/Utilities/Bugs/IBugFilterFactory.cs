@@ -2,7 +2,7 @@
 
 namespace Core.Utilities.Bugs
 {
-    public interface IBugFilterFactory : IFilterFactory<Bug>
+    public interface IBugFilterFactory : IFilterFactory<Bug, BugFilterType>
     {
     }
 }

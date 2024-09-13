@@ -5,6 +5,6 @@ namespace Core.Utilities
 {
     public interface IFilter<T> where T : BaseEntity
     {
-        Expression<Func<T, bool>> ToExpression();
+        Expression<Func<T, bool>> Apply();
     }
 }

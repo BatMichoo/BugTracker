@@ -1,16 +1,30 @@
-﻿using Core.Utilities.Comments;
-using Infrastructure.Models.BugEntity;
+﻿using Infrastructure.Models.BugEntity;
 
 namespace Core.Utilities.Bugs
 {
     public class BugFilterFactory : IBugFilterFactory
     {
-        public Task<IFilter<Bug>> CreateFilter(CommentFilterType filterBy, object value)
+        public IFilter<Bug> CreateFilter(BugFilterType filterBy, string value)
         {
-            throw new NotImplementedException();
+            switch (filterBy)
+            {
+                case BugFilterType.AssignedTo:
+                    return new BugAssignedToFilter(value);
+                case BugFilterType.CreatedBy:
+                    return new BugCreatedByFilter(value);
+                case BugFilterType.CreatedOn:
+                    var info = value.Split(';').ToArray();
+
+                    var date = DateTime.Parse(info[0]);
+                    var comparisonOperation = info[1];
+
+                    return new BugDateFilter(date, comparisonOperation);
+                default:
+                    throw new ArgumentException("No such filter");
+            }
         }
 
-        public Task<IList<IFilter<Bug>>> CreateFilters(string? filterInput)
+        public Task<IList<IFilter<Bug>>> CreateFilters(string? filterInput = null)
         {
             var filters = new List<IFilter<Bug>>();
 
@@ -22,7 +36,7 @@ namespace Core.Utilities.Bugs
                 {
                     string[] filterInfo = filterData.Split("_");
 
-                    if (!Enum.TryParse(filterInfo[0], true, out BugFilterType type) )
+                    if (!Enum.TryParse(filterInfo[0], true, out BugFilterType type))
                     {
                         continue;
                     }

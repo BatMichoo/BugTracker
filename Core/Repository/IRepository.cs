@@ -5,6 +5,7 @@ namespace Core.Repository
     public interface IRepository<T> where T : BaseEntity
     {
         Task<T?> GetById(int id);
+        Task<List<T>> GetAll();
         Task<bool> DoesExist(int id);
 
         Task<T> Create(T entity);
