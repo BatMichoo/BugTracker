@@ -55,11 +55,13 @@ namespace Core.Repository
 
         public async Task<T> Update(T entity)
         {
-            _dbSet.Update(entity);
+            T existingEntity = await _dbSet.FindAsync(entity.Id);
+
+            _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
 
             await SaveChangesAsync();
 
-            return await GetById(entity.Id)!;
+            return entity;
         }
 
         private async Task SaveChangesAsync()

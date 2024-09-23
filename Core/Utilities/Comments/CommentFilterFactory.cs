@@ -15,7 +15,7 @@ namespace Core.Utilities.Comments
             }
         }
 
-        public Task<IList<IFilter<Comment>>> CreateFilters(string? filterInput)
+        public IList<IFilter<Comment>> CreateFilters(string? filterInput)
         {
             var filters = new List<IFilter<Comment>>();
 
@@ -66,7 +66,7 @@ namespace Core.Utilities.Comments
                 }
             }
 
-            return Task.FromResult((IList<IFilter<Comment>>)filters);
+            return filters;
         }
     }
 }

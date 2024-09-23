@@ -1,11 +1,10 @@
 using API.AutoMapper;
 using Core.AutoMapper;
-using Core.BaseService;
 using Core.BugService;
 using Core.CommentService;
 using Core.Other;
+using Core.QueryParameters;
 using Core.ReplyService;
-using Core.Repository;
 using Core.Repository.BugRepo;
 using Core.Repository.CommentRepo;
 using Core.Repository.ReplyRepo;
@@ -29,7 +28,7 @@ namespace API
 
             // Add services to the container.
 
-            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ?? string.Empty;
+            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ?? throw new ArgumentNullException("No connection string to the DB.");
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
@@ -82,11 +81,13 @@ namespace API
 
             builder.Services.AddScoped<IBugService, BugService>();
             builder.Services.AddScoped<IBugRepository, BugRepository>();
+            builder.Services.AddScoped<IBugQueryFactory, BugQueryFactory>();
             builder.Services.AddScoped<IBugFilterFactory, BugFilterFactory>();
             builder.Services.AddScoped<IBugSortingOptionsFactory, BugSortingOptionsFactory>();
 
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentQueryFactory, CommentQueryFactory>();
             builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
             builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
 

@@ -44,7 +44,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCommentsByBugId(int bugId)
         {
-            var comments = await _commentService.GetCommentsByBugId(bugId);
+            var comments = await _commentService.GetByBugId(bugId);
 
             return Ok(comments);
         }

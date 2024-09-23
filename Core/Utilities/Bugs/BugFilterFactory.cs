@@ -4,7 +4,7 @@ namespace Core.Utilities.Bugs
 {
     public class BugFilterFactory : IBugFilterFactory
     {
-        public IFilter<Bug> CreateFilter(BugFilterType filterBy, string value)
+        public IFilter<Bug> CreateFilter(BugFilterType filterBy, string? value)
         {
             switch (filterBy)
             {
@@ -24,7 +24,7 @@ namespace Core.Utilities.Bugs
             }
         }
 
-        public Task<IList<IFilter<Bug>>> CreateFilters(string? filterInput = null)
+        public IList<IFilter<Bug>> CreateFilters(string? filterInput = null)
         {
             var filters = new List<IFilter<Bug>>();
 
@@ -71,7 +71,7 @@ namespace Core.Utilities.Bugs
                 }
             }
 
-            return Task.FromResult((IList<IFilter<Bug>>) filters);
+            return filters;
         }
     }
 }

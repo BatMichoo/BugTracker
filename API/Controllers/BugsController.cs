@@ -108,17 +108,22 @@ namespace API.Controllers
                 });
             }
 
-            var bug = await _bugService.GetById(editBugViewModel.Id);
-            
-            if (bug is not null)
+            bool doesBugExist = await _bugService.DoesExist(editBugViewModel.Id);
+
+            if (doesBugExist)
             {
-                bug = await _bugService.Update(_mapper.Map<EditBugModel>(editBugViewModel));
-                return Ok(_mapper.Map<BugViewModel>(bug));
+                var editModel = _mapper.Map<EditBugModel>(editBugViewModel);
+
+                string userId = _userService.RetrieveUserId();
+
+                editModel.LastUpdatedById = userId;
+                
+                var updatedModel = await _bugService.Update(editModel);
+
+                return Ok(_mapper.Map<BugViewModel>(updatedModel));
             }
-            else
-            {
-                return await Post(_mapper.Map<AddBugViewModel>(editBugViewModel));
-            }
+
+            return await Post(_mapper.Map<AddBugViewModel>(editBugViewModel));
         }
 
         [HttpDelete("{id}")]

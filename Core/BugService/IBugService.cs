@@ -6,7 +6,7 @@ using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService
 {
-    public interface IBugService : IAdvancedService<Bug, BugOrderBy, BugFilterType, BugModel, AddBugModel, EditBugModel>
+    public interface IBugService : IAdvancedService<Bug, BugSortBy, BugFilterType, BugModel, AddBugModel, EditBugModel>
     {
         Task<bool> DoesExist(int id);
         Task<List<BugModel>> GetAssignedToUserId(string userId);

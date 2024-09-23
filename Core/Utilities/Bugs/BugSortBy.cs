@@ -1,6 +1,6 @@
 ﻿namespace Core.Utilities.Bugs
 {
-    public enum BugOrderBy
+    public enum BugSortBy
     {
         Id,
         CreatedOn,

@@ -2,7 +2,7 @@
 
 namespace Core.Utilities.Bugs
 {
-    public interface IBugSortingOptionsFactory : ISortingOptionsFactory<Bug, BugOrderBy>
+    public interface IBugSortingOptionsFactory : ISortingOptionsFactory<Bug, BugSortBy>
     {
     }
 }

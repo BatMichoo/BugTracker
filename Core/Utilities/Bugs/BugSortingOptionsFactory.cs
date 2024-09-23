@@ -14,7 +14,7 @@ namespace Core.Utilities.Bugs
                 string sortBy = sortingInfo[0];
                 string order = sortingInfo[1];
 
-                if (Enum.TryParse(sortBy, true, out BugOrderBy sortingBy))
+                if (Enum.TryParse(sortBy, true, out BugSortBy sortingBy))
                 {
                     if (Enum.TryParse(order, true, out SortOrder sortOrder))
                     {
@@ -23,10 +23,10 @@ namespace Core.Utilities.Bugs
                 }
             }
 
-            return new BugSortingOptions(SortOrder.Ascending, BugOrderBy.Id);
+            return new BugSortingOptions(SortOrder.Ascending, BugSortBy.Id);
         }        
 
-        public ISortingOptions<Bug> CreateSortingOptions(SortOrder order, BugOrderBy orderBy)
+        public ISortingOptions<Bug> CreateSortingOptions(SortOrder order, BugSortBy orderBy)
             => new BugSortingOptions(order, orderBy);
     }    
 }

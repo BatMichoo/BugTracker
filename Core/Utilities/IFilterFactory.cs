@@ -6,7 +6,7 @@ namespace Core.Utilities
         where TEntity : BaseEntity
         where TFilterByEnum : struct, Enum
     {
-        Task<IList<IFilter<TEntity>>> CreateFilters(string? filter = null);
+        IList<IFilter<TEntity>> CreateFilters(string? filter = null);
         IFilter<TEntity> CreateFilter(TFilterByEnum filterBy, string? value = null);
     }
 }

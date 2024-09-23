@@ -5,24 +5,24 @@ namespace Core.Utilities.Bugs
 {
     public class BugSortingOptions : ISortingOptions<Bug>
     {
-        public BugSortingOptions(SortOrder sortOrder, BugOrderBy sortBy)
+        public BugSortingOptions(SortOrder sortOrder, BugSortBy sortBy)
         {
             SortOrder = sortOrder;
             SortBy = sortBy;
         }
 
         public SortOrder SortOrder { get; private set; }
-        public BugOrderBy SortBy { get; private set; }
+        public BugSortBy SortBy { get; private set; }
 
         public Expression<Func<Bug, object>> Sort()
         {
             switch (SortBy)
             {
-                case BugOrderBy.CreatedOn:
+                case BugSortBy.CreatedOn:
                     return b => b.CreatedOn;
-                case BugOrderBy.LastModifiedOn:
+                case BugSortBy.LastModifiedOn:
                     return b => b.LastUpdatedOn;
-                case BugOrderBy.Comments:
+                case BugSortBy.Comments:
                     return b => b.Comments.Count;
                 default:
                     return b => b.Id;

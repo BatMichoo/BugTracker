@@ -13,7 +13,7 @@ namespace Core.BaseService
         protected readonly IRepository<TEntity> _repository;
         protected readonly IMapper _mapper;
 
-        public SimpleService(IRepository<TEntity> repository, IMapper mapper)
+        protected SimpleService(IRepository<TEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

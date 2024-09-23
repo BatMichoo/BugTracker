@@ -39,7 +39,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ReplyViewModel>>> GetAll(int commentId)
+        public async Task<ActionResult<List<ReplyViewModel>>> GetAllByCommentId(int commentId)
         {
             var replies = (await _replyService.GetAll())
                 .Where(r => r.CommentId == commentId);
@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ReplyViewModel>> Post(int commentId, AddReplyViewModel replyToBeAdded)
+        public async Task<ActionResult<ReplyViewModel>> Post(int bugId, int commentId, AddReplyViewModel replyToBeAdded)
         {
             string userId = _userService.RetrieveUserId();
 
@@ -59,7 +59,7 @@ namespace API.Controllers
 
             var reply = await _replyService.Create(replyAddModel);
 
-            string uri = Url.Action(nameof(Get), "Replies", new { reply.Id })!;
+            string uri = Url.Action(nameof(Get), "Replies", new { bugId, commentId, reply.Id })!;
 
             return Created(uri, reply);
         }

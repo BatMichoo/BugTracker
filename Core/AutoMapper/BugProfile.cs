@@ -27,10 +27,16 @@ namespace API.AutoMapper
                 .ForMember(d => d.Creator, opt => opt.Ignore())
                 .ForMember(d => d.Comments, opt => opt.Ignore());
 
-            CreateMap<EditBugViewModel, Bug>()
-                .ForMember(s => s.Id, opt => opt.Ignore())
+            CreateMap<BugModel, EditBugModel>();
+
+            CreateMap<EditBugViewModel, EditBugModel>();
+
+            CreateMap<EditBugModel, BugModel>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
+                .ForMember(s => s.Description, opt => opt.Condition((s, d, m) => IsDifferentAndNotNullOrEmpty(s, d, m)))
                 .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null || sm is not null));
+
+            CreateMap<EditBugModel, Bug>();
 
             CreateMap<EditBugViewModel, AddBugViewModel>();
 
@@ -41,7 +47,12 @@ namespace API.AutoMapper
 
             CreateMap<BugModel, BugViewModel>()
                 .ForMember(d => d.CreatedBy, opt => opt.MapFrom(s => s.Creator))
-                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));            
+                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));
+        }
+
+        private static bool IsDifferentAndNotNullOrEmpty(EditBugModel s, BugModel d, string m)
+        {
+            return !String.IsNullOrWhiteSpace(m) && s.Description != d.Description;
         }
     }
 }
