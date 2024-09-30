@@ -8,7 +8,7 @@ namespace Core.QueryParameters
         public QueryParameters(IList<IFilter<T>> filters = null, PagingInfo pagingInfo = null, string? searchTerm = null, ISortingOptions<T>? sortOptions = null)
         {
             Filters = filters ?? new List<IFilter<T>>();
-            PagingInfo = pagingInfo ??  new PagingInfo();
+            PagingInfo = pagingInfo ?? PagingInfo.CreatePage();
             SearchTerm = searchTerm;
             SortOptions = sortOptions;
         }

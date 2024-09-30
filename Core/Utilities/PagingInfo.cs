@@ -16,7 +16,7 @@
 
             if (pageCount < page) 
             {
-                page = pageCount;
+                pageCount = page;
             }
 
             return new PagingInfo { CurrentPage = page, ElementsPerPage = elementsPerPage, PageCount = pageCount};

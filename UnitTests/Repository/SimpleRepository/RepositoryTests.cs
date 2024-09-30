@@ -1,9 +1,8 @@
-﻿using Core.Models.Bugs.BugEnums;
-using Infrastructure;
+﻿using Infrastructure;
 using Infrastructure.Models.BugEntity;
 using Microsoft.EntityFrameworkCore;
 
-namespace UnitTests.Repository
+namespace UnitTests.Repository.SimpleRepository
 {
     public class RepositoryTests
     {
@@ -11,7 +10,7 @@ namespace UnitTests.Repository
         private TrackerDbContext _dbContext;
 
         public RepositoryTests()
-        {            
+        {
         }
 
         [SetUp]
@@ -45,7 +44,7 @@ namespace UnitTests.Repository
         [Test]
         public async Task Create_ShouldReturnCreatedItem()
         {
-            var entity = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "ad", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ad"};
+            var entity = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "ad", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ad" };
 
             var result = await _repository!.Create(entity);
 
@@ -97,7 +96,7 @@ namespace UnitTests.Repository
             var result = await _repository!.GetAll();
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Count, Is.AtLeast(1));
+            Assert.That(result, Has.Count.AtLeast(1));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.BaseService;
+using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.QueryParameters;
 using Core.Repository.BugRepo;
@@ -21,40 +22,56 @@ namespace Core.BugService
         public async Task<bool> DoesExist(int id)
             => await AdvancedRepository.DoesExist(id);
 
-        public async Task<List<BugModel>> GetAllBetweenTwoDates(DateTime startDate, DateTime endDate)
+        public async Task<PagedList<BugModel>> GetAllBetweenTwoDates(DateTime startDate, DateTime endDate)
         {
             var queryParameters = QueryFactory.CreateBetweenTwoDatesQuery(startDate, endDate);
 
             var allBugsInPeriod = await AdvancedRepository.RunQuery(queryParameters);
 
-            return _mapper.Map<List<BugModel>>(allBugsInPeriod);
+            return new PagedList<BugModel>
+            {
+                PageInfo = queryParameters.PagingInfo,
+                Items = _mapper.Map<List<BugModel>>(allBugsInPeriod)
+            };
         }       
 
-        public async Task<List<BugModel>> GetAssignedToUserId(string userId)
+        public async Task<PagedList<BugModel>> GetAssignedToUserId(string userId)
         {
             var queryParameters = QueryFactory.CreateAssignedToUserQuery(userId);
 
             var bugs = await AdvancedRepository.RunQuery(queryParameters);
 
-            return _mapper.Map<List<BugModel>>(bugs);
+            return new PagedList<BugModel>
+            {
+                PageInfo = queryParameters.PagingInfo,
+                Items = _mapper.Map<List<BugModel>>(bugs)
+            };
         }        
 
-        public async Task<List<BugModel>> GetCreatedByUserId(string userId)
+        public async Task<PagedList<BugModel>> GetCreatedByUserId(string userId)
         {
             var queryParameters = QueryFactory.CreateMadeByUserQuery(userId);
 
             var bugs = await AdvancedRepository.RunQuery(queryParameters);
 
-            return _mapper.Map<List<BugModel>>(bugs);
+            return new PagedList<BugModel>
+            {
+                PageInfo = queryParameters.PagingInfo,
+                Items = _mapper.Map<List<BugModel>>(bugs)
+            };
         }
 
-        public async Task<List<BugModel>> GetUnassigned()
+        public async Task<PagedList<BugModel>> GetUnassigned()
         {
             var queryParameters = QueryFactory.CreateNotAssignedQuery();
 
             var bugs = await AdvancedRepository.RunQuery(queryParameters);
 
-            return _mapper.Map<List<BugModel>>(bugs);
+            return new PagedList<BugModel>
+            {
+                PageInfo = queryParameters.PagingInfo,
+                Items = _mapper.Map<List<BugModel>>(bugs)
+            };
         }        
     }
 }

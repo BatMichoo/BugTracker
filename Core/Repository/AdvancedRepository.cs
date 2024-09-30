@@ -33,7 +33,10 @@ namespace Core.Repository
                 query = query.Skip(itemsToSkip);
             }
 
-            query = query.Take(paging.ElementsPerPage);
+            if (paging.ElementsPerPage > 0)
+            {
+                query = query.Take(paging.ElementsPerPage);
+            }
 
             return query;
         }

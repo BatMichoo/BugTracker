@@ -16,7 +16,9 @@ namespace Core.QueryParameters
 
             var filterList = new List<IFilter<Bug>> { filter };
 
-            return new QueryParameters<Bug>(filterList);
+            var sortingOptions = _sortingOptionsFactory.CreateSortingOptions();
+
+            return new QueryParameters<Bug>(filters: filterList, sortOptions: sortingOptions);
         }
 
         public QueryParameters<Bug> CreateBetweenTwoDatesQuery(DateTime startDate, DateTime endDate)

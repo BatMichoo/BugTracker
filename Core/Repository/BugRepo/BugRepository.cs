@@ -16,7 +16,8 @@ namespace Core.Repository.BugRepo
                 .Include(b => b.Creator)
                 .Include(b => b.Assignee)
                 .Include(b => b.LastUpdatedBy)
-                .Include(b => b.Comments);
+                .Include(b => b.Comments)
+                .AsSplitQuery();
 
             return query;
         }
