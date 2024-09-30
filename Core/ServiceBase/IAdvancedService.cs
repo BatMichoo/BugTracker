@@ -1,4 +1,5 @@
 ﻿using Core.DTOs;
+using Core.QueryParameters;
 using Infrastructure.Models;
 
 namespace Core.BaseService
@@ -11,6 +12,6 @@ namespace Core.BaseService
         where TCreate : class
         where TUpdate : class
     {
-        Task<PagedList<TModel>> Fetch(int page, int pageSize, string? searchTerm, string? sortOptions, string? filter);
+        Task<PagedList<TModel>> Fetch(QueryParameters<TEntity> queryParameters);
     }
 }

@@ -22,6 +22,13 @@ namespace UnitTests.Repository.SimpleRepository
 
             _dbContext = new TrackerDbContext(options);
 
+            SeedInMemoryDatabase();
+
+            _repository = new SimpleTestRepository(_dbContext);
+        }
+
+        private void SeedInMemoryDatabase()
+        {
             var entity = new Bug { Id = 1, AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a" };
             var entity2 = new Bug { Id = 2, AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab" };
 
@@ -29,8 +36,6 @@ namespace UnitTests.Repository.SimpleRepository
             _dbContext.Add(entity2);
 
             _dbContext.SaveChanges();
-
-            _repository = new SimpleTestRepository(_dbContext);
         }
 
         [TearDown]

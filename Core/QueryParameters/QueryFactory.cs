@@ -21,11 +21,12 @@ namespace Core.QueryParameters
             string? sortOptionsInput, string? filterInput)
         {
             var filters = _filterFactory.CreateFilters(filterInput);
+
             var sortingOptions = _sortingOptionsFactory.CreateSortingOptions(sortOptionsInput);
 
             var pageInfo = PagingInfo.CreatePage(pageInput, pageSizeInput);
 
-            return Task.FromResult(new QueryParameters<TEntity>(filters, pageInfo, searchTermInput, sortingOptions));
+            return Task.FromResult(new QueryParameters<TEntity>(filters, pageInfo, sortingOptions, searchTermInput));
         }
     }
 }

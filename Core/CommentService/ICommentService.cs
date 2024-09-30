@@ -8,7 +8,6 @@ namespace Core.CommentService
 {
     public interface ICommentService : IAdvancedService<Comment, CommentOrderBy, CommentFilterType, CommentModel, AddCommentModel, EditCommentModel>
     {
-        Task<PagedList<CommentModel>> GetByBugId(int bugId);
         Task<int> Interact(int commentId, char operation);
     }
 }

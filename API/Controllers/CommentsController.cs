@@ -2,6 +2,7 @@
 using Core.CommentService;
 using Core.DTOs.Comments;
 using Core.Other;
+using Core.QueryParameters;
 using Core.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
@@ -13,14 +14,16 @@ namespace API.Controllers
     public class CommentsController : Controller
     {
         private readonly ICommentService _commentService;
+        private readonly ICommentQueryFactory _queryFactory;
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
 
-        public CommentsController(ICommentService commentService, IUserService<BugUser> userService, IMapper mapper)
+        public CommentsController(ICommentService commentService, IUserService<BugUser> userService, IMapper mapper, ICommentQueryFactory commentQueryFactory)
         {
             _commentService = commentService;
             _userService = userService;
             _mapper = mapper;
+            _queryFactory = commentQueryFactory;
         }
 
         [HttpGet("{commentId}")]
@@ -44,7 +47,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCommentsByBugId(int bugId)
         {
-            var comments = await _commentService.GetByBugId(bugId);
+            var queryParameters = _queryFactory.GetByBugId(bugId);
+
+            var comments = await _commentService.Fetch(queryParameters);
 
             return Ok(comments);
         }

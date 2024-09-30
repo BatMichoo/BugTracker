@@ -3,7 +3,9 @@ using Core.BugService;
 using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.Other;
+using Core.QueryParameters;
 using Core.UserService;
+using Core.Utilities;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +20,14 @@ namespace API.Controllers
         private readonly IBugService _bugService;        
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;        
+        private readonly IBugQueryFactory _queryFactory;
 
-        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper)
+        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryFactory queryFactory)
         {
             _bugService = bugService;
             _userService = userService;
-            _mapper = mapper;           
+            _mapper = mapper;
+            _queryFactory = queryFactory;
         }
 
         [HttpGet("{id}")]
@@ -43,30 +47,12 @@ namespace API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(string? pageInput, string? pageSizeInput, string? searchTerm, string? sortOptions, string? filter)
+        public async Task<IActionResult> Get(string? searchTerm, string? sortOptions, string? filter,
+            int pageInput = PagingDefaults.StartingPageNumber, int pageSizeInput = PagingDefaults.ElementsPerPage)
         {
-            int page;
-            int pageSize;
+            var queryParameters = await _queryFactory.ProcessQueryParametersInput(pageInput, pageSizeInput, searchTerm, sortOptions, filter);
 
-            if (pageInput == null)
-            {
-                page = 1;
-            }
-            else
-            {
-                page = int.Parse(pageInput);
-            }
-
-            if (pageSizeInput == null)
-            {
-                pageSize = 50;
-            }
-            else
-            {
-                pageSize = int.Parse(pageSizeInput);
-            }
-
-            var bugs = await _bugService.Fetch(page, pageSize, searchTerm, sortOptions, filter);
+            var bugs = await _bugService.Fetch(queryParameters);
 
             return Ok(_mapper.Map<PagedList<BugViewModel>>(bugs));
         }
@@ -151,8 +137,10 @@ namespace API.Controllers
                     userId
                 });
             }
+            
+            var queryParameters = _queryFactory.CreateAssignedToUserQuery(userId);
 
-            var userWithBugs = await _bugService.GetAssignedToUserId(userId);
+            var userWithBugs = await _bugService.Fetch(queryParameters);
 
             return Ok(userWithBugs);
         }
@@ -174,7 +162,9 @@ namespace API.Controllers
                 });
             }
 
-            var userWithBugs = await _bugService.GetCreatedByUserId(userId);
+            var queryParameters = _queryFactory.CreateMadeByUserQuery(userId);
+
+            var userWithBugs = await _bugService.Fetch(queryParameters);
 
             return Ok(userWithBugs);
         }

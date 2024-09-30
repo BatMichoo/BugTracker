@@ -17,21 +17,15 @@ namespace Core.BaseService
         where TCreate : class
         where TUpdate : class
     {
-        protected readonly IQueryFactory<TEntity, TSortBy, TFilterBy> _queryFactory;
         protected IAdvancedRepository<TEntity> AdvancedRepository => (IAdvancedRepository<TEntity>) _repository;
 
-        protected AdvancedService(IAdvancedRepository<TEntity> repository, IMapper mapper, 
-                                 IQueryFactory<TEntity, TSortBy, TFilterBy> queryFactory)
+        protected AdvancedService(IAdvancedRepository<TEntity> repository, IMapper mapper)
             : base(repository, mapper)
         {
-            _queryFactory = queryFactory;
         }        
 
-        public async Task<PagedList<TModel>> Fetch(int pageInput, int pageSizeInput, string? searchTermInput,
-                                                    string? sortOptionsInput, string? filterInput)
+        public async Task<PagedList<TModel>> Fetch(QueryParameters<TEntity> queryParameters)
         {
-            var queryParameters = await _queryFactory.ProcessQueryParametersInput(pageInput, pageSizeInput, searchTermInput, sortOptionsInput, filterInput);
-
             var bugList = await AdvancedRepository.RunQuery(queryParameters);
 
             return new PagedList<TModel>

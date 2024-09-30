@@ -10,16 +10,16 @@
 
         public int TotalElementCount { get; internal set; }
 
-        public static PagingInfo CreatePage(int totalElements = 0, int page = 1, int elementsPerPage = 25)
+        public static PagingInfo CreatePage(int totalElements = 0, int pageNumber = 1, int elementsPerPage = 25)
         {
-            int pageCount = (int) Math.Ceiling(totalElements / (double)elementsPerPage);
+            int pageCount = (int) Math.Ceiling(totalElements / (double) elementsPerPage);
 
-            if (pageCount < page) 
+            if (pageCount < pageNumber) 
             {
-                pageCount = page;
+                pageCount = pageNumber;
             }
 
-            return new PagingInfo { CurrentPage = page, ElementsPerPage = elementsPerPage, PageCount = pageCount};
+            return new PagingInfo { CurrentPage = pageNumber, ElementsPerPage = elementsPerPage, PageCount = pageCount};
         }
     }
 }

@@ -6,7 +6,8 @@ namespace Core.QueryParameters
 {
     public sealed class BugQueryFactory : QueryFactory<Bug, BugSortBy, BugFilterType>, IBugQueryFactory
     {
-        public BugQueryFactory(IBugSortingOptionsFactory sortingOptionsFactory, IBugFilterFactory filterFactory) : base(sortingOptionsFactory, filterFactory)
+        public BugQueryFactory(IBugSortingOptionsFactory sortingOptionsFactory, IBugFilterFactory filterFactory) 
+            : base(sortingOptionsFactory, filterFactory)
         {
         }
 
