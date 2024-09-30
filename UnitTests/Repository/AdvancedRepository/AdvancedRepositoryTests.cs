@@ -35,9 +35,9 @@ namespace UnitTests.Repository.AdvancedRepository
 
             var entity = new Bug { Id = 1, AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a" };
             var entity2 = new Bug { Id = 2, AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab" };
+            var entity3 = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab" };
 
-            _dbContext.Bugs.Add(entity);
-            _dbContext.Bugs.Add(entity2);
+            _dbContext.Bugs.AddRange(new List<Bug> { entity, entity2, entity3 });
             _dbContext.Users.AddRange(new List<BugUser> { user, user2, user3 });
 
             _dbContext.SaveChanges();
@@ -56,7 +56,7 @@ namespace UnitTests.Repository.AdvancedRepository
         [Test]
         public async Task RunQuery_AppliesAssignedToUserQueryFilters()
         {
-            string userId = "abc";
+            string userId = "abcd";
             var queryParameters = _queryFactory.CreateAssignedToUserQuery(userId);
 
 
