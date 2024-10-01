@@ -3,7 +3,7 @@ using Infrastructure.Models;
 
 namespace Core.QueryParameters
 {
-    public abstract class QueryFactory<TEntity, TSortBy, TFilterBy>
+    public abstract class QueryParametersFactory<TEntity, TSortBy, TFilterBy> : IQueryParametersFactory<TEntity, TSortBy, TFilterBy>
         where TEntity : BaseEntity
         where TSortBy : struct, Enum
         where TFilterBy : struct, Enum
@@ -11,10 +11,15 @@ namespace Core.QueryParameters
         protected readonly ISortingOptionsFactory<TEntity, TSortBy> _sortingOptionsFactory;
         protected readonly IFilterFactory<TEntity, TFilterBy> _filterFactory;
 
-        protected QueryFactory(ISortingOptionsFactory<TEntity, TSortBy> sortingOptionsFactory, IFilterFactory<TEntity, TFilterBy> filterFactory)
+        protected QueryParametersFactory(ISortingOptionsFactory<TEntity, TSortBy> sortingOptionsFactory, IFilterFactory<TEntity, TFilterBy> filterFactory)
         {
             _sortingOptionsFactory = sortingOptionsFactory;
             _filterFactory = filterFactory;
+        }
+
+        public Task<QueryParameters<TEntity>> CreateGetAllQuery()
+        {
+            return Task.FromResult(new QueryParameters<TEntity>());
         }
 
         public Task<QueryParameters<TEntity>> ProcessQueryParametersInput(int pageInput, int pageSizeInput, string? searchTermInput,

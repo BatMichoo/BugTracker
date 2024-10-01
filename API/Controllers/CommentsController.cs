@@ -14,12 +14,12 @@ namespace API.Controllers
     public class CommentsController : Controller
     {
         private readonly ICommentService _commentService;
-        private readonly ICommentQueryFactory _queryFactory;
+        private readonly ICommentQueryParametersFactory _queryFactory;
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
 
         public CommentsController(ICommentService commentService, IUserService<BugUser> userService,
-            IMapper mapper, ICommentQueryFactory commentQueryFactory)
+            IMapper mapper, ICommentQueryParametersFactory commentQueryFactory)
         {
             _commentService = commentService;
             _userService = userService;

@@ -2,7 +2,7 @@
 
 namespace Core.Repository.CommentRepo
 {
-    public interface ICommentRepository : IAdvancedRepository<Comment>
+    public interface ICommentRepository : IRepository<Comment>
     {
     }
 }

@@ -1,16 +1,22 @@
-﻿using Infrastructure;
+﻿using Core.QueryBuilders;
+using Core.QueryParameters;
+using Core.Utilities.Bugs;
+using Infrastructure;
 using Infrastructure.Models.BugEntity;
+using Infrastructure.Models.UserEntity;
 using Microsoft.EntityFrameworkCore;
 
-namespace UnitTests.Repository.SimpleRepository
+namespace UnitTests.Repository
 {
     public class RepositoryTests
     {
-        private SimpleTestRepository? _repository;
+        private TestRepository? _repository;
         private TrackerDbContext _dbContext;
+        private readonly IBugQueryParametersFactory _paramsFactory;
 
         public RepositoryTests()
         {
+            _paramsFactory = new BugQueryParametersFactory(new BugSortingOptionsFactory(), new BugFilterFactory());
         }
 
         [SetUp]
@@ -24,16 +30,21 @@ namespace UnitTests.Repository.SimpleRepository
 
             SeedInMemoryDatabase();
 
-            _repository = new SimpleTestRepository(_dbContext);
+            _repository = new TestRepository(_dbContext, new BugQueryableBuilder());
         }
 
         private void SeedInMemoryDatabase()
         {
+            var user = new BugUser { Id = "abc", UserName = "tester1" };
+            var user2 = new BugUser { Id = "a", UserName = "tester2" };
+            var user3 = new BugUser { Id = "ab", UserName = "tester3" };
+
             var entity = new Bug { Id = 1, AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a" };
             var entity2 = new Bug { Id = 2, AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab" };
+            var entity3 = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab" };
 
-            _dbContext.Add(entity);
-            _dbContext.Add(entity2);
+            _dbContext.Bugs.AddRange(new List<Bug> { entity, entity2, entity3 });
+            _dbContext.Users.AddRange(new List<BugUser> { user, user2, user3 });
 
             _dbContext.SaveChanges();
         }
@@ -49,7 +60,7 @@ namespace UnitTests.Repository.SimpleRepository
         [Test]
         public async Task Create_ShouldReturnCreatedItem()
         {
-            var entity = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "ad", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ad" };
+            var entity = new Bug { Id = 4, AssigneeId = "abcd", CreatorId = "ab", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ab" };
 
             var result = await _repository!.Create(entity);
 
@@ -82,7 +93,7 @@ namespace UnitTests.Repository.SimpleRepository
         [Test]
         public async Task Update()
         {
-            var updatedEntity = new Bug { Id = 1, AssigneeId = "updated ID", CreatorId = "updated", Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = "b" };
+            var updatedEntity = new Bug { Id = 1, AssigneeId = "ab", CreatorId = "abc", Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = "b" };
 
             var result = await _repository!.Update(updatedEntity);
 
@@ -98,10 +109,33 @@ namespace UnitTests.Repository.SimpleRepository
         [Test]
         public async Task GetAll_ReturnsNonEmptyCollection()
         {
-            var result = await _repository!.GetAll();
+            int mininumTreshold = 1;
+            var queryParams = await _paramsFactory.CreateGetAllQuery();
+
+            var result = await _repository!.ExecuteQuery(queryParams);
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result, Has.Count.AtLeast(1));
+            Assert.That(result, Has.Count.AtLeast(mininumTreshold));
+        }
+
+        [Test]
+        public async Task TotalCount_Returns3()
+        {
+            int expectedResult = 3;
+
+            var result = await _repository!.CountTotal();
+
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public async Task DoesExists_ReturnsTrue()
+        {
+            int idToCheck = 1;
+
+            var result = await _repository!.DoesExist(idToCheck);
+
+            Assert.That(result, Is.True);
         }
     }
 }

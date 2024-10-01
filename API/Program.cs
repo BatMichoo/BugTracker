@@ -81,17 +81,17 @@ namespace API
 
             builder.Services.AddScoped<IBugService, BugService>();
             builder.Services.AddScoped<IBugRepository, BugRepository>();
-            builder.Services.AddScoped<IBugQueryFactory, BugQueryFactory>();
+            builder.Services.AddScoped<IBugQueryParametersFactory, BugQueryParametersFactory>();
             builder.Services.AddScoped<IBugFilterFactory, BugFilterFactory>();
             builder.Services.AddScoped<IBugSortingOptionsFactory, BugSortingOptionsFactory>();
 
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-            builder.Services.AddScoped<ICommentQueryFactory, CommentQueryFactory>();
+            builder.Services.AddScoped<ICommentQueryParametersFactory, CommentQueryParametersFactory>();
             builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
             builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
 
-            builder.Services.AddScoped<IReplyService, ReplyService>();
+            //builder.Services.AddScoped<IReplyService, ReplyService>();
             builder.Services.AddScoped<IReplyRepository, ReplyRepository>();
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()

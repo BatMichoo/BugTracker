@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
 using Core.BaseService;
 using Core.DTOs.Bugs;
+using Core.QueryParameters;
 using Core.Repository.BugRepo;
 using Core.Utilities.Bugs;
 using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService
 {
-    public class BugService : AdvancedService<Bug, BugSortBy, BugFilterType, BugModel, AddBugModel, EditBugModel>, IBugService
+    public class BugService : EntityService<Bug, BugModel, AddBugModel, EditBugModel, BugSortBy, BugFilterType>, IBugService
     {
-        public BugService(IBugRepository repository, IMapper mapper) 
-            : base(repository, mapper)
+        public BugService(IBugRepository repository, IBugQueryParametersFactory queryParametersFactory, IMapper mapper) 
+            : base(repository, mapper, queryParametersFactory)
         {
         }
-
-        public async Task<bool> DoesExist(int id)
-            => await AdvancedRepository.DoesExist(id);
-                
     }
 }

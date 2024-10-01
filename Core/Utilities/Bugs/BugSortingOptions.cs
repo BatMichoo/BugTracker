@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Core.Utilities.Bugs
 {
-    public class BugSortingOptions : ISortingOptions<Bug>
+    public class BugSortingOptions : IBugSortingOptions
     {
         public BugSortingOptions(SortOrder sortOrder, BugSortBy sortBy)
         {

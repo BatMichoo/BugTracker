@@ -1,22 +1,23 @@
 ﻿using AutoMapper;
 using Core.BaseService;
 using Core.DTOs.Comments;
+using Core.QueryParameters;
 using Core.Repository.CommentRepo;
 using Core.Utilities.Comments;
 using Infrastructure.Models.CommentEntity;
 
 namespace Core.CommentService
 {
-    public class CommentService : AdvancedService<Comment, CommentOrderBy, CommentFilterType, CommentModel, AddCommentModel, EditCommentModel>, ICommentService
+    public class CommentService : EntityService<Comment, CommentModel, AddCommentModel, EditCommentModel, CommentOrderBy, CommentFilterType>, ICommentService
     {
-        public CommentService(ICommentRepository repository, IMapper mapper)
-            : base(repository, mapper)
+        public CommentService(ICommentRepository repository, ICommentQueryParametersFactory queryableParametersFactory, IMapper mapper)
+            : base(repository, mapper, queryableParametersFactory)
         {
         }        
 
         public async Task<int> Interact(int commentId, char operation)
         {
-            var comment = await AdvancedRepository.GetById(commentId);
+            var comment = await _repository.GetById(commentId);
 
             if (comment is null)
             {
@@ -32,7 +33,7 @@ namespace Core.CommentService
                 comment.Likes++;
             }
 
-            comment = await AdvancedRepository.Update(comment);
+            comment = await _repository.Update(comment);
 
             return comment.Likes;
         }        

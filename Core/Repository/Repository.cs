@@ -1,4 +1,6 @@
-﻿using Infrastructure;
+﻿using Core.QueryBuilders;
+using Core.QueryParameters;
+using Infrastructure;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +10,13 @@ namespace Core.Repository
     {
         private readonly TrackerDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
+        private readonly IQueryableBuilder<T> _queryableBuilder;
 
-        public Repository(TrackerDbContext dbContext)
+        public Repository(TrackerDbContext dbContext, IQueryableBuilder<T> queryableBuilder)
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
+            _queryableBuilder = queryableBuilder;
         }
 
         public async Task<T> Create(T entity)
@@ -46,16 +50,18 @@ namespace Core.Repository
             return entity;
         }
 
-        public async Task<List<T>> GetAll()
+        public async Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters)
         {
-            var entityList = await AsQueryable().ToListAsync();
+            var query = _queryableBuilder.BuildQuery(AsQueryable(), queryParameters);
+
+            var entityList = await query.ToListAsync();
 
             return entityList;
         }
 
         public async Task<T> Update(T entity)
         {
-            T existingEntity = await _dbSet.FindAsync(entity.Id);
+            T existingEntity = (await _dbSet.FindAsync(entity.Id))!;
 
             _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
 
@@ -69,7 +75,7 @@ namespace Core.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        internal IQueryable<T> AsQueryable()
+        private IQueryable<T> AsQueryable()
             => _dbSet.AsQueryable();
 
         public async Task Delete(T entity)
@@ -92,6 +98,6 @@ namespace Core.Repository
         public async Task<bool> DoesExist(int id)
             => await _dbSet.AsNoTracking()
             .Where(e => e.Id == id)
-            .AnyAsync();
+            .AnyAsync();        
     }
 }

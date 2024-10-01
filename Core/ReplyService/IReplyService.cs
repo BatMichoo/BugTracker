@@ -4,7 +4,7 @@ using Infrastructure.Models.ReplyEntity;
 
 namespace Core.ReplyService
 {
-    public interface IReplyService : ISimpleService<Reply, ReplyModel, AddReplyModel, EditReplyModel>
+    public interface IReplyService : IEntityService<Reply, ReplyModel, AddReplyModel, EditReplyModel>
     {
     }
 }

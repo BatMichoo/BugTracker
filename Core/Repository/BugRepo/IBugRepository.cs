@@ -2,7 +2,7 @@
 
 namespace Core.Repository.BugRepo
 {
-    public interface IBugRepository : IAdvancedRepository<Bug>
+    public interface IBugRepository : IRepository<Bug>
     {
     }
 }

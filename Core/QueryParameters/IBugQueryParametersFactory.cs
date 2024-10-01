@@ -3,7 +3,7 @@ using Infrastructure.Models.BugEntity;
 
 namespace Core.QueryParameters
 {
-    public interface IBugQueryFactory : IQueryFactory<Bug, BugSortBy, BugFilterType>
+    public interface IBugQueryParametersFactory : IQueryParametersFactory<Bug, BugSortBy, BugFilterType>
     {
         public QueryParameters<Bug> CreateAssignedToUserQuery(string userId);
         public QueryParameters<Bug> CreateBetweenTwoDatesQuery(DateTime startDate, DateTime endDate);

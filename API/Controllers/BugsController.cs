@@ -20,9 +20,9 @@ namespace API.Controllers
         private readonly IBugService _bugService;        
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;        
-        private readonly IBugQueryFactory _queryFactory;
+        private readonly IBugQueryParametersFactory _queryFactory;
 
-        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryFactory queryFactory)
+        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
         {
             _bugService = bugService;
             _userService = userService;

@@ -1,11 +1,11 @@
-﻿using Infrastructure.Models;
+﻿using Core.QueryParameters;
+using Infrastructure.Models;
 
 namespace Core.Repository
 {
     public interface IRepository<T> where T : BaseEntity
     {
         Task<T?> GetById(int id);
-        Task<List<T>> GetAll();
         Task<bool> DoesExist(int id);
 
         Task<T> Create(T entity);
@@ -16,5 +16,8 @@ namespace Core.Repository
         Task Delete(T entity);
 
         Task<int> CountTotal();
+
+        Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters);
+        
     }
 }

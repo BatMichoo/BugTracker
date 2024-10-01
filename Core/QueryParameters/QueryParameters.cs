@@ -5,7 +5,7 @@ namespace Core.QueryParameters
 {
     public class QueryParameters<T> where T : BaseEntity
     {
-        public QueryParameters(IList<IFilter<T>> filters, PagingInfo? pagingInfo = null, ISortingOptions<T> sortOptions = null, string? searchTerm = null)
+        public QueryParameters(IList<IFilter<T>>? filters = null, PagingInfo? pagingInfo = null, ISortingOptions<T> sortOptions = null, string? searchTerm = null)
         {
             Filters = filters ?? new List<IFilter<T>>();
             PagingInfo = pagingInfo ?? PagingInfo.CreatePage(pageNumber: PagingDefaults.StartingPageNumber, elementsPerPage: PagingDefaults.ElementsPerPage);
