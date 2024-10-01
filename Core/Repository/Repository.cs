@@ -21,7 +21,7 @@ namespace Core.Repository
 
             await SaveChangesAsync();
 
-            return await GetById(entity.Id);
+            return (await GetById(entity.Id))!;
         }
 
         public async Task DeleteById(int id)

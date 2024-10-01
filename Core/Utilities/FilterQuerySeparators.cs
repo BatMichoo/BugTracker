@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.Utilities
+﻿namespace Core.Utilities
 {
-    internal class FilterQuerySeparators
+    public static class FilterQuerySeparators
     {
+        public const char KeyValue = ':';
+        public const char Filter = ';';
     }
 }

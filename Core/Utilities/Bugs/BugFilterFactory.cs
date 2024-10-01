@@ -30,11 +30,11 @@ namespace Core.Utilities.Bugs
 
             if (filterInput != null)
             {
-                string[] filtersData = filterInput.Split(';').ToArray();
+                string[] filtersData = filterInput.Split(FilterQuerySeparators.Filter).ToArray();
 
                 foreach (var filterData in filtersData)
                 {
-                    string[] filterInfo = filterData.Split("_");
+                    string[] filterInfo = filterData.Split(FilterQuerySeparators.KeyValue);
 
                     if (!Enum.TryParse(filterInfo[0], true, out BugFilterType type))
                     {

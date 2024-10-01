@@ -18,7 +18,8 @@ namespace API.Controllers
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
 
-        public CommentsController(ICommentService commentService, IUserService<BugUser> userService, IMapper mapper, ICommentQueryFactory commentQueryFactory)
+        public CommentsController(ICommentService commentService, IUserService<BugUser> userService,
+            IMapper mapper, ICommentQueryFactory commentQueryFactory)
         {
             _commentService = commentService;
             _userService = userService;

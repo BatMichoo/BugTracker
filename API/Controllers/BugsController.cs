@@ -122,7 +122,6 @@ namespace API.Controllers
         }
 
         [HttpGet("assigned-to/{userId}")]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAssignedBugs(string userId)
@@ -146,7 +145,6 @@ namespace API.Controllers
         }
 
         [HttpGet("created-by/{userId}")]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCreatedByBugs(string userId)
