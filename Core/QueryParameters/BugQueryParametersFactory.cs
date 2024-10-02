@@ -4,7 +4,7 @@ using Infrastructure.Models.BugEntity;
 
 namespace Core.QueryParameters
 {
-    public sealed class BugQueryParametersFactory : QueryParametersFactory<Bug, BugSortBy, BugFilterType>, IBugQueryParametersFactory
+    public  class BugQueryParametersFactory : QueryParametersFactory<Bug, BugSortBy, BugFilterType>, IBugQueryParametersFactory
     {
         public BugQueryParametersFactory(IBugSortingOptionsFactory sortingOptionsFactory, IBugFilterFactory filterFactory) 
             : base(sortingOptionsFactory, filterFactory)

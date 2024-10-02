@@ -1,5 +1,5 @@
-﻿using Core.BaseService;
-using Core.DTOs.Replies;
+﻿using Core.DTOs.Replies;
+using Core.EntityService;
 using Infrastructure.Models.ReplyEntity;
 
 namespace Core.ReplyService

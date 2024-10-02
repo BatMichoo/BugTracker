@@ -17,9 +17,9 @@ namespace Core.QueryParameters
             _filterFactory = filterFactory;
         }
 
-        public Task<QueryParameters<TEntity>> CreateGetAllQuery()
+        public QueryParameters<TEntity> CreateGetAllQuery()
         {
-            return Task.FromResult(new QueryParameters<TEntity>());
+            return new QueryParameters<TEntity>();
         }
 
         public Task<QueryParameters<TEntity>> ProcessQueryParametersInput(int pageInput, int pageSizeInput, string? searchTermInput,

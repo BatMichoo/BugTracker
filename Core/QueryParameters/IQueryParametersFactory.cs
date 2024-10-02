@@ -10,6 +10,6 @@ namespace Core.QueryParameters
         public Task<QueryParameters<TEntity>> ProcessQueryParametersInput(int pageInput, int pageSizeInput, string? searchTermInput,
             string? sortOptionsInput, string? filterInput);
 
-        public Task<QueryParameters<TEntity>> CreateGetAllQuery();
+        public QueryParameters<TEntity> CreateGetAllQuery();
     }
 }

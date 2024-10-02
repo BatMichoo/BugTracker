@@ -4,7 +4,7 @@ using Core.QueryParameters;
 using Core.Repository;
 using Infrastructure.Models;
 
-namespace Core.BaseService
+namespace Core.EntityService
 {
     public abstract class EntityService<TEntity, TModel, TCreate, TUpdate, TSortBy, TFilterBy> : IEntityService<TEntity, TModel, TCreate, TUpdate>
         where TEntity : BaseEntity
@@ -54,7 +54,7 @@ namespace Core.BaseService
 
         public async Task<List<TModel>> GetAll()
         {
-            var allEntitiesQuery = await _queryParametersFactory.CreateGetAllQuery();
+            var allEntitiesQuery = _queryParametersFactory.CreateGetAllQuery();
 
             var modelList = await _repository.ExecuteQuery(allEntitiesQuery);
 

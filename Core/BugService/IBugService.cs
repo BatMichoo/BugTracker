@@ -1,5 +1,5 @@
-﻿using Core.BaseService;
-using Core.DTOs.Bugs;
+﻿using Core.DTOs.Bugs;
+using Core.EntityService;
 using Infrastructure.Models.BugEntity;
 
 namespace Core.BugService

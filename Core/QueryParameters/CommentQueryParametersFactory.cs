@@ -4,7 +4,7 @@ using Infrastructure.Models.CommentEntity;
 
 namespace Core.QueryParameters
 {
-    public sealed class CommentQueryParametersFactory : QueryParametersFactory<Comment, CommentOrderBy, CommentFilterType>, ICommentQueryParametersFactory
+    public class CommentQueryParametersFactory : QueryParametersFactory<Comment, CommentOrderBy, CommentFilterType>, ICommentQueryParametersFactory
     {
         public CommentQueryParametersFactory(ICommentSortingOptionsFactory sortingOptionsFactory, ICommentFilterFactory filterFactory) : base(sortingOptionsFactory, filterFactory)
         {

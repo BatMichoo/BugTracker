@@ -4,8 +4,8 @@ namespace Core.QueryParameters
 {
     public class ReplyQueryParametersFactory : IReplyQueryParametersFactory
     {
-        public Task<QueryParameters<Reply>> CreateGetAllQuery()
-            => Task.FromResult(new QueryParameters<Reply>());
+        public QueryParameters<Reply> CreateGetAllQuery()
+            => new QueryParameters<Reply>();
 
         public Task<QueryParameters<Reply>> ProcessQueryParametersInput(int pageInput, int pageSizeInput, string? searchTermInput, string? sortOptionsInput, string? filterInput)
         {

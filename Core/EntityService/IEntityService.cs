@@ -2,7 +2,7 @@
 using Core.QueryParameters;
 using Infrastructure.Models;
 
-namespace Core.BaseService
+namespace Core.EntityService
 {
     public interface IEntityService<TEntity, TModel, TCreate, TUpdate> 
         where TEntity : BaseEntity

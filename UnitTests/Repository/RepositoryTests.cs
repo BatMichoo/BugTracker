@@ -110,7 +110,7 @@ namespace UnitTests.Repository
         public async Task GetAll_ReturnsNonEmptyCollection()
         {
             int mininumTreshold = 1;
-            var queryParams = await _paramsFactory.CreateGetAllQuery();
+            var queryParams = _paramsFactory.CreateGetAllQuery();
 
             var result = await _repository!.ExecuteQuery(queryParams);
 
@@ -136,6 +136,19 @@ namespace UnitTests.Repository
             var result = await _repository!.DoesExist(idToCheck);
 
             Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public async Task DeleteByEntity_DeletesSaidEntity()
+        {
+            int idToGet = 1;
+            var entity = await _repository!.GetById(idToGet);
+
+            await _repository.Delete(entity!);
+
+            var result = await _repository.DoesExist(idToGet);
+
+            Assert.That(result, Is.False);
         }
     }
 }

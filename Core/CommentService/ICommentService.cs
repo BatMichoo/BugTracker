@@ -1,5 +1,5 @@
-﻿using Core.BaseService;
-using Core.DTOs.Comments;
+﻿using Core.DTOs.Comments;
+using Core.EntityService;
 using Infrastructure.Models.CommentEntity;
 
 namespace Core.CommentService

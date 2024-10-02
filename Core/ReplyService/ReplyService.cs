@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Core.BaseService;
 using Core.DTOs.Replies;
+using Core.EntityService;
 using Core.QueryParameters;
 using Core.Repository.ReplyRepo;
 using Core.Utilities.Replies;
