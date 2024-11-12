@@ -1,7 +1,8 @@
-﻿using Core.Utilities.Bugs;
+﻿using Core.EntitiesQueryUtilities.QueryParameters;
+using Core.Utilities.Bugs;
 using Infrastructure.Models.BugEntity;
 
-namespace Core.QueryParameters.Bugs
+namespace Core.EntitiesQueryUtilities.QueryParameters.Bugs
 {
     public interface IBugQueryParametersFactory : IQueryParametersFactory<Bug, BugSortBy, BugFilterType>
     {

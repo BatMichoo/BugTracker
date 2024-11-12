@@ -1,8 +1,9 @@
-﻿using Core.Utilities;
+﻿using Core.EntitiesQueryUtilities.QueryParameters;
+using Core.Utilities;
 using Core.Utilities.Comments;
 using Infrastructure.Models.CommentEntity;
 
-namespace Core.QueryParameters.Comments
+namespace Core.EntitiesQueryUtilities.QueryParameters.Comments
 {
     public class CommentQueryParametersFactory : QueryParametersFactory<Comment, CommentOrderBy, CommentFilterType>, ICommentQueryParametersFactory
     {

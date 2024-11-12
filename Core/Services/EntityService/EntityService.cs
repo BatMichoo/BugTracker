@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs;
-using Core.QueryParameters;
+using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Repository;
 using Infrastructure.Models;
 

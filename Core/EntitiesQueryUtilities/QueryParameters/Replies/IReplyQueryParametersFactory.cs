@@ -1,7 +1,8 @@
-﻿using Core.Utilities.Replies;
+﻿using Core.EntitiesQueryUtilities.QueryParameters;
+using Core.Utilities.Replies;
 using Infrastructure.Models.ReplyEntity;
 
-namespace Core.QueryParameters.Replies
+namespace Core.EntitiesQueryUtilities.QueryParameters.Replies
 {
     public interface IReplyQueryParametersFactory : IQueryParametersFactory<Reply, ReplySortBy, ReplyFilterType>
     {

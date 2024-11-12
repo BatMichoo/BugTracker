@@ -1,6 +1,7 @@
-﻿using Infrastructure.Models.ReplyEntity;
+﻿using Core.EntitiesQueryUtilities.QueryParameters;
+using Infrastructure.Models.ReplyEntity;
 
-namespace Core.QueryParameters.Replies
+namespace Core.EntitiesQueryUtilities.QueryParameters.Replies
 {
     public class ReplyQueryParametersFactory : IReplyQueryParametersFactory
     {

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
+using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Other;
-using Core.QueryParameters.Bugs;
 using Core.Services.BugService;
 using Core.UserService;
 using Core.Utilities;

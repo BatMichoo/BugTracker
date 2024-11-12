@@ -1,8 +1,8 @@
 ﻿using Infrastructure.Models;
 
-namespace Core.QueryParameters
+namespace Core.EntitiesQueryUtilities.QueryParameters
 {
-    public interface IQueryParametersFactory<TEntity, TSortBy, TFilterBy> 
+    public interface IQueryParametersFactory<TEntity, TSortBy, TFilterBy>
         where TEntity : BaseEntity
         where TSortBy : struct, Enum
         where TFilterBy : struct, Enum

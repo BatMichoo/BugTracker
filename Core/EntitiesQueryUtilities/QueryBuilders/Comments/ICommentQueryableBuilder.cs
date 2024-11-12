@@ -1,6 +1,7 @@
-﻿using Infrastructure.Models.CommentEntity;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders;
+using Infrastructure.Models.CommentEntity;
 
-namespace Core.QueryBuilders.Comments
+namespace Core.EntitiesQueryUtilities.QueryBuilders.Comments
 {
     public interface ICommentQueryableBuilder : IQueryableBuilder<Comment>
     {

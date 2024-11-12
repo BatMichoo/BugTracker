@@ -1,6 +1,7 @@
-﻿using Infrastructure.Models.ReplyEntity;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders;
+using Infrastructure.Models.ReplyEntity;
 
-namespace Core.QueryBuilders.Replies
+namespace Core.EntitiesQueryUtilities.QueryBuilders.Replies
 {
     public interface IReplyQueryableBuilder : IQueryableBuilder<Reply>
     {

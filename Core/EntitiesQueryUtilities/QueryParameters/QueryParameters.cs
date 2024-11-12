@@ -1,7 +1,7 @@
 ﻿using Core.Utilities;
 using Infrastructure.Models;
 
-namespace Core.QueryParameters
+namespace Core.EntitiesQueryUtilities.QueryParameters
 {
     public class QueryParameters<T> where T : BaseEntity
     {
@@ -13,9 +13,9 @@ namespace Core.QueryParameters
             SortOptions = sortOptions;
         }
 
-        public IList<IFilter<T>> Filters { get; } 
-        public PagingInfo PagingInfo { get; } 
-        public string? SearchTerm { get; } 
-        public ISortingOptions<T> SortOptions { get; }         
+        public IList<IFilter<T>> Filters { get; }
+        public PagingInfo PagingInfo { get; }
+        public string? SearchTerm { get; }
+        public ISortingOptions<T> SortOptions { get; }
     }
 }
