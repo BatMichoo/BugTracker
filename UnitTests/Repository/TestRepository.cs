@@ -1,4 +1,4 @@
-﻿using Core.QueryBuilders;
+﻿using Core.QueryBuilders.Bug;
 using Core.Repository.BugRepo;
 using Infrastructure;
 

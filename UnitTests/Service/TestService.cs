@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.BugService;
-using Core.QueryParameters;
+using Core.QueryParameters.Bug;
 using Core.Repository.BugRepo;
+using Core.Services.BugService;
 
 namespace UnitTests.Service
 {

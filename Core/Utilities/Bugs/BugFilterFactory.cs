@@ -13,7 +13,7 @@ namespace Core.Utilities.Bugs
                 case BugFilterType.CreatedBy:
                     return new BugCreatedByFilter(value);
                 case BugFilterType.CreatedOn:
-                    var info = value.Split(';').ToArray();
+                    var info = value.Split(FilterQuerySeparators.Filter).ToArray();
 
                     var date = DateTime.Parse(info[0]);
                     var comparisonOperation = info[1];

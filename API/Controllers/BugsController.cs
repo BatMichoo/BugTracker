@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Core.BugService;
 using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.Other;
-using Core.QueryParameters;
+using Core.QueryParameters.Bugs;
+using Core.Services.BugService;
 using Core.UserService;
 using Core.Utilities;
 using Infrastructure.Models.UserEntity;

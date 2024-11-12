@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs.Replies;
 using Core.Other;
-using Core.ReplyService;
+using Core.Services.ReplyService;
 using Core.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;

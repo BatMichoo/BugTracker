@@ -1,13 +1,14 @@
 using API.AutoMapper;
 using Core.AutoMapper;
-using Core.BugService;
-using Core.CommentService;
 using Core.Other;
-using Core.QueryParameters;
+using Core.QueryParameters.Bug;
+using Core.QueryParameters.Comment;
 using Core.ReplyService;
 using Core.Repository.BugRepo;
 using Core.Repository.CommentRepo;
 using Core.Repository.ReplyRepo;
+using Core.Services.BugService;
+using Core.Services.CommentService;
 using Core.UserService;
 using Core.Utilities.Bugs;
 using Core.Utilities.Comments;

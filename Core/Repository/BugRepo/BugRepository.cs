@@ -1,4 +1,4 @@
-﻿using Core.QueryBuilders;
+﻿using Core.QueryBuilders.Bug;
 using Infrastructure;
 using Infrastructure.Models.BugEntity;
 using Microsoft.EntityFrameworkCore;

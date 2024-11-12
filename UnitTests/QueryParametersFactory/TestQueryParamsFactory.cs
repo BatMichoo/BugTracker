@@ -1,4 +1,4 @@
-﻿using Core.QueryParameters;
+﻿using Core.QueryParameters.Bug;
 using Core.Utilities.Bugs;
 
 namespace UnitTests.QueryParametersFactory

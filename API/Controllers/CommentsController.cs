@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Core.CommentService;
 using Core.DTOs.Comments;
 using Core.Other;
-using Core.QueryParameters;
+using Core.QueryParameters.Comment;
+using Core.Services.CommentService;
 using Core.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;

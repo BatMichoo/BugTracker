@@ -1,5 +1,5 @@
-﻿using Core.QueryBuilders;
-using Core.QueryParameters;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders;
+using Core.EntitiesQueryUtilities.QueryParameters;
 using Infrastructure;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;

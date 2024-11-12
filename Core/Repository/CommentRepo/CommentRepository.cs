@@ -1,4 +1,4 @@
-﻿using Core.QueryBuilders;
+﻿using Core.QueryBuilders.Comment;
 using Core.QueryParameters;
 using Infrastructure;
 using Infrastructure.Models.CommentEntity;

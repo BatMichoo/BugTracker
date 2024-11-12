@@ -1,4 +1,4 @@
-﻿using Core.QueryBuilders;
+﻿using Core.QueryBuilders.Reply;
 using Infrastructure;
 using Infrastructure.Models.ReplyEntity;
 using Microsoft.EntityFrameworkCore;

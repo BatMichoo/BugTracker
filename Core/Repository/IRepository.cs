@@ -1,4 +1,4 @@
-﻿using Core.QueryParameters;
+﻿using Core.EntitiesQueryUtilities.QueryParameters;
 using Infrastructure.Models;
 
 namespace Core.Repository

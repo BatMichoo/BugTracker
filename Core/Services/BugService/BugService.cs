@@ -1,0 +1,18 @@
+﻿using AutoMapper;
+using Core.DTOs.Bugs;
+using Core.QueryParameters.Bugs;
+using Core.Repository.BugRepo;
+using Core.Services.EntityService;
+using Core.Utilities.Bugs;
+using Infrastructure.Models.BugEntity;
+
+namespace Core.Services.BugService
+{
+    public class BugService : EntityService<Bug, BugModel, AddBugModel, EditBugModel, BugSortBy, BugFilterType>, IBugService
+    {
+        public BugService(IBugRepository repository, IBugQueryParametersFactory queryParametersFactory, IMapper mapper)
+            : base(repository, mapper, queryParametersFactory)
+        {
+        }
+    }
+}
