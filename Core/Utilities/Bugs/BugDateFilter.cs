@@ -23,7 +23,7 @@ namespace Core.Utilities.Bugs
                 case "<=":
                     return b => b.CreatedOn <= _targetDate;
                 default:
-                    return b => true;
+                    return b => b.CreatedOn == _targetDate;
             }
         }
     }

@@ -48,7 +48,7 @@ namespace Core.Utilities.Bugs
                     switch (type)
                     {
                         case BugFilterType.CreatedOn:
-                            string operation = filterInfo[2];
+                            string operation = filterInfo.Count() > 2 ? filterInfo[2] : "==";
                             var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
 
                             if (!success)

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.QueryParameters.Bug;
+using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Repository.BugRepo;
 using Core.Services.BugService;
 

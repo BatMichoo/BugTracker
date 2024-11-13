@@ -1,5 +1,5 @@
-﻿using Core.QueryBuilders;
-using Core.QueryParameters.Bug;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
+using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Utilities.Bugs;
 using Infrastructure;
 using Infrastructure.Models.BugEntity;

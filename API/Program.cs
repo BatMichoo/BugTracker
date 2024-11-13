@@ -1,14 +1,18 @@
 using API.AutoMapper;
 using Core.AutoMapper;
+using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
+using Core.EntitiesQueryUtilities.QueryBuilders.Comments;
+using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
+using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
+using Core.EntitiesQueryUtilities.QueryParameters.Comments;
+using Core.EntitiesQueryUtilities.QueryParameters.Replies;
 using Core.Other;
-using Core.QueryParameters.Bug;
-using Core.QueryParameters.Comment;
-using Core.ReplyService;
 using Core.Repository.BugRepo;
 using Core.Repository.CommentRepo;
 using Core.Repository.ReplyRepo;
 using Core.Services.BugService;
 using Core.Services.CommentService;
+using Core.Services.ReplyService;
 using Core.UserService;
 using Core.Utilities.Bugs;
 using Core.Utilities.Comments;
@@ -82,18 +86,22 @@ namespace API
 
             builder.Services.AddScoped<IBugService, BugService>();
             builder.Services.AddScoped<IBugRepository, BugRepository>();
+            builder.Services.AddScoped<IBugQueryableBuilder, BugQueryableBuilder>();
             builder.Services.AddScoped<IBugQueryParametersFactory, BugQueryParametersFactory>();
             builder.Services.AddScoped<IBugFilterFactory, BugFilterFactory>();
             builder.Services.AddScoped<IBugSortingOptionsFactory, BugSortingOptionsFactory>();
 
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentQueryableBuilder, CommentQueryableBuilder>();
             builder.Services.AddScoped<ICommentQueryParametersFactory, CommentQueryParametersFactory>();
             builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
             builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
 
-            //builder.Services.AddScoped<IReplyService, ReplyService>();
+            builder.Services.AddScoped<IReplyService, ReplyService>();
             builder.Services.AddScoped<IReplyRepository, ReplyRepository>();
+            builder.Services.AddScoped<IReplyQueryableBuilder, ReplyQueryableBuilder>();
+            builder.Services.AddScoped<IReplyQueryParametersFactory, ReplyQueryParametersFactory>();
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();

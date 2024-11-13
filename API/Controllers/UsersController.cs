@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Core.BugService;
 using Core.DTOs.Users;
 using Core.Other;
 using Core.UserService;

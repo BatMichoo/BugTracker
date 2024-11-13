@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs.Comments;
+using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Other;
-using Core.QueryParameters.Comment;
 using Core.Services.CommentService;
 using Core.UserService;
 using Infrastructure.Models.UserEntity;

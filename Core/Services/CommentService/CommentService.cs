@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Comments;
-using Core.QueryParameters.Comment;
+using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Repository.CommentRepo;
 using Core.Services.EntityService;
 using Core.Utilities.Comments;

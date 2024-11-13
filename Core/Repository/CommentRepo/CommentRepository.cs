@@ -1,5 +1,4 @@
-﻿using Core.QueryBuilders.Comment;
-using Core.QueryParameters;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders.Comments;
 using Infrastructure;
 using Infrastructure.Models.CommentEntity;
 using Microsoft.EntityFrameworkCore;
