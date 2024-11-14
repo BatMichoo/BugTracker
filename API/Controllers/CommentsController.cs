@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using API.Utilities.ErrorMessages;
+using AutoMapper;
+using Core.DTOs;
 using Core.DTOs.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Other;
@@ -28,6 +30,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{commentId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetComment(int bugId, int commentId)
         {
             var comment = await _commentService.GetById(commentId);
@@ -36,26 +41,38 @@ namespace API.Controllers
             {
                 if (comment.BugId != bugId)
                 {
-                    return BadRequest();
+                    return BadRequest(new
+                    {
+                        errorMessage = ErrorMessage.Comments.InvalidBugIdCommentIdPairing,
+                        bugId,
+                        commentId
+                    });
                 }
 
                 return Ok(_mapper.Map<CommentViewModel>(comment));
             }
 
-            return NotFound();
+            return NotFound(new
+            {
+                errorMessage = string.Format(ErrorMessage.Comments.NotFound, commentId),
+                commentId
+            });
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCommentsByBugId(int bugId)
         {
             var queryParameters = _queryFactory.GetByBugId(bugId);
 
             var comments = await _commentService.Fetch(queryParameters);
 
-            return Ok(comments);
+            return Ok(_mapper.Map<PagedList<CommentViewModel>>(comments));
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostComment(int bugId, AddCommentViewModel comment)
         {
             string userId = _userService.RetrieveUserId();
@@ -71,16 +88,21 @@ namespace API.Controllers
 
             if (createdComment is not null)
             {
-                string uri = Url.Action(nameof(GetComment), "Comments", new { bugId = createdComment.BugId, createdComment.Id })!;
+                string uri = Url.Action(nameof(GetComment), "Comments", new { bugId = createdComment.BugId, commentId = createdComment.Id })!;
 
-                return Created(uri, createdComment);
+                return Created(uri, _mapper.Map<CommentViewModel>(createdComment));
             }
 
-            return BadRequest();
+            return BadRequest(new
+            {
+                errorMessage = ErrorMessage.Comments.UnableToCreate
+            });
         }
 
         [HttpDelete("{commentId}")]
         [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommentById(int commentId)
         {
             var comment = await _commentService.GetById(commentId);
@@ -96,6 +118,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateComment(int bugId, EditCommentViewModel editModel)
         {
             var comment = await _commentService.GetById(editModel.Id);
@@ -107,27 +130,29 @@ namespace API.Controllers
 
             var updatedComment = await _commentService.Update(_mapper.Map<EditCommentModel>(editModel));
 
-            return Ok(updatedComment);
+            return Ok(_mapper.Map<CommentViewModel>(updatedComment));
         }
 
         [HttpGet("{commentId}/react")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> InteractWithComment(int commentId, char operation)
         {
             var comment = await _commentService.GetById(commentId);
 
             if (comment is null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    errorMessage = string.Format(ErrorMessage.Comments.NotFound, commentId),
+                    commentId
+                });
             }
 
             int currentLikes = await _commentService.Interact(comment.Id, operation);
 
-            if (currentLikes > 0)
-            {
-                return Ok(currentLikes);
-            }
-
-            return BadRequest();
+            return Ok(currentLikes);
         }
     }
 }

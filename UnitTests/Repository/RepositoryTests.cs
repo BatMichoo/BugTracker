@@ -123,7 +123,7 @@ namespace UnitTests.Repository
         {
             int expectedResult = 3;
 
-            var result = await _repository!.CountTotal();
+            var result = await _repository!.Count();
 
             Assert.That(result, Is.EqualTo(expectedResult));
         }

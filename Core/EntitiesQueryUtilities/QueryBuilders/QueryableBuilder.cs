@@ -8,9 +8,25 @@ namespace Core.EntitiesQueryUtilities.QueryBuilders
     {
         public IQueryable<T> BuildQuery(IQueryable<T> query, QueryParameters<T>? queryParameters)
         {
+            query = ApplyQueryParameters(query, queryParameters);
+
+            query = ApplyPagination(query, queryParameters.PagingInfo);
+
+            return query;
+        }
+
+        public IQueryable<T> BuildCountQuery(IQueryable<T> query, QueryParameters<T>? queryParameters)
+        {
+            query = ApplyQueryParameters(query, queryParameters);
+
+            return query;
+        }
+
+        private IQueryable<T> ApplyQueryParameters(IQueryable<T> query, QueryParameters<T>? queryParameters)
+        {
             if (queryParameters is not null)
             {
-                if (queryParameters.Filters != null && queryParameters.Filters.Any())
+                if (queryParameters.Filters != null && queryParameters.Filters.Count > 0)
                 {
                     query = ApplyFilter(query, queryParameters.Filters);
                 }
@@ -25,8 +41,6 @@ namespace Core.EntitiesQueryUtilities.QueryBuilders
                     query = ApplySort(query, queryParameters.SortOptions);
                 }
             }
-
-            query = ApplyPagination(query, queryParameters.PagingInfo);
 
             return query;
         }
@@ -77,5 +91,7 @@ namespace Core.EntitiesQueryUtilities.QueryBuilders
 
             return query;
         }
+
+        
     }
 }

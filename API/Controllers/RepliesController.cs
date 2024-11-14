@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using API.Utilities.ErrorMessages;
+using AutoMapper;
 using Core.DTOs.Replies;
 using Core.Other;
 using Core.Services.ReplyService;
@@ -26,6 +27,8 @@ namespace API.Controllers
         }
 
         [HttpGet("{replyId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ReplyViewModel>> Get(int replyId)
         {
             var reply = await _replyService.GetById(replyId);
@@ -35,10 +38,15 @@ namespace API.Controllers
                 return Ok(reply);
             }
 
-            return NotFound();
+            return NotFound(new
+            {
+                errorMessage = string.Format(ErrorMessage.Replies.NotFound, replyId),
+                replyId
+            });
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ReplyViewModel>>> GetAllByCommentId(int commentId)
         {
             var replies = (await _replyService.GetAll())
@@ -48,6 +56,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ReplyViewModel>> Post(int bugId, int commentId, AddReplyViewModel replyToBeAdded)
         {
             string userId = _userService.RetrieveUserId();
@@ -59,9 +68,17 @@ namespace API.Controllers
 
             var reply = await _replyService.Create(replyAddModel);
 
-            string uri = Url.Action(nameof(Get), "Replies", new { bugId, commentId, reply.Id })!;
+            string uri = Url.Action(nameof(Get), "Replies", new { bugId, commentId, replyId = reply.Id })!;
 
             return Created(uri, reply);
+        }
+
+        [HttpDelete("{replyId}")]
+        public async Task<ActionResult> Delete(int replyId)
+        {
+            await _replyService.Delete(replyId);
+
+            return Ok();
         }
     }
 }

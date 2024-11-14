@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using API.Utilities.ErrorMessages;
+using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
@@ -32,7 +33,7 @@ namespace API.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
         {
             var bug = await _bugService.GetById(id);
@@ -42,7 +43,11 @@ namespace API.Controllers
                 return Ok(_mapper.Map<BugViewModel>(bug));
             }
 
-            return NotFound();
+            return NotFound(new
+            {
+                errorMessage = string.Format(ErrorMessage.Bugs.NotFound, id),
+                id
+            });
         }
 
         [HttpGet]
@@ -77,7 +82,11 @@ namespace API.Controllers
                 return Created(uri, bugViewModel);
             }
 
-            return BadRequest(addBugView);
+            return BadRequest(new
+            {
+                errorMessage = ErrorMessage.Bugs.UnableToCreate,
+                addBugView
+            });
         }
 
         [HttpPut]
@@ -89,8 +98,8 @@ namespace API.Controllers
             {
                 return BadRequest(new
                 {
-                    error = "Model invalid",
-                    bug = editBugViewModel
+                    errorMessage = ErrorMessage.Bugs.InvalidUpdateModel,
+                    model = editBugViewModel
                 });
             }
 
@@ -132,7 +141,7 @@ namespace API.Controllers
             {
                 return NotFound(new
                 {
-                    error = "User does not exist",
+                    errorMessage = string.Format(ErrorMessage.Users.NotFound, userId),
                     userId
                 });
             }
@@ -155,7 +164,7 @@ namespace API.Controllers
             {
                 return NotFound(new
                 {
-                    error = "User does not exist.",
+                    errorMessage = string.Format(ErrorMessage.Users.NotFound, userId),
                     userId
                 });
             }

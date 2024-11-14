@@ -88,9 +88,11 @@ namespace Core.Repository
         internal virtual IQueryable<T> AddInclusions(IQueryable<T> query)
             => query;
 
-        public async Task<int> CountTotal()
+        public async Task<int> Count(QueryParameters<T> queryParameters)
         {
-            var count = await _dbSet.CountAsync();
+            var query = _queryableBuilder.BuildCountQuery(AsQueryable(), queryParameters);
+
+            var count = await query.CountAsync();
 
             return count;
         }

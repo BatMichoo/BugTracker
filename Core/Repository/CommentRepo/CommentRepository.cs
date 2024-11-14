@@ -13,6 +13,6 @@ namespace Core.Repository.CommentRepo
         }
 
         internal override IQueryable<Comment> AddInclusions(IQueryable<Comment> query)
-            => query.Include(c => c.Author);        
+            => query.Include(c => c.Author);
     }
 }

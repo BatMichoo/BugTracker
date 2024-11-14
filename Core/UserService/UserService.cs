@@ -87,7 +87,7 @@ namespace Core.UserService
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
             var users = await _userManager.Users
-                .Where(u => u.UserName != "Admin")
+                .Where(u => u.UserName != "Administrator")
                 .AsNoTracking()
                 .ToListAsync();
 

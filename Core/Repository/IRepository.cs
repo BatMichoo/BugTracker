@@ -15,7 +15,7 @@ namespace Core.Repository
         Task DeleteById(int id);
         Task Delete(T entity);
 
-        Task<int> CountTotal();
+        Task<int> Count(QueryParameters<T> queryParameters);
 
         Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters);
         

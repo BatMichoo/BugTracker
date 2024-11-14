@@ -24,16 +24,19 @@ namespace Core.Services.CommentService
                 return -1;
             }
 
-            if (operation == '-')
+            if (operation == '-' && comment.Likes > 0)
             {
                 comment.Likes--;
             }
-            else
+            else if (operation != '-')
             {
                 comment.Likes++;
             }
 
-            comment = await _repository.Update(comment);
+            if (comment.Likes >= 0)
+            {
+                comment = await _repository.Update(comment);
+            }
 
             return comment.Likes;
         }

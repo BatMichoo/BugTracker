@@ -15,6 +15,7 @@ namespace API.AutoMapper
 
             CreateMap<AddBugModel, Bug>()
                 .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => DateTime.Now))
+                .ForMember(d => d.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId))
                 .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())
                 .ForMember(d => d.Assignee, opt => opt.Ignore())

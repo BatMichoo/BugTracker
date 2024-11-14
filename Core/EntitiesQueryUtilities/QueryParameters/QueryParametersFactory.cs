@@ -29,7 +29,7 @@ namespace Core.EntitiesQueryUtilities.QueryParameters
 
             var sortingOptions = _sortingOptionsFactory.CreateSortingOptions(sortOptionsInput);
 
-            var pageInfo = PagingInfo.CreatePage(pageInput, pageSizeInput);
+            var pageInfo = PagingInfo.CreatePage(pageNumber: pageInput, elementsPerPage: pageSizeInput);
 
             return Task.FromResult(new QueryParameters<TEntity>(filters, pageInfo, sortingOptions, searchTermInput));
         }

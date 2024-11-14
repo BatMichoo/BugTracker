@@ -44,6 +44,9 @@ namespace Core.Services.EntityService
         public async Task<PagedList<TModel>> Fetch(QueryParameters<TEntity> queryParameters)
         {
             var entitiesList = await _repository.ExecuteQuery(queryParameters);
+            var totalElementCount = await _repository.Count(queryParameters);
+
+            queryParameters.PagingInfo.TotalElementCount = totalElementCount;
 
             return new PagedList<TModel>
             {
