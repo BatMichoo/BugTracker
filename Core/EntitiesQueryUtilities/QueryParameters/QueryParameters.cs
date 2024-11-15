@@ -1,5 +1,4 @@
-﻿using Core.Utilities;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 
 namespace Core.EntitiesQueryUtilities.QueryParameters
 {

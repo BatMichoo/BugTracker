@@ -1,4 +1,4 @@
-﻿namespace Core.Utilities.Comments
+﻿namespace Core.EntitiesQueryUtilities.Comments
 {
     public enum CommentOrderBy
     {

@@ -1,4 +1,4 @@
-﻿namespace Core.Utilities.Replies
+﻿namespace Core.EntitiesQueryUtilities.Replies
 {
     public enum ReplySortBy
     {

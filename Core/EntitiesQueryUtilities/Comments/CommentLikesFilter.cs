@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Models.CommentEntity;
 using System.Linq.Expressions;
 
-namespace Core.Utilities.Comments
+namespace Core.EntitiesQueryUtilities.Comments
 {
     public class CommentLikesFilter : IFilter<Comment>
     {

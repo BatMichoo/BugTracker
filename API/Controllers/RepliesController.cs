@@ -3,7 +3,7 @@ using AutoMapper;
 using Core.DTOs.Replies;
 using Core.Other;
 using Core.Services.ReplyService;
-using Core.UserService;
+using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

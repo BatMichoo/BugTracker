@@ -1,4 +1,4 @@
-﻿using Core.Utilities;
+﻿using Core.EntitiesQueryUtilities;
 
 namespace Core.DTOs
 {

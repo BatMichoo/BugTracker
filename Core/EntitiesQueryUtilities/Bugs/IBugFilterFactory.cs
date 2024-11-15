@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Models.BugEntity;
 
-namespace Core.Utilities.Bugs
+namespace Core.EntitiesQueryUtilities.Bugs
 {
     public interface IBugFilterFactory : IFilterFactory<Bug, BugFilterType>
     {

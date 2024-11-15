@@ -2,7 +2,7 @@
 using AutoMapper;
 using Core.DTOs.Users;
 using Core.Other;
-using Core.UserService;
+using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

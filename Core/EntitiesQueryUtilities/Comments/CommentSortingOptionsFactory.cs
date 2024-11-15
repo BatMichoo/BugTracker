@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Models.CommentEntity;
 
-namespace Core.Utilities.Comments
+namespace Core.EntitiesQueryUtilities.Comments
 {
     public class CommentSortingOptionsFactory : ICommentSortingOptionsFactory
     {

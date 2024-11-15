@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Models.BugEntity;
-using System.Globalization;
 
-namespace Core.Utilities.Bugs
+namespace Core.EntitiesQueryUtilities.Bugs
 {
     public class BugSortingOptionsFactory : IBugSortingOptionsFactory
     {

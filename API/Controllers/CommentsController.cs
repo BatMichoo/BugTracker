@@ -5,7 +5,7 @@ using Core.DTOs.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Other;
 using Core.Services.CommentService;
-using Core.UserService;
+using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

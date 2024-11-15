@@ -6,7 +6,7 @@ using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Other;
 using Core.Services.BugService;
-using Core.UserService;
+using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

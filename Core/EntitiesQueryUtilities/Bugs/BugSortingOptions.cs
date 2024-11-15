@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Models.BugEntity;
 using System.Linq.Expressions;
 
-namespace Core.Utilities.Bugs
+namespace Core.EntitiesQueryUtilities.Bugs
 {
     public class BugSortingOptions : IBugSortingOptions
     {

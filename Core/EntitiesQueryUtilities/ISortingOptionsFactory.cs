@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Models;
 
-namespace Core.Utilities
+namespace Core.EntitiesQueryUtilities
 {
     public interface ISortingOptionsFactory<T, TOrderByEnum>
         where T : BaseEntity

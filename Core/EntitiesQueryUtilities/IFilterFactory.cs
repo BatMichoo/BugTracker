@@ -1,8 +1,8 @@
 ﻿using Infrastructure.Models;
 
-namespace Core.Utilities
+namespace Core.EntitiesQueryUtilities
 {
-    public interface IFilterFactory<TEntity, TFilterByEnum> 
+    public interface IFilterFactory<TEntity, TFilterByEnum>
         where TEntity : BaseEntity
         where TFilterByEnum : struct, Enum
     {

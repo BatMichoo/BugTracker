@@ -10,6 +10,10 @@ namespace Infrastructure.Models.CommentEntity
             builder.HasOne(c => c.Author)
                 .WithMany(a => a.Comments)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(c => c.Replies)
+                .WithOne(r => r.Comment)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Core.DTOs.Users;
 using Microsoft.AspNetCore.Identity;
 
-namespace Core.UserService
+namespace Core.Services.UserService
 {
     public interface IUserService<T> where T : IdentityUser
     {

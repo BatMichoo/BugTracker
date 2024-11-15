@@ -63,7 +63,11 @@ namespace Core.Repository
         {
             T existingEntity = (await _dbSet.FindAsync(entity.Id))!;
 
-            _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
+            var entry = _dbContext.Entry(existingEntity);
+
+            entry.CurrentValues.SetValues(entity);
+
+            entry.CurrentValues["CreatorId"] = entry.OriginalValues["CreatorId"];
 
             await SaveChangesAsync();
 

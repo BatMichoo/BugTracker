@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Models;
 using System.Linq.Expressions;
 
-namespace Core.Utilities
+namespace Core.EntitiesQueryUtilities
 {
     public interface IFilter<T> where T : BaseEntity
     {

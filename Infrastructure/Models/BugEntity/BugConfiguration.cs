@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Models.BugEntity
@@ -15,6 +16,12 @@ namespace Infrastructure.Models.BugEntity
             builder.Property(b => b.Priority)
                 .HasConversion<int>();
 
+            builder.Property(b => b.CreatedOn)
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            builder.Property(b => b.CreatorId)
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            
             builder.HasOne(b => b.Creator)
                 .WithMany(c => c.CreatedBugs)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -25,7 +32,7 @@ namespace Infrastructure.Models.BugEntity
 
             builder.HasMany(b => b.Comments)
                 .WithOne(bc => bc.Bug)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Core.UserService
+namespace Core.Services.UserService
 {
     public class UserService<T> : IUserService<T> where T : IdentityUser
     {
@@ -34,7 +34,7 @@ namespace Core.UserService
         {
             var toBeCreated = _mapper.Map<T>(newUser);
 
-            var result = await _userManager.CreateAsync(toBeCreated, newUser.Password);            
+            var result = await _userManager.CreateAsync(toBeCreated, newUser.Password);
 
             if (result.Succeeded)
             {
@@ -63,7 +63,7 @@ namespace Core.UserService
             var user = await _userManager.FindByEmailAsync(email);
 
             return user;
-        }       
+        }
 
         public async Task<bool> SignInUserWithPassword(T user, string password)
         {

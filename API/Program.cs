@@ -1,5 +1,6 @@
 using API.AutoMapper;
 using Core.AutoMapper;
+using Core.EntitiesQueryUtilities.Comments;
 using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
 using Core.EntitiesQueryUtilities.QueryBuilders.Comments;
 using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
@@ -13,9 +14,8 @@ using Core.Repository.ReplyRepo;
 using Core.Services.BugService;
 using Core.Services.CommentService;
 using Core.Services.ReplyService;
-using Core.UserService;
+using Core.Services.UserService;
 using Core.Utilities.Bugs;
-using Core.Utilities.Comments;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.UserEntity;
