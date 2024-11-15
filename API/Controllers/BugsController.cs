@@ -2,11 +2,11 @@
 using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
+using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Other;
 using Core.Services.BugService;
 using Core.UserService;
-using Core.Utilities;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿namespace Core.Utilities
+﻿namespace Core.EntitiesQueryUtilities
 {
     public static class PagingDefaults
     {

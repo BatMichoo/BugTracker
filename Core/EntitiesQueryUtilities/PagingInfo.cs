@@ -1,4 +1,6 @@
-﻿namespace Core.Utilities
+﻿using Core.EntitiesQueryUtilities;
+
+namespace Core.Utilities
 {
     public class PagingInfo
     {

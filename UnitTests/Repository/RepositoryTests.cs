@@ -1,4 +1,5 @@
 ﻿using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
+using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Utilities.Bugs;
 using Infrastructure;
@@ -123,7 +124,7 @@ namespace UnitTests.Repository
         {
             int expectedResult = 3;
 
-            var result = await _repository!.Count();
+            var result = await _repository!.Count(new QueryParameters<Bug>());
 
             Assert.That(result, Is.EqualTo(expectedResult));
         }
