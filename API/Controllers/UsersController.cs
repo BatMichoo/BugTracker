@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using API.Utilities.ErrorMessages;
+using AutoMapper;
 using Core.DTOs.Users;
 using Core.Other;
 using Core.UserService;
@@ -40,7 +41,10 @@ namespace API.Controllers
                 }
             }
 
-            return BadRequest();
+            return BadRequest(new
+            {
+                errorMessage = ErrorMessage.Users.LoginFailed
+            });
         }
 
         [HttpPost("register")]
@@ -87,7 +91,11 @@ namespace API.Controllers
 
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    errorMessage = string.Format(ErrorMessage.Users.NotFound, userId),
+                    userId
+                });
             }
 
             return Ok(_mapper.Map<UserViewModel>(user));
@@ -126,12 +134,12 @@ namespace API.Controllers
             {
                 return NotFound(new
                 {
-                    error = "User not found.",
+                    errorMessage = string.Format(ErrorMessage.Users.NotFound, userId),
                     user
                 });
             }
 
-            if (role == UserRoles.User || role == UserRoles.Manager)
+            if (role == UserRoles.Admin || role == UserRoles.Manager)
             {
                 var success = await _userService.AddRolesToUser(user, new List<string> { role });
 
@@ -143,7 +151,7 @@ namespace API.Controllers
 
             return BadRequest(new
             {
-                error = "Role assignment failed",
+                errorMessage = string.Format(ErrorMessage.Users.CouldNotAssignRole, role),
                 role
             });
         }

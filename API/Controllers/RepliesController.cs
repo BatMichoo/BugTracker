@@ -74,6 +74,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{replyId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(int replyId)
         {
             await _replyService.Delete(replyId);

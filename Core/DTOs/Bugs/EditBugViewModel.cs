@@ -1,4 +1,6 @@
 ﻿using Core.Models.Bugs.BugEnums;
+using Infrastructure.Models.BugEntity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.DTOs.Bugs
 {
@@ -6,7 +8,9 @@ namespace Core.DTOs.Bugs
     {
         public int Id { get; set; }
         public BugStatus? Status { get; set; }
-        public BugPriority? Priority { get; set; } 
+        public BugPriority? Priority { get; set; }
+
+        [MaxLength(BugValidation.MaxLength)]
         public string? Description { get; set; }
         public string? AssigneeId { get; set; } 
 

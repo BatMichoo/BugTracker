@@ -136,12 +136,11 @@ namespace API.Controllers
         [HttpGet("{commentId}/react")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> InteractWithComment(int commentId, char operation)
         {
-            var comment = await _commentService.GetById(commentId);
+            int currentLikes = await _commentService.Interact(commentId, operation);
 
-            if (comment is null)
+            if (currentLikes < 0)
             {
                 return NotFound(new
                 {
@@ -149,8 +148,6 @@ namespace API.Controllers
                     commentId
                 });
             }
-
-            int currentLikes = await _commentService.Interact(comment.Id, operation);
 
             return Ok(currentLikes);
         }

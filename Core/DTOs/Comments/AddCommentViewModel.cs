@@ -1,7 +1,11 @@
-﻿namespace Core.DTOs.Comments
+﻿using Infrastructure.Models.CommentEntity;
+using System.ComponentModel.DataAnnotations;
+
+namespace Core.DTOs.Comments
 {
     public class AddCommentViewModel
     {
+        [MaxLength(CommentValidation.MaxLength)]
         public string Content { get; set; } = null!;
     }
 }
