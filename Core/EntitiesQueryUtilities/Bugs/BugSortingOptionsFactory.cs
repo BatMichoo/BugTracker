@@ -8,7 +8,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
         {
             if (sortOptions != null)
             {
-                string[] sortingInfo = sortOptions.Split('_');
+                string[] sortingInfo = sortOptions.Split(FilterQuerySeparators.KeyValue);
 
                 string sortBy = sortingInfo[0];
                 string order = sortingInfo[1];

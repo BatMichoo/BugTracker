@@ -54,7 +54,7 @@ namespace API.AutoMapper
 
         private static bool IsDifferentAndNotNullOrEmpty(EditBugModel s, BugModel d, string m)
         {
-            return !String.IsNullOrWhiteSpace(m) && s.Description != d.Description;
+            return !string.IsNullOrWhiteSpace(m) && s.Description != d.Description;
         }
     }
 }

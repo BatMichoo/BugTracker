@@ -12,8 +12,6 @@ namespace Core.AutoMapper
             CreateMap<PagedList<CommentModel>, PagedList<CommentViewModel>>()
                 .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items));
 
-            CreateMap<Comment, CommentModel>();
-
             CreateMap<CommentModel, Comment>()
                 .ReverseMap();
 
@@ -30,9 +28,11 @@ namespace Core.AutoMapper
 
             CreateMap<EditCommentViewModel, AddCommentViewModel>();
 
-            CreateMap<EditCommentModel, CommentModel>()
+            CreateMap<EditCommentModel, Comment>()
+                .ForMember(d => d.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(d => d.Author, opt => opt.Ignore())
-                .ForMember(d => d.AuthorId, opt => opt.Ignore());
+                .ForMember(d => d.AuthorId, opt => opt.Ignore())
+                .ForMember(d => d.Likes, opt => opt.Ignore());
         }
     }
 }

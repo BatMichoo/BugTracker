@@ -3,6 +3,8 @@
     public enum CommentOrderBy
     {
         Id,
-        BugId
+        BugId,
+        Date,
+        Likes
     }
 }

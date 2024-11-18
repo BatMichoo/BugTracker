@@ -18,8 +18,14 @@ namespace Core.EntitiesQueryUtilities.Comments
         {
             switch (OrderBy)
             {
-                default:
+                case CommentOrderBy.BugId:
                     return c => c.BugId;
+                case CommentOrderBy.Date:
+                    return c => c.PostedOn;
+                case CommentOrderBy.Likes:
+                    return c => c.Likes;
+                default:
+                    return c => c.Id;
             }
         }
     }

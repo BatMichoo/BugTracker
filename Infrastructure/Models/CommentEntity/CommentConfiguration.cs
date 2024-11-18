@@ -16,6 +16,9 @@ namespace Infrastructure.Models.CommentEntity
                 .WithOne(r => r.Comment)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Property(c => c.BugId)
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
             builder.Property(c => c.PostedOn)
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 

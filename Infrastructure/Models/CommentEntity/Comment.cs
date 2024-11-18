@@ -15,6 +15,7 @@ namespace Infrastructure.Models.CommentEntity
         [Range(0, int.MaxValue)]
         public int Likes { get; set; }
         public DateTime PostedOn { get; set; }
+        public DateTime LastUpdatedOn { get; set; }
 
         [ForeignKey(nameof(Bug))]
         public int BugId { get; set; }

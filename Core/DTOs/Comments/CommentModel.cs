@@ -11,5 +11,6 @@ namespace Core.DTOs.Comments
         public int BugId { get; set; }
         public string AuthorId { get; set; } = null!;
         public BugUser Author { get; set; } = null!;
+        public DateTime LastUpdatedOn { get; set; }
     }
 }

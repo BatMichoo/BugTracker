@@ -20,8 +20,12 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
             {
                 case ">=":
                     return b => b.CreatedOn >= _targetDate;
+                case ">":
+                    return b => b.CreatedOn > _targetDate;
                 case "<=":
                     return b => b.CreatedOn <= _targetDate;
+                case "<":
+                    return b => b.CreatedOn < _targetDate;
                 default:
                     return b => b.CreatedOn == _targetDate;
             }

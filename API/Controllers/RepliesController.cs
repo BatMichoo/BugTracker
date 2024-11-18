@@ -1,9 +1,13 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs.Replies;
+using Core.EntitiesQueryUtilities;
+using Core.EntitiesQueryUtilities.QueryParameters;
+using Core.EntitiesQueryUtilities.Replies.Filters;
 using Core.Other;
 using Core.Services.ReplyService;
 using Core.Services.UserService;
+using Infrastructure.Models.ReplyEntity;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,10 +53,14 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ReplyViewModel>>> GetAllByCommentId(int commentId)
         {
-            var replies = (await _replyService.GetAll())
-                .Where(r => r.CommentId == commentId).ToList();
+            var filterList = new List<IFilter<Reply>> { new ReplyToCommentFilter(commentId) };
+            var pagingInfo = PagingInfo.CreatePage(0, 0, 0);
 
-            return Ok(_mapper.Map<List<ReplyViewModel>>(replies));
+            var queryParameters = new QueryParameters<Reply>(filterList, pagingInfo);
+
+            var replies = await _replyService.Fetch(queryParameters);
+
+            return Ok(_mapper.Map<List<ReplyViewModel>>(replies.Items));
         }
 
         [HttpPost]
@@ -70,7 +78,7 @@ namespace API.Controllers
 
             string uri = Url.Action(nameof(Get), "Replies", new { bugId, commentId, replyId = reply.Id })!;
 
-            return Created(uri, reply);
+            return Created(uri, _mapper.Map<ReplyViewModel>(reply));
         }
 
         [HttpDelete("{replyId}")]

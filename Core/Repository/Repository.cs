@@ -69,9 +69,9 @@ namespace Core.Repository
 
             entry.CurrentValues.SetValues(entity);
 
-            entry.CurrentValues["AuthorId"] = entry.OriginalValues["AuthorId"];
-
             await SaveChangesAsync();
+
+            entity = (await GetById(entity.Id))!;
 
             return entity;
         }

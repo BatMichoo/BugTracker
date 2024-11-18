@@ -22,11 +22,21 @@
 
                 if (pageCount < pageNumber)
                 {
-                    pageCount = pageNumber;
+                    pageNumber = pageCount;
                 }
             }
 
             return new PagingInfo { CurrentPage = pageNumber, ElementsPerPage = elementsPerPage };
+        }
+
+        internal void UpdatePaging(int totalElementCount)
+        {
+            TotalElementCount = totalElementCount;
+
+            if (CurrentPage > PageCount)
+            {
+                CurrentPage = PageCount;
+            }
         }
     }
 }

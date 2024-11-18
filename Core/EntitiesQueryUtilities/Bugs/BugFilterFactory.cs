@@ -42,37 +42,38 @@ namespace Core.EntitiesQueryUtilities.Bugs
                         continue;
                     }
 
-                    string propertyValue = filterInfo[1];
-
-                    IFilter<Bug> filter;
-
-                    switch (type)
-                    {
-                        case BugFilterType.CreatedOn:
-                            string operation = filterInfo.Count() > 2 ? filterInfo[2] : "==";
-                            var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
-
-                            if (!success)
-                                createdOn = DateTime.UtcNow;
-
-                            filter = new BugDateFilter(createdOn, operation);
-                            break;
-                        case BugFilterType.AssignedTo:
-                            filter = new BugAssignedToFilter(propertyValue);
-                            break;
-                        case BugFilterType.CreatedBy:
-                            filter = new BugCreatedByFilter(propertyValue);
-                            break;
-                        default:
-                            continue;
-
-                    }
+                    IFilter<Bug> filter = ProduceFilter(filterInfo, type);
 
                     filters.Add(filter);
                 }
             }
 
             return filters;
+        }
+
+        private static IFilter<Bug> ProduceFilter(string[] filterInfo, BugFilterType type)
+        {
+            string propertyValue = filterInfo[1];
+
+            switch (type)
+            {
+                case BugFilterType.CreatedOn:
+                    string operation = filterInfo.Count() > 2 ?
+                        filterInfo[2] : string.Empty;
+
+                    var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
+
+                    if (!success)
+                        createdOn = DateTime.UtcNow;
+
+                    return new BugDateFilter(createdOn, operation);
+                case BugFilterType.AssignedTo:
+                    return new BugAssignedToFilter(propertyValue);
+                case BugFilterType.CreatedBy:
+                    return new BugCreatedByFilter(propertyValue);
+                default:
+                    throw new ArgumentException("No such filter");
+            }
         }
     }
 }

@@ -142,14 +142,16 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateComment(int bugId, EditCommentViewModel editModel)
         {
-            var comment = await _commentService.GetById(editModel.Id);
+            bool doesExist = await _commentService.DoesExist(editModel.Id);
 
-            if (comment is null)
+            if (!doesExist)
             {
                 return await PostComment(bugId, _mapper.Map<AddCommentViewModel>(editModel));
             }
 
-            var updatedComment = await _commentService.Update(_mapper.Map<EditCommentModel>(editModel));
+            var updatedModel = _mapper.Map<EditCommentModel>(editModel);
+
+            var updatedComment = await _commentService.Update(updatedModel);
 
             return Ok(_mapper.Map<CommentViewModel>(updatedComment));
         }
