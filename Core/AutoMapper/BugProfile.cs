@@ -11,6 +11,7 @@ namespace API.AutoMapper
         {
             CreateMap<PagedList<BugModel>, PagedList<BugViewModel>>()
                 .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items));
+
             CreateMap<AddBugViewModel, AddBugModel>();
 
             CreateMap<AddBugModel, Bug>()

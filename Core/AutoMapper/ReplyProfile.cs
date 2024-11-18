@@ -10,7 +10,8 @@ namespace Core.AutoMapper
         {
             CreateMap<Reply, ReplyModel>();
 
-            CreateMap<ReplyModel, ReplyViewModel>();
+            CreateMap<ReplyModel, ReplyViewModel>()
+                .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.Author.Name));
 
             CreateMap<AddReplyViewModel, AddReplyModel>()
                 .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => DateTime.Now));

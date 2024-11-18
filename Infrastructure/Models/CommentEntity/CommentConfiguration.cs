@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Models.CommentEntity
@@ -14,6 +15,12 @@ namespace Infrastructure.Models.CommentEntity
             builder.HasMany(c => c.Replies)
                 .WithOne(r => r.Comment)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(c => c.PostedOn)
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            builder.Property(c => c.AuthorId)
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         }
     }
 }

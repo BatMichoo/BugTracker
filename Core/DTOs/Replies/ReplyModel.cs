@@ -1,4 +1,6 @@
-﻿namespace Core.DTOs.Replies
+﻿using Infrastructure.Models.UserEntity;
+
+namespace Core.DTOs.Replies
 {
     public class ReplyModel
     {
@@ -6,6 +8,7 @@
         public int CommentId { get; set; }
         public string Content { get; set; } = null!;
         public string AuthorId { get; set; } = null!;
+        public BugUser Author { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
     }
 }

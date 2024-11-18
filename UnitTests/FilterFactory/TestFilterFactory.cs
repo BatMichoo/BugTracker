@@ -1,8 +1,8 @@
-﻿using Core.Utilities.Bugs;
+﻿using Core.EntitiesQueryUtilities.Bugs;
 
 namespace UnitTests.FilterFactory
 {
-    public class TestFilterFactory : BugFilterFactory
+    public class TestFilterFactory : BugFilterFactory, IBugFilterFactory
     {
     }
 }

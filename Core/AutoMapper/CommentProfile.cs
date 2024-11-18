@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.DTOs;
 using Core.DTOs.Comments;
 using Infrastructure.Models.CommentEntity;
 
@@ -8,6 +9,9 @@ namespace Core.AutoMapper
     {
         public CommentProfile()
         {
+            CreateMap<PagedList<CommentModel>, PagedList<CommentViewModel>>()
+                .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items));
+
             CreateMap<Comment, CommentModel>();
 
             CreateMap<CommentModel, Comment>()

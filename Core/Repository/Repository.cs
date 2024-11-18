@@ -52,7 +52,9 @@ namespace Core.Repository
 
         public async Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters)
         {
-            var query = _queryableBuilder.BuildQuery(AsQueryable(), queryParameters);
+            var query = AddInclusions(AsQueryable());
+
+            query = _queryableBuilder.BuildQuery(query, queryParameters);
 
             var entityList = await query.ToListAsync();
 
@@ -67,7 +69,7 @@ namespace Core.Repository
 
             entry.CurrentValues.SetValues(entity);
 
-            entry.CurrentValues["CreatorId"] = entry.OriginalValues["CreatorId"];
+            entry.CurrentValues["AuthorId"] = entry.OriginalValues["AuthorId"];
 
             await SaveChangesAsync();
 

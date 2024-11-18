@@ -35,7 +35,7 @@ namespace API.Controllers
 
             if (reply is not null)
             {
-                return Ok(reply);
+                return Ok(_mapper.Map<ReplyViewModel>(reply));
             }
 
             return NotFound(new
@@ -50,7 +50,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<ReplyViewModel>>> GetAllByCommentId(int commentId)
         {
             var replies = (await _replyService.GetAll())
-                .Where(r => r.CommentId == commentId);
+                .Where(r => r.CommentId == commentId).ToList();
 
             return Ok(_mapper.Map<List<ReplyViewModel>>(replies));
         }
