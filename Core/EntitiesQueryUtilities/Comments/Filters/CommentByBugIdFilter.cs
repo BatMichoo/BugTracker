@@ -14,5 +14,22 @@ namespace Core.EntitiesQueryUtilities.Comments.Filters
 
         public Expression<Func<Comment, bool>> Apply()
             => c => c.BugId == bugId;
+
+        public override bool Equals(object? obj)
+        {
+            if (obj.GetType() != typeof(CommentByBugIdFilter))
+            {
+                return false;
+            }
+
+            var otherFilter = (CommentByBugIdFilter)obj;
+
+            if (otherFilter.bugId != bugId)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

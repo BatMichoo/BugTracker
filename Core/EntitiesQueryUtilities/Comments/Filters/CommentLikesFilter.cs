@@ -20,8 +20,14 @@ namespace Core.EntitiesQueryUtilities.Comments.Filters
             {
                 case "=>":
                     return c => c.Likes >= count;
-                default:
+                case ">":
+                    return c => c.Likes > count;
+                case "<=":
                     return c => c.Likes <= count;
+                case "<":
+                    return c => c.Likes < count;
+                default:
+                    return c => c.Likes == count;
             }
         }
     }
