@@ -1,4 +1,5 @@
-﻿using Infrastructure.Models.BugEntity;
+﻿using Core.EntitiesQueryUtilities.Bugs.Filters;
+using Infrastructure.Models.BugEntity;
 
 namespace Core.EntitiesQueryUtilities.Bugs
 {

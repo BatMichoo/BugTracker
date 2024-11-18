@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Models.BugEntity;
 using System.Linq.Expressions;
 
-namespace Core.EntitiesQueryUtilities.Bugs
+namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugDateFilter : IFilter<Bug>
     {

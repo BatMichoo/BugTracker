@@ -1,15 +1,12 @@
-﻿using Infrastructure.Models.ReplyEntity;
+﻿using Core.EntitiesQueryUtilities.Replies;
+using Infrastructure.Models.ReplyEntity;
 
 namespace Core.EntitiesQueryUtilities.QueryParameters.Replies
 {
-    public class ReplyQueryParametersFactory : IReplyQueryParametersFactory
+    public class ReplyQueryParametersFactory : QueryParametersFactory<Reply, ReplySortBy, ReplyFilterType>, IReplyQueryParametersFactory
     {
-        public QueryParameters<Reply> CreateGetAllQuery()
-            => new QueryParameters<Reply>();
-
-        public Task<QueryParameters<Reply>> ProcessQueryParametersInput(int pageInput, int pageSizeInput, string? searchTermInput, string? sortOptionsInput, string? filterInput)
+        public ReplyQueryParametersFactory(IReplySortingOptionFactory sortingOptionsFactory, IReplyFilterFactory filterFactory) : base(sortingOptionsFactory, filterFactory)
         {
-            throw new NotImplementedException();
         }
     }
 }

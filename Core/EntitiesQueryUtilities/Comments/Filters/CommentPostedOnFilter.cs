@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Models.CommentEntity;
 using System.Linq.Expressions;
 
-namespace Core.EntitiesQueryUtilities.Comments
+namespace Core.EntitiesQueryUtilities.Comments.Filters
 {
     public class CommentPostedOnFilter : IFilter<Comment>
     {

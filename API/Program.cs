@@ -1,5 +1,6 @@
 using API.AutoMapper;
 using Core.AutoMapper;
+using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.Comments;
 using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
 using Core.EntitiesQueryUtilities.QueryBuilders.Comments;
@@ -7,6 +8,7 @@ using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Replies;
+using Core.EntitiesQueryUtilities.Replies;
 using Core.Other;
 using Core.Repository.BugRepo;
 using Core.Repository.CommentRepo;
@@ -15,7 +17,6 @@ using Core.Services.BugService;
 using Core.Services.CommentService;
 using Core.Services.ReplyService;
 using Core.Services.UserService;
-using Core.Utilities.Bugs;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.UserEntity;
@@ -102,6 +103,9 @@ namespace API
             builder.Services.AddScoped<IReplyRepository, ReplyRepository>();
             builder.Services.AddScoped<IReplyQueryableBuilder, ReplyQueryableBuilder>();
             builder.Services.AddScoped<IReplyQueryParametersFactory, ReplyQueryParametersFactory>();
+            builder.Services.AddScoped<IReplyFilterFactory, ReplyFilterFactory>();
+            builder.Services.AddScoped<IReplySortingOptionFactory, ReplySortingOptionsFactory>();
+
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();

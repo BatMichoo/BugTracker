@@ -3,6 +3,7 @@
     public enum ReplyFilterType
     {
         BugId,
-        CreatedBy
+        CreatedBy,
+        CommentId
     }
 }
