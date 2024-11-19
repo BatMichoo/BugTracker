@@ -1,5 +1,7 @@
-﻿using Infrastructure.Models.UserEntity;
+﻿using Infrastructure;
+using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API
 {
@@ -8,15 +10,28 @@ namespace API
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<BugUser> userManager;
         private readonly IConfiguration Config;
+        private readonly TrackerDbContext _dbContext;
 
-        public Initializer(RoleManager<IdentityRole> roleManager, UserManager<BugUser> userManager, IConfiguration config)
+        public Initializer(RoleManager<IdentityRole> roleManager, UserManager<BugUser> userManager, IConfiguration config, TrackerDbContext dbContext)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
             Config = config;
+            _dbContext = dbContext;
         }
 
-        public async Task InitializeRoles()
+        public async Task Initialize()
+        {
+            await InitializeDatabase();
+            await InitializeRoles();
+        }
+
+        private async Task InitializeDatabase()
+        {
+            await _dbContext.Database.MigrateAsync();
+        }
+
+        private async Task InitializeRoles()
         {
             var roles = Config.GetSection("Roles:UserRoles").Get<string[]>();
 

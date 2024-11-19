@@ -84,6 +84,13 @@ namespace Core.Services.UserService
             return result.Succeeded;
         }
 
+        public async Task<bool> RemoveRolesFromUser(T user, IEnumerable<string> roles)
+        {
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+
+            return result.Succeeded;
+        }
+
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
             var users = await _userManager.Users

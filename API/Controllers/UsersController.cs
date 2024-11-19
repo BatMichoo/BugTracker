@@ -155,5 +155,40 @@ namespace API.Controllers
                 role
             });
         }
+
+        [HttpPatch("unassign-role")]
+        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UnassignRole(string userId, string role)
+        {
+            var user = await _userService.RetrieveUserById(userId);
+
+            if (user is null)
+            {
+                return NotFound(new
+                {
+                    errorMessage = string.Format(ErrorMessage.Users.NotFound, userId),
+                    user
+                });
+            }
+
+            if (role == UserRoles.Admin || role == UserRoles.Manager)
+            {
+                var success = await _userService.RemoveRolesFromUser(user, new List<string> { role });
+
+                if (success)
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest(new
+            {
+                errorMessage = string.Format(ErrorMessage.Users.CouldNotAssignRole, role),
+                role
+            });
+        }
     }
 }

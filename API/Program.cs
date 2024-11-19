@@ -159,10 +159,11 @@ namespace API
             {
                 var roleManager = (RoleManager<IdentityRole>)scope.ServiceProvider.GetRequiredService(typeof(RoleManager<IdentityRole>));
                 var userManager = (UserManager<BugUser>)scope.ServiceProvider.GetRequiredService(typeof(UserManager<BugUser>));
+                var dbContext = (TrackerDbContext) scope.ServiceProvider.GetRequiredService(typeof(TrackerDbContext));
 
-                var initializer = new Initializer(roleManager, userManager, builder.Configuration);
+                var initializer = new Initializer(roleManager, userManager, builder.Configuration, dbContext);
 
-                await initializer.InitializeRoles();
+                await initializer.Initialize();
             }
         }
     }

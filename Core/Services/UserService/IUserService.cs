@@ -7,6 +7,7 @@ namespace Core.Services.UserService
     {
         string RetrieveUserId();
         Task<bool> AddRolesToUser(T user, IEnumerable<string> roles);
+        Task<bool> RemoveRolesFromUser(T user, IEnumerable<string> roles);
         Task<T> RetrieveUserByEmail(string email);
         Task<T> RetrieveUserById(string id);
         Task<T> RetrieveUser();
