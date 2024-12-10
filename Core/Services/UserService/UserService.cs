@@ -160,11 +160,6 @@ namespace Core.Services.UserService
             return new LoginResponseModel()
             {
                 Token = tokenString,
-                User = new UserViewModel()
-                {
-                    Id = user.Id,
-                    UserName = user.UserName
-                }
             };
         }
     }
