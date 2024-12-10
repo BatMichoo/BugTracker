@@ -4,7 +4,10 @@ using Core.Other;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Core.Services.UserService
 {
@@ -127,6 +130,42 @@ namespace Core.Services.UserService
             var user = await _userManager.FindByIdAsync(id);
 
             return user;
+        }
+
+        public async Task<LoginResponseModel> GenerateLoginResponse(T user)
+        {
+            string userRole = (await GetRoles()).Last();
+
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, userRole)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKeyYourSuperSecretKey"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "https://localhost",
+                audience: "https://localhost",
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: creds
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new LoginResponseModel()
+            {
+                Token = tokenString,
+                User = new UserViewModel()
+                {
+                    Id = user.Id,
+                    UserName = user.UserName
+                }
+            };
         }
     }
 }

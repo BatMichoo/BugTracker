@@ -17,5 +17,6 @@ namespace Core.Services.UserService
         Task SignOut();
 
         Task<List<string>> GetRoles();
+        Task<LoginResponseModel> GenerateLoginResponse(T user);
     }
 }

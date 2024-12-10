@@ -20,8 +20,13 @@ using Core.Services.UserService;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.UserEntity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace API
@@ -34,7 +39,8 @@ namespace API
 
             // Add services to the container.
 
-            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ?? throw new ArgumentNullException("No connection string to the DB.");
+            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ??
+                throw new ArgumentNullException("No connection string to the DB.");
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
@@ -57,21 +63,24 @@ namespace API
                 .AddUserManager<UserManager<BugUser>>()
                 .AddRoleManager<RoleManager<IdentityRole>>();
 
-            builder.Services.ConfigureApplicationCookie(opt =>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
             {
-                opt.LoginPath = "/users/login";
-                opt.LogoutPath = "/users/logout";
-                opt.ExpireTimeSpan = TimeSpan.FromDays(1);
-                opt.SlidingExpiration = true;
-                opt.Cookie.HttpOnly = true;
-                opt.Cookie.IsEssential = true;
+                string jwtSecretKey = Environment.GetEnvironmentVariable(builder.Configuration["Jwt:SecretKeyEnvName"]) ?? 
+                    throw new ArgumentNullException("No secret key for Jwt signing.");
 
-                opt.Events.OnRedirectToLogin = c =>
+                opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-
-                    return Task.CompletedTask;
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "https://localhost",
+                    ValidAudience = "https://localhost",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
                 };
+
+                opt.SaveToken = true;
             });
 
             builder.Services.AddAuthorization(opt =>

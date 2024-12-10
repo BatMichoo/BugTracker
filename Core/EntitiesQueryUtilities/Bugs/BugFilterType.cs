@@ -4,10 +4,10 @@
     {
         CreatedBy,
         CreatedOn,
-        Older,
-        Newer,
         AssignedTo,
         LastUpdatedOn,
-        LastUpdatedBy
+        LastUpdatedBy,
+        Priority,
+        Status
     }
 }

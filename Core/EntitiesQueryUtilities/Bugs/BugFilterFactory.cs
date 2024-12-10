@@ -1,4 +1,5 @@
 ﻿using Core.EntitiesQueryUtilities.Bugs.Filters;
+using Core.Models.Bugs.BugEnums;
 using Infrastructure.Models.BugEntity;
 
 namespace Core.EntitiesQueryUtilities.Bugs
@@ -12,14 +13,28 @@ namespace Core.EntitiesQueryUtilities.Bugs
                 case BugFilterType.AssignedTo:
                     return new BugAssignedToFilter(value);
                 case BugFilterType.CreatedBy:
-                    return new BugCreatedByFilter(value);
+                    return new BugCreatedByFilter(value!);
                 case BugFilterType.CreatedOn:
                     var info = value.Split(FilterQuerySeparators.Filter).ToArray();
 
                     var date = DateTime.Parse(info[0]);
                     var comparisonOperation = info[1];
 
-                    return new BugDateFilter(date, comparisonOperation);
+                    return new BugCreatedOnFilter(date, comparisonOperation);
+                case BugFilterType.Priority:
+                    if (Enum.TryParse<BugPriority>(value, out var priority))
+                    {
+                        return new BugPriorityFilter(priority);
+                    }
+
+                    throw new ArgumentException("Priority for filtering invalid.");
+                case BugFilterType.Status:
+                    if (Enum.TryParse<BugStatus>(value, out var status))
+                    {
+                        return new BugStatusFilter(status);
+                    }
+
+                    throw new ArgumentException("Priority for filtering invalid.");
                 default:
                     throw new ArgumentException("No such filter");
             }
@@ -53,12 +68,12 @@ namespace Core.EntitiesQueryUtilities.Bugs
 
         private static IFilter<Bug> ProduceFilter(string[] filterInfo, BugFilterType type)
         {
-            string propertyValue = filterInfo[1];
+            string propertyValue = filterInfo.Length > 1 ? filterInfo[1] : string.Empty;
 
             switch (type)
             {
                 case BugFilterType.CreatedOn:
-                    string operation = filterInfo.Count() > 2 ?
+                    string operation = filterInfo.Length > 2 ?
                         filterInfo[2] : string.Empty;
 
                     var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
@@ -66,11 +81,25 @@ namespace Core.EntitiesQueryUtilities.Bugs
                     if (!success)
                         createdOn = DateTime.UtcNow;
 
-                    return new BugDateFilter(createdOn, operation);
+                    return new BugCreatedOnFilter(createdOn, operation);
                 case BugFilterType.AssignedTo:
                     return new BugAssignedToFilter(propertyValue);
                 case BugFilterType.CreatedBy:
                     return new BugCreatedByFilter(propertyValue);
+                case BugFilterType.Priority:
+                    if (Enum.TryParse<BugPriority>(propertyValue, out var priority))
+                    {
+                        return new BugPriorityFilter(priority);
+                    }
+
+                    throw new ArgumentException("Priority for filtering invalid.");
+                case BugFilterType.Status:
+                    if (Enum.TryParse<BugStatus>(propertyValue, out var status))
+                    {
+                        return new BugStatusFilter(status);
+                    }
+
+                    throw new ArgumentException("Priority for filtering invalid.");
                 default:
                     throw new ArgumentException("No such filter");
             }

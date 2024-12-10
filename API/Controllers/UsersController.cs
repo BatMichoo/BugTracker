@@ -37,7 +37,9 @@ namespace API.Controllers
 
                 if (result)
                 {
-                    return Ok();
+                    var loginResponse = await _userService.GenerateLoginResponse(user);
+
+                    return Ok(loginResponse);
                 }
             }
 

@@ -5,9 +5,9 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugAssignedToFilter : IFilter<Bug>
     {
-        private readonly string userId;
+        private readonly string? userId;
 
-        public BugAssignedToFilter(string userId)
+        public BugAssignedToFilter(string? userId)
         {
             this.userId = userId;
         }
