@@ -16,7 +16,10 @@ namespace Infrastructure.Models.BugEntity
         public string LastUpdatedById { get; set; } = null!;
         public BugUser LastUpdatedBy { get; set; } = null!;
 
-        [MaxLength(BugValidation.MaxLength)]
+        [MaxLength(BugValidation.TitleMaxLength)]
+        public string Title { get; set; } = null!;
+
+        [MaxLength(BugValidation.DescMaxLength)]
         public string Description { get; set; } = null!;
 
         [ForeignKey(nameof(Creator))]

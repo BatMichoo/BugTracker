@@ -13,7 +13,10 @@ namespace Core.DTOs.Bugs
         public BugPriority Priority { get; set; }
 
         [Required]
-        [MaxLength(BugValidation.MaxLength)]
+        public string Title { get; set; } = null!;
+
+        [Required]
+        [MaxLength(BugValidation.DescMaxLength)]
         public string Description { get; set; } = null!;
     }
 }

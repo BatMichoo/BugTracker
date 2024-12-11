@@ -12,6 +12,9 @@ namespace Core.DTOs.Bugs
         public BugPriority Priority { get; set; }
 
         [Required]
+        public string Title { get; set; } = null!;
+
+        [Required]
         [MaxLength(3000)]
         public string Description { get; set; } = null!;
 

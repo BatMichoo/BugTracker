@@ -7,6 +7,7 @@ namespace Core.DTOs.Bugs
         public int Id { get; set; }
         public BugStatus? Status { get; set; }
         public BugPriority? Priority { get; set; }
+        public string? Title { get; set; }
         public string? Description { get; set; }
         public string? AssigneeId { get; set; }
         public string? LastUpdatedById { get; set; }

@@ -10,6 +10,7 @@ namespace Core.DTOs.Bugs
         public BugStatus Status { get; set; }
         public DateTime LastUpdatedOn { get; set; }
         public BugPriority Priority { get; set; }
+        public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string CreatorId { get; set; } = null!;
         public string Creator { get; set; } = null!;
