@@ -9,13 +9,15 @@ using Core.Other;
 using Core.Services.CommentService;
 using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("{bugId}/comments")]
-    public class CommentsController : Controller
+    [Route("bugs/{bugId}/comments")]
+    [Authorize(Policy = AuthorizePolicy.BasicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class CommentsController : BaseController
     {
         private readonly ICommentService _commentService;
         private readonly ICommentQueryParametersFactory _queryFactory;

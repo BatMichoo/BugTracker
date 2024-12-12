@@ -20,11 +20,16 @@ using Core.Services.UserService;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.UserEntity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace API
@@ -75,10 +80,43 @@ namespace API
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "https://localhost",
                     ValidAudience = "https://localhost",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+                    RoleClaimType = ClaimTypes.Role,
+                    NameClaimType = ClaimTypes.Name,                    
                 };
 
-                opt.SaveToken = true;
+                opt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
+                        {
+                            string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    },                    
+                    OnAuthenticationFailed = context =>
+                    {
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+
+                        var errorMessage = new { error = "Authentication failed." };
+
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddAuthorization(opt =>

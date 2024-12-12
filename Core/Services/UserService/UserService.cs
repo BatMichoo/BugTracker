@@ -138,13 +138,14 @@ namespace Core.Services.UserService
 
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(ClaimTypes.Role, userRole)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKeyYourSuperSecretKey"));
+            string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey")!;
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
