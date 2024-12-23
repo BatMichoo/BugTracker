@@ -60,7 +60,7 @@ namespace API
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(user, roles);
+                    await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
         }

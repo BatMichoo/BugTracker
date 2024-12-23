@@ -134,14 +134,17 @@ namespace Core.Services.UserService
 
         public async Task<LoginResponseModel> GenerateLoginResponse(T user)
         {
-            string userRole = (await GetRoles()).Last();
+            var userRoles = await GetRoles();
+
+            var roleClaims = userRoles.Select(r => new Claim(ClaimTypes.Role, r));
 
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(ClaimTypes.Role, userRole)
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName)
             };
+
+            claims.AddRange(roleClaims);
 
             string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey")!;
 
@@ -149,8 +152,8 @@ namespace Core.Services.UserService
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "https://localhost",
-                audience: "https://localhost",
+                issuer: "https://localhost:7272",
+                audience: "https://localhost:7094",
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds

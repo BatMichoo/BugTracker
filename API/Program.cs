@@ -78,8 +78,8 @@ namespace API
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "https://localhost",
-                    ValidAudience = "https://localhost",
+                    ValidIssuer = "https://localhost:7272",
+                    ValidAudience = "https://localhost:7094",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
                     RoleClaimType = ClaimTypes.Role,
                     NameClaimType = ClaimTypes.Name,                    
@@ -105,12 +105,7 @@ namespace API
                         var errorMessage = new { error = "Authentication failed." };
 
                         return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
-                    },
-                    OnChallenge = context =>
-                    {
-                        context.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    },
+                    },                    
                     OnForbidden = context =>
                     {
                         context.Response.StatusCode = (int) HttpStatusCode.Forbidden;
@@ -122,12 +117,23 @@ namespace API
             builder.Services.AddAuthorization(opt =>
             {
                 opt.AddPolicy(AuthorizePolicy.AdminAccess, p => p.RequireRole(UserRoles.Admin));
+
                 opt.AddPolicy(AuthorizePolicy.ElevatedAccess, p =>
                 {
-                    p.RequireRole(UserRoles.Manager);
-                    p.RequireRole(UserRoles.Admin);
+                    p.RequireAssertion(context =>
+                        context.User.IsInRole(UserRoles.Manager) || 
+                        context.User.IsInRole(UserRoles.Admin)
+                    );
                 });
-                opt.AddPolicy(AuthorizePolicy.BasicAccess, p => p.RequireRole(UserRoles.User));
+
+                opt.AddPolicy(AuthorizePolicy.BasicAccess, p =>
+                {
+                    p.RequireAssertion(context =>
+                        context.User.IsInRole(UserRoles.User) ||
+                        context.User.IsInRole(UserRoles.Manager) ||
+                        context.User.IsInRole(UserRoles.Admin)
+                    );
+                });
             });
 
             builder.Services.AddScoped<IBugService, BugService>();
