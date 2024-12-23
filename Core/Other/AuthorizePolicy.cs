@@ -3,7 +3,7 @@
     public static class AuthorizePolicy
     {
         public const string AdminAccess = "Admin";
-        public const string ElevatedAccess = "Elevated";
-        public const string BasicAccess = "Basic";
+        public const string ManagerAccess = "Elevated";
+        public const string UserAccess = "Basic";
     }
 }

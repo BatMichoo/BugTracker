@@ -4,6 +4,7 @@ using Core.DTOs.Users;
 using Core.Other;
 using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -84,7 +85,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUser(string userId)
@@ -104,7 +105,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = AuthorizePolicy.BasicAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> RetrieveUserList()
         {
@@ -114,17 +115,17 @@ namespace API.Controllers
         }
 
         [HttpGet("roles")]
-        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RetrieveRoles()
         {
-            var roles = await _userService.GetRoles();
+            var roles = await _userService.GetAllRoles();
 
             return Ok(roles);
         }
 
         [HttpPatch("assign-role")]
-        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -159,7 +160,7 @@ namespace API.Controllers
         }
 
         [HttpPatch("unassign-role")]
-        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

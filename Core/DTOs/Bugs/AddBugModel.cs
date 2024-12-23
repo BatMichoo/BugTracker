@@ -6,7 +6,7 @@ namespace Core.DTOs.Bugs
     public class AddBugModel
     {
         [Required]
-        public BugStatus Status { get; set; }
+        public BugStatus Status { get; set; } = BugStatus.InProgress;
 
         [Required]
         public BugPriority Priority { get; set; }
@@ -20,5 +20,7 @@ namespace Core.DTOs.Bugs
 
         [Required]
         public string CreatorId { get; set; } = null!;
+
+        public string? AssignedTo { get; set; }
     }
 }

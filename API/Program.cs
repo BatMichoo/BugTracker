@@ -22,6 +22,7 @@ using Infrastructure;
 using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -116,24 +117,31 @@ namespace API
 
             builder.Services.AddAuthorization(opt =>
             {
-                opt.AddPolicy(AuthorizePolicy.AdminAccess, p => p.RequireRole(UserRoles.Admin));
+                string[] rolesForUserPolicy = new[] { UserRoles.User, UserRoles.Manager, UserRoles.Admin };
 
-                opt.AddPolicy(AuthorizePolicy.ElevatedAccess, p =>
-                {
-                    p.RequireAssertion(context =>
-                        context.User.IsInRole(UserRoles.Manager) || 
-                        context.User.IsInRole(UserRoles.Admin)
-                    );
-                });
+                var userPolicy = new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireRole(rolesForUserPolicy)
+                    .Build();
 
-                opt.AddPolicy(AuthorizePolicy.BasicAccess, p =>
-                {
-                    p.RequireAssertion(context =>
-                        context.User.IsInRole(UserRoles.User) ||
-                        context.User.IsInRole(UserRoles.Manager) ||
-                        context.User.IsInRole(UserRoles.Admin)
-                    );
-                });
+                string[] rolesForManagerPolicy = new[] { UserRoles.Manager, UserRoles.Admin };
+
+                var managerPolicy = new AuthorizationPolicyBuilder()
+                    .Combine(userPolicy)
+                    .RequireRole(rolesForManagerPolicy)
+                    .Build();
+
+                string rolesForAdminPolicy = UserRoles.Admin;
+
+                var adminPolicy = new AuthorizationPolicyBuilder()
+                    .Combine(managerPolicy)
+                    .RequireRole(rolesForAdminPolicy)
+                    .Build();
+
+                opt.AddPolicy(AuthorizePolicy.UserAccess, userPolicy);
+                opt.AddPolicy(AuthorizePolicy.ManagerAccess, managerPolicy);
+                opt.AddPolicy(AuthorizePolicy.AdminAccess, adminPolicy);
             });
 
             builder.Services.AddScoped<IBugService, BugService>();

@@ -8,14 +8,13 @@ using Core.Other;
 using Core.Services.BugService;
 using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("/bugs")]
-    [Authorize(Policy = AuthorizePolicy.BasicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = AuthorizePolicy.UserAccess)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BugsController : BaseController
     {

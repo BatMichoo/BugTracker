@@ -9,14 +9,13 @@ using Core.Other;
 using Core.Services.CommentService;
 using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("bugs/{bugId}/comments")]
-    [Authorize(Policy = AuthorizePolicy.BasicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = AuthorizePolicy.UserAccess)]
     public class CommentsController : BaseController
     {
         private readonly ICommentService _commentService;
@@ -123,7 +122,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{commentId}")]
-        [Authorize(Policy = AuthorizePolicy.ElevatedAccess)]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommentById(int commentId)

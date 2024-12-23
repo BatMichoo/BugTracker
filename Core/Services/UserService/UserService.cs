@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs.Users;
 using Core.Other;
+using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace Core.Services.UserService
 {
-    public class UserService<T> : IUserService<T> where T : IdentityUser
+    public class UserService<T> : IUserService<T> where T : BugUser
     {
         private readonly UserManager<T> _userManager;
         private readonly SignInManager<T> _signInManager;
@@ -109,7 +110,7 @@ namespace Core.Services.UserService
             return new List<UserViewModel>();
         }
 
-        public async Task<List<string>> GetRoles()
+        public async Task<List<string>> GetAllRoles()
         {
             var roles = await _roleManager.Roles
                 .AsNoTracking()
@@ -134,14 +135,16 @@ namespace Core.Services.UserService
 
         public async Task<LoginResponseModel> GenerateLoginResponse(T user)
         {
-            var userRoles = await GetRoles();
+            var userRoles = await GetAllRoles();
 
             var roleClaims = userRoles.Select(r => new Claim(ClaimTypes.Role, r));
 
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(ClaimTypes.Name, user.Name)
             };
 
             claims.AddRange(roleClaims);

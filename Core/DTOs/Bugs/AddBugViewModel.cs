@@ -7,9 +7,6 @@ namespace Core.DTOs.Bugs
     public class AddBugViewModel
     {
         [Required]
-        public BugStatus Status { get; set; }
-
-        [Required]
         public BugPriority Priority { get; set; }
 
         [Required]
@@ -18,5 +15,7 @@ namespace Core.DTOs.Bugs
         [Required]
         [MaxLength(BugValidation.DescMaxLength)]
         public string Description { get; set; } = null!;
+
+        public string? AssignedTo { get; set; }
     }
 }

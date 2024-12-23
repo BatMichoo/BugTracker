@@ -19,6 +19,7 @@ namespace API.AutoMapper
                 .ForMember(d => d.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(d => d.LastUpdatedById, opt => opt.MapFrom(s => s.CreatorId))
                 .ForMember(d => d.LastUpdatedBy, opt => opt.Ignore())
+                .ForMember(d => d.AssigneeId, opt => opt.MapFrom(s => s.AssignedTo))
                 .ForMember(d => d.Assignee, opt => opt.Ignore())
                 .ForMember(d => d.Creator, opt => opt.Ignore())
                 .ForMember(d => d.Comments, opt => opt.Ignore());
@@ -43,9 +44,9 @@ namespace API.AutoMapper
             CreateMap<EditBugViewModel, AddBugViewModel>();
 
             CreateMap<Bug, BugModel>()
-                .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.UserName))
+                .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.Name))
                 .ForMember(d => d.Assignee, opt => opt.MapFrom(s => s.Assignee.Name ?? string.Empty))
-                .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy.UserName));
+                .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy.Name));
 
             CreateMap<BugModel, BugViewModel>()
                 .ForMember(d => d.CreatedBy, opt => opt.MapFrom(s => s.Creator))
