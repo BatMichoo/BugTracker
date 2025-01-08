@@ -1,4 +1,5 @@
 ﻿using Core.EntitiesQueryUtilities.Bugs.Filters;
+using Core.EntitiesQueryUtilities.Comments.Filters;
 using Core.Models.Bugs.BugEnums;
 using Infrastructure.Models.BugEntity;
 
@@ -72,6 +73,8 @@ namespace Core.EntitiesQueryUtilities.Bugs
 
             switch (type)
             {
+                case BugFilterType.Id:
+                    return new BugIdFilter(int.Parse(propertyValue));
                 case BugFilterType.CreatedOn:
                     string operation = filterInfo.Length > 2 ?
                         filterInfo[2] : string.Empty;

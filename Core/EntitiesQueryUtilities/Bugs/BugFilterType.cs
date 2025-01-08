@@ -2,6 +2,7 @@
 {
     public enum BugFilterType
     {
+        Id,
         CreatedBy,
         CreatedOn,
         AssignedTo,
