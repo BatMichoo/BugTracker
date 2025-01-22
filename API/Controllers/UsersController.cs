@@ -4,7 +4,6 @@ using Core.DTOs.Users;
 using Core.Other;
 using Core.Services.UserService;
 using Infrastructure.Models.UserEntity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;

@@ -4,6 +4,7 @@ using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
+using Core.Models.Bugs.BugEnums;
 using Core.Other;
 using Core.Services.BugService;
 using Core.Services.UserService;
@@ -174,6 +175,32 @@ namespace API.Controllers
             var userWithBugs = await _bugService.Fetch(queryParameters);
 
             return Ok(userWithBugs);
+        }
+
+        [HttpGet("close/{id}")]
+        public async Task<IActionResult> Close(int id)
+        {
+            var bug = await _bugService.GetById(id);
+
+            if (bug is not null)
+            {
+                if (bug.Status != BugStatus.Fixed)
+                {
+                    bug.Status = BugStatus.Fixed;
+
+                    bug = await _bugService.Update(_mapper.Map<EditBugModel>(bug));
+
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+
+            return NotFound(new
+            {
+                errorMessage = string.Format(ErrorMessage.Bugs.NotFound, id),
+                id
+            });
         }
     }
 }
