@@ -178,6 +178,9 @@ namespace API.Controllers
         }
 
         [HttpGet("close/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Close(int id)
         {
             var bug = await _bugService.GetById(id);
