@@ -9,7 +9,6 @@ namespace Core.DTOs.Bugs
         public int Id { get; set; }
         public BugStatus? Status { get; set; }
         public BugPriority? Priority { get; set; }
-        public string Title { get; set; } = null!;
 
         [MaxLength(BugValidation.DescMaxLength)]
         public string? Description { get; set; }

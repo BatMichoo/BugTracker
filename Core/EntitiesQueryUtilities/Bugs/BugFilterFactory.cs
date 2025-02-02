@@ -1,5 +1,4 @@
 ﻿using Core.EntitiesQueryUtilities.Bugs.Filters;
-using Core.EntitiesQueryUtilities.Comments.Filters;
 using Core.Models.Bugs.BugEnums;
 using Infrastructure.Models.BugEntity;
 
@@ -35,7 +34,10 @@ namespace Core.EntitiesQueryUtilities.Bugs
                         return new BugStatusFilter(status);
                     }
 
-                    throw new ArgumentException("Priority for filtering invalid.");
+                    throw new ArgumentException("Status for filtering invalid.");
+
+                case BugFilterType.Title:
+                    return new BugTitleFilter(value);
                 default:
                     throw new ArgumentException("No such filter");
             }
@@ -102,7 +104,9 @@ namespace Core.EntitiesQueryUtilities.Bugs
                         return new BugStatusFilter(status);
                     }
 
-                    throw new ArgumentException("Priority for filtering invalid.");
+                    throw new ArgumentException("Status for filtering invalid.");
+                case BugFilterType.Title:
+                    return new BugTitleFilter(propertyValue);
                 default:
                     throw new ArgumentException("No such filter");
             }

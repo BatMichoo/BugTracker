@@ -61,19 +61,19 @@ namespace Core.Repository
             return entityList;
         }
 
-        public async Task<T> Update(T entity)
+        public async Task<T> Update(T updatedEntity)
         {
-            T existingEntity = (await _dbSet.FindAsync(entity.Id))!;
+            T existingEntity = (await _dbSet.FindAsync(updatedEntity.Id))!;
 
             var entry = _dbContext.Entry(existingEntity);
 
-            entry.CurrentValues.SetValues(entity);
+            entry.CurrentValues.SetValues(updatedEntity);
 
             await SaveChangesAsync();
 
-            entity = (await GetById(entity.Id))!;
+            //updatedEntity = (await GetById(updatedEntity.Id))!;
 
-            return entity;
+            return existingEntity;
         }
 
         private async Task SaveChangesAsync()

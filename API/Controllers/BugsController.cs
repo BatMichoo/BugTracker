@@ -113,7 +113,8 @@ namespace API.Controllers
                 string userId = _userService.RetrieveUserId();
 
                 editModel.LastUpdatedById = userId;
-                
+                editModel.LastUpdatedOn = DateTime.Now;
+
                 var updatedModel = await _bugService.Update(editModel);
 
                 return Ok(_mapper.Map<BugViewModel>(updatedModel));

@@ -37,6 +37,7 @@ namespace API.AutoMapper
             CreateMap<EditBugModel, BugModel>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(s => s.Description, opt => opt.Condition((s, d, m) => IsDifferentAndNotNullOrEmpty(s, d, m)))
+                .ForMember(s => s.AssigneeId, opt => opt.Condition((s, d, m) => IsDifferentAndNotNullOrEmpty(s, d, m)))
                 .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null || sm is not null));
 
             CreateMap<EditBugModel, Bug>();

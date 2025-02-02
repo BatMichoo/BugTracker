@@ -10,7 +10,7 @@ namespace Core.Services.EntityService
         where TEntity : BaseEntity
         where TModel : class
         where TCreate : class
-        where TUpdate : class
+        where TUpdate : BaseModel
         where TSortBy : struct, Enum
         where TFilterBy : struct, Enum
 
@@ -78,7 +78,10 @@ namespace Core.Services.EntityService
 
         public async Task<TModel> Update(TUpdate updateModel)
         {
-            var updatedEntity = await _repository.Update(_mapper.Map<TEntity>(updateModel));
+            var existingModel = await _repository.GetById(updateModel.Id);
+            _mapper.Map(updateModel, existingModel);
+
+            var updatedEntity = await _repository.Update(_mapper.Map<TEntity>(existingModel));
 
             return _mapper.Map<TModel>(updatedEntity);
         }

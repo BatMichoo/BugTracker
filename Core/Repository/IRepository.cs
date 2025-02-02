@@ -18,6 +18,5 @@ namespace Core.Repository
         Task<int> Count(QueryParameters<T> queryParameters);
 
         Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters);
-        
     }
 }

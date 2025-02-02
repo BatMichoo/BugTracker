@@ -35,13 +35,13 @@ namespace UnitTests.QueryParametersFactory
 
         private void SeedInMemoryDatabase()
         {
-            var user = new BugUser { Id = "abc", UserName = "tester1" };
-            var user2 = new BugUser { Id = "a", UserName = "tester2" };
-            var user3 = new BugUser { Id = "ab", UserName = "tester3" };
+            var user = new BugUser { Id = "abc", UserName = "tester1", Name = "Pesho" };
+            var user2 = new BugUser { Id = "a", UserName = "tester2" , Name = "Gosho"};
+            var user3 = new BugUser { Id = "ab", UserName = "tester3", Name = "Sasho" };
 
-            var entity = new Bug { Id = 1, AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a", CreatedOn = DateTime.Parse("1.10.2024") };
-            var entity2 = new Bug { Id = 2, AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("30.9.2024") };
-            var entity3 = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("5.10.2024") };
+            var entity = new Bug { Id = 1, Title = "Title1", AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a", CreatedOn = DateTime.Parse("1.10.2024") };
+            var entity2 = new Bug { Id = 2, Title = "Title2", AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("30.9.2024") };
+            var entity3 = new Bug { Id = 3, Title = "Title3", AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("5.10.2024") };
 
             _dbContext.Bugs.AddRange(new List<Bug> { entity, entity2, entity3 });
             _dbContext.Users.AddRange(new List<BugUser> { user, user2, user3 });

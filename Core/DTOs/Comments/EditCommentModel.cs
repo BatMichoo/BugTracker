@@ -1,8 +1,7 @@
 ﻿namespace Core.DTOs.Comments
 {
-    public class EditCommentModel
+    public class EditCommentModel : BaseModel
     {
-        public int Id { get; set; }
         public string Content { get; set; } = null!;
         public DateTime LastUpdatedOn { get; set; }
     }

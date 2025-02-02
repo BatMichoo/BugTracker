@@ -36,13 +36,13 @@ namespace UnitTests.Repository
 
         private void SeedInMemoryDatabase()
         {
-            var user = new BugUser { Id = "abc", UserName = "tester1" };
-            var user2 = new BugUser { Id = "a", UserName = "tester2" };
-            var user3 = new BugUser { Id = "ab", UserName = "tester3" };
+            var user = new BugUser { Id = "abc", UserName = "tester1", Name = "Pesho" };
+            var user2 = new BugUser { Id = "a", UserName = "tester2", Name = "Gosho" };
+            var user3 = new BugUser { Id = "ab", UserName = "tester3", Name = "Sasho" };
 
-            var entity = new Bug { Id = 1, AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a" };
-            var entity2 = new Bug { Id = 2, AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab" };
-            var entity3 = new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab" };
+            var entity = new Bug { Id = 1, Title = "Title1", AssigneeId = "abc", CreatorId = "a", Description = "test 1234", Priority = 4, Status = 0, LastUpdatedById = "a" };
+            var entity2 = new Bug { Id = 2, Title = "Title2", AssigneeId = "abcd", CreatorId = "ab", Description = "test 12345", Priority = 3, Status = 1, LastUpdatedById = "ab" };
+            var entity3 = new Bug { Id = 3, Title = "Title3", AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3, Status = 1, LastUpdatedById = "ab" };
 
             _dbContext.Bugs.AddRange(new List<Bug> { entity, entity2, entity3 });
             _dbContext.Users.AddRange(new List<BugUser> { user, user2, user3 });
@@ -61,7 +61,7 @@ namespace UnitTests.Repository
         [Test]
         public async Task Create_ShouldReturnCreatedItem()
         {
-            var entity = new Bug { Id = 4, AssigneeId = "abcd", CreatorId = "ab", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ab" };
+            var entity = new Bug { Id = 4, Title = "Title4", AssigneeId = "abcd", CreatorId = "ab", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ab" };
 
             var result = await _repository!.Create(entity);
 
@@ -82,19 +82,19 @@ namespace UnitTests.Repository
         [Test]
         public async Task DeleteById_DeletesTheEntityWithId()
         {
-            int idToDelete = 1;
+            int idToDelete = 3;
 
             await _repository!.DeleteById(idToDelete);
 
             var result = await _repository.GetById(idToDelete);
 
-            Assert.That(result is null, Is.True);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
         public async Task Update()
         {
-            var updatedEntity = new Bug { Id = 1, AssigneeId = "ab", CreatorId = "abc", Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = "b" };
+            var updatedEntity = new Bug { Id = 1, Title = "Title5", AssigneeId = "ab", CreatorId = "abc", Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = "b" };
 
             var result = await _repository!.Update(updatedEntity);
 
@@ -142,7 +142,7 @@ namespace UnitTests.Repository
         [Test]
         public async Task DeleteByEntity_DeletesSaidEntity()
         {
-            int idToGet = 1;
+            int idToGet = 2;
             var entity = await _repository!.GetById(idToGet);
 
             await _repository.Delete(entity!);

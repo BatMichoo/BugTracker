@@ -20,14 +20,12 @@ using Core.Services.UserService;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
 using Infrastructure.Models.UserEntity;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -165,7 +163,6 @@ namespace API
             builder.Services.AddScoped<IReplyQueryParametersFactory, ReplyQueryParametersFactory>();
             builder.Services.AddScoped<IReplyFilterFactory, ReplyFilterFactory>();
             builder.Services.AddScoped<IReplySortingOptionFactory, ReplySortingOptionsFactory>();
-
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();

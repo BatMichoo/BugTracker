@@ -9,6 +9,7 @@
         LastUpdatedOn,
         LastUpdatedBy,
         Priority,
-        Status
+        Status,
+        Title
     }
 }
