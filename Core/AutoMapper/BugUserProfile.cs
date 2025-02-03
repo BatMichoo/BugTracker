@@ -11,6 +11,10 @@ namespace Core.AutoMapper
             CreateMap<RegisterUserModel, BugUser>()
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.FirstName + " " + s.LastName));
 
+            CreateMap<BugUser, UserModel>();
+
+            CreateMap<UserModel, UserViewModel>();
+
             CreateMap<BugUser, UserViewModel>();
 
             CreateMap<BugUser, UserAssignedBugsModel>();

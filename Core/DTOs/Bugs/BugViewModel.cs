@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.Comments;
+using Core.DTOs.Users;
 using Core.Models.Bugs.BugEnums;
 
 namespace Core.DTOs.Bugs
@@ -12,10 +13,10 @@ namespace Core.DTOs.Bugs
         public BugPriority Priority { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public string CreatedBy { get; set; } = null!;
-        public string LastUpdatedBy { get; set; } = null!;
-        public bool IsAssigned => !string.IsNullOrEmpty(AssignedTo);
-        public string? AssignedTo { get; set; }
+        public UserViewModel CreatedBy { get; set; } = null!;
+        public UserViewModel LastUpdatedBy { get; set; } = null!;
+        public bool IsAssigned => AssignedTo != null;
+        public UserViewModel AssignedTo { get; set; } = null!;
         public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

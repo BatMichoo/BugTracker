@@ -71,8 +71,6 @@ namespace Core.Repository
 
             await SaveChangesAsync();
 
-            //updatedEntity = (await GetById(updatedEntity.Id))!;
-
             return existingEntity;
         }
 

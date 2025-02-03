@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
+using Core.DTOs.Users;
 using Infrastructure.Models.BugEntity;
 
 namespace API.AutoMapper
@@ -37,7 +38,7 @@ namespace API.AutoMapper
             CreateMap<EditBugModel, BugModel>()
                 .ForMember(s => s.LastUpdatedOn, opt => opt.MapFrom(s => DateTime.Now))
                 .ForMember(s => s.Description, opt => opt.Condition((s, d, m) => IsDifferentAndNotNullOrEmpty(s, d, m)))
-                .ForMember(s => s.AssigneeId, opt => opt.Condition((s, d, m) => IsDifferentAndNotNullOrEmpty(s, d, m)))
+                .ForMember(s => s.AssignedTo, opt => opt.MapFrom(s => new UserModel { Id = s.AssigneeId }))
                 .ForAllMembers(opt => opt.Condition((s, d, sm) => sm != null || sm is not null));
 
             CreateMap<EditBugModel, Bug>();
@@ -45,13 +46,11 @@ namespace API.AutoMapper
             CreateMap<EditBugViewModel, AddBugViewModel>();
 
             CreateMap<Bug, BugModel>()
-                .ForMember(d => d.Creator, opt => opt.MapFrom(s => s.Creator.Name))
-                .ForMember(d => d.Assignee, opt => opt.MapFrom(s => s.Assignee.Name ?? string.Empty))
-                .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy.Name));
-
-            CreateMap<BugModel, BugViewModel>()
                 .ForMember(d => d.CreatedBy, opt => opt.MapFrom(s => s.Creator))
-                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee));
+                .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee))
+                .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy));
+
+            CreateMap<BugModel, BugViewModel>();
         }
 
         private static bool IsDifferentAndNotNullOrEmpty(EditBugModel s, BugModel d, string m)

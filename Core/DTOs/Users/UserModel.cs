@@ -1,8 +1,9 @@
 ﻿namespace Core.DTOs.Users
 {
-    public class UserViewModel
+    public class UserModel
     {
         public string Id { get; set; } = null!;
+        public string UserName { get; set; } = null!;
         public string Name { get; set; } = null!;
     }
 }
