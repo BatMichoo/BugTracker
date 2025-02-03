@@ -5,6 +5,8 @@
         Id,
         CreatedOn,
         LastModifiedOn,
-        Comments
+        Comments,
+        Priority,
+        Status
     }
 }

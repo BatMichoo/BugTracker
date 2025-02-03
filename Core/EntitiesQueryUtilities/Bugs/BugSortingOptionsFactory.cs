@@ -22,7 +22,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
                 }
             }
 
-            return new BugSortingOptions(SortOrder.Ascending, BugSortBy.Id);
+            return new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status);
         }        
 
         public ISortingOptions<Bug> CreateSortingOptions(SortOrder order, BugSortBy orderBy)

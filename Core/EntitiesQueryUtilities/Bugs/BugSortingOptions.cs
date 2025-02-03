@@ -24,8 +24,12 @@ namespace Core.EntitiesQueryUtilities.Bugs
                     return b => b.LastUpdatedOn;
                 case BugSortBy.Comments:
                     return b => b.Comments.Count;
-                default:
+                case BugSortBy.Id:
                     return b => b.Id;
+                case BugSortBy.Priority:
+                    return b => b.Priority;
+                default:
+                    return b => b.Status;
             }
         }
     }
