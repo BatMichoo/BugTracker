@@ -19,15 +19,15 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
             switch (_operation)
             {
                 case ">=":
-                    return b => b.CreatedOn >= _targetDate;
+                    return b => b.CreatedOn.Date >= _targetDate.Date;
                 case ">":
-                    return b => b.CreatedOn > _targetDate;
+                    return b => b.CreatedOn.Date > _targetDate.Date;
                 case "<=":
-                    return b => b.CreatedOn <= _targetDate;
+                    return b => b.CreatedOn.Date <= _targetDate.Date;
                 case "<":
-                    return b => b.CreatedOn < _targetDate;
+                    return b => b.CreatedOn.Date < _targetDate.Date;
                 default:
-                    return b => b.CreatedOn == _targetDate;
+                    return b => b.CreatedOn.Date == _targetDate.Date;
             }
         }
     }

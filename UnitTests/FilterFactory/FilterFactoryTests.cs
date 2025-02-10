@@ -1,4 +1,5 @@
-﻿using Core.EntitiesQueryUtilities.Bugs;
+﻿using Core.EntitiesQueryUtilities;
+using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.Bugs.Filters;
 
 namespace UnitTests.FilterFactory
@@ -17,7 +18,7 @@ namespace UnitTests.FilterFactory
         [Test]
         public void CreateFilter_Returns_AssignedToFilter()
         {
-            string filterInput = "assignedTo:abc";            
+            string filterInput = $"assignedTo{FilterQuerySeparators.KeyValue}abc";            
 
             var filter = _factory.CreateFilters(filterInput).First();
 
@@ -27,7 +28,7 @@ namespace UnitTests.FilterFactory
         [Test]
         public void CreateFilter_Returns_CreatedByFilter()
         {
-            string filterInput = "createdBy:abc";
+            string filterInput = $"createdBy{FilterQuerySeparators.KeyValue}abc";
 
             var filter = _factory.CreateFilters(filterInput).First();
 
@@ -37,7 +38,7 @@ namespace UnitTests.FilterFactory
         [Test]
         public void CreateFilter_Returns_CreatedOnFilter()
         {
-            string filterInput = "createdOn:01.11.2024:>=";
+            string filterInput = $"createdOn{FilterQuerySeparators.KeyValue}01.11.2024{FilterQuerySeparators.KeyValue}>=";
 
             var filter = _factory.CreateFilters(filterInput).First();
 
@@ -47,7 +48,7 @@ namespace UnitTests.FilterFactory
         [Test]
         public void CreateFilter_Returns_PriorityFilter()
         {
-            string filterInput = "priority:0";
+            string filterInput = $"priority{FilterQuerySeparators.KeyValue}0";
 
             var filter = _factory.CreateFilters(filterInput).First();
 
@@ -57,7 +58,7 @@ namespace UnitTests.FilterFactory
         [Test]
         public void CreateFilter_Returns_StatusFilter()
         {
-            string filterInput = "status:0";
+            string filterInput = $"status{FilterQuerySeparators.KeyValue}0";
 
             var filter = _factory.CreateFilters(filterInput).First();
 

@@ -23,6 +23,7 @@ namespace Infrastructure
             modelBuilder.ApplyConfiguration(new BugConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
             modelBuilder.ApplyConfiguration(new ReplyConfiguration());
+            modelBuilder.ApplyConfiguration(new BugUserConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

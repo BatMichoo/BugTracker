@@ -84,7 +84,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
                     var success = DateTime.TryParse(propertyValue, out DateTime createdOn);
 
                     if (!success)
-                        createdOn = DateTime.UtcNow;
+                        createdOn = DateTime.Now;
 
                     return new BugCreatedOnFilter(createdOn, operation);
                 case BugFilterType.AssignedTo:

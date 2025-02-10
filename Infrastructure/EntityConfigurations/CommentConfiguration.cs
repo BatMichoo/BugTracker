@@ -15,7 +15,7 @@ namespace Infrastructure.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(CommentValidation.MaxLength);
 
-            builder.HasCheckConstraint("CK_Comment_Likes_NonNegative", "[Likes] >= 0");
+            builder.HasCheckConstraint($"CK_{nameof(Comment)}_{nameof(Comment.Likes)}_NonNegative", $"[{nameof(Comment.Likes)}] >= 0");
 
             builder.HasOne(c => c.Author)
                 .WithMany(a => a.Comments)

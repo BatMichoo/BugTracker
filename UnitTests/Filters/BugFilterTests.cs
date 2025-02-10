@@ -1,4 +1,5 @@
 ﻿using Core.Entities.BugEntity;
+using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.Bugs;
 
 namespace UnitTests.Filters
@@ -15,7 +16,7 @@ namespace UnitTests.Filters
             new Bug { Id = 3, AssigneeId = "abcd", CreatorId = "abc", Description = "test 123457", Priority = 3,
                 Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("10.11.2024") },
             new Bug { Id = 4, AssigneeId = null, CreatorId = "abc", Description = "test 123457", Priority = 3,
-                Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("10.11.2024") }
+                Status = 1, LastUpdatedById = "ab", CreatedOn = DateTime.Parse("10.11.2024 22:15:00") }
         };
 
         [SetUp]
@@ -35,13 +36,14 @@ namespace UnitTests.Filters
             var filterFunc = filter.Apply().Compile();
 
             var filteredBugs = _bugs.Where(b => filterFunc(b)).ToList();
+
             return filteredBugs;
         }
 
         [Test]
         public void CreateFilter_Returns_1_AssignedToFilter()
         {
-            string filterInput = "assignedTo:abc";
+            string filterInput = $"assignedTo{FilterQuerySeparators.KeyValue}abc";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
@@ -62,7 +64,7 @@ namespace UnitTests.Filters
         [Test]
         public void CreateFilter_Returns_2_AssignedToFilter()
         {
-            string filterInput = "assignedTo:abcd";
+            string filterInput = $"assignedTo{FilterQuerySeparators.KeyValue}abcd";
 
             List<Bug> filteredBugs = CreateAndApplyFilter(filterInput);
 
@@ -77,7 +79,7 @@ namespace UnitTests.Filters
         [Test]
         public void CreateFilter_Returns_2_CreatedByFilter()
         {
-            string filterInput = "createdBy:abc";
+            string filterInput = $"createdBy{FilterQuerySeparators.KeyValue}abc";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
@@ -89,44 +91,60 @@ namespace UnitTests.Filters
         [Test]
         public void CreateFilter_Returns_4_CreatedOnFilter()
         {
-            string filterInput = "createdOn:01.11.2024:>=";
+            string filterInput = $"createdOn{FilterQuerySeparators.KeyValue}01.11.2024{FilterQuerySeparators.KeyValue}>=";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
             int expectedCount = 4;
+
             Assert.That(filteredBugs, Has.Count.EqualTo(expectedCount));
         }
 
         [Test]
         public void CreateFilter_Returns_2_CreatedOnFilter()
         {
-            string filterInput = "createdOn:01.11.2024:>";
+            string filterInput = $"createdOn{FilterQuerySeparators.KeyValue}01.11.2024{FilterQuerySeparators.KeyValue}>";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
             int expectedCount = 3;
+
+            Assert.That(filteredBugs, Has.Count.EqualTo(expectedCount));
+        }
+
+        [Test]
+        public void CreateFilter_Returns_2_CreatedOnFilter_Equals()
+        {
+            string filterInput = $"createdOn{FilterQuerySeparators.KeyValue}10.11.2024";
+
+            var filteredBugs = CreateAndApplyFilter(filterInput);
+
+            int expectedCount = 2;
+
             Assert.That(filteredBugs, Has.Count.EqualTo(expectedCount));
         }
 
         [Test]
         public void CreateFilter_Returns_3_PriorityFilter()
         {
-            string filterInput = "priority:3";
+            string filterInput = $"priority{FilterQuerySeparators.KeyValue}3";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
             int expectedCount = 3;
+
             Assert.That(filteredBugs, Has.Count.EqualTo(expectedCount));
         }
 
         [Test]
         public void CreateFilter_Returns_1_StatusFilter()
         {
-            string filterInput = "status:0";
+            string filterInput = $"status{FilterQuerySeparators.KeyValue}0";
 
             var filteredBugs = CreateAndApplyFilter(filterInput);
 
             int expectedCount = 1;
+
             Assert.That(filteredBugs, Has.Count.EqualTo(expectedCount));
         }
     }
