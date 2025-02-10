@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.CommentEntity;
+﻿using Core.Entities.CommentEntity;
 
 namespace Core.EntitiesQueryUtilities.Comments
 {

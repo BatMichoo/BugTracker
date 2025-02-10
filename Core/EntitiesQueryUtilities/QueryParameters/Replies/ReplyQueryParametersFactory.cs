@@ -1,5 +1,5 @@
-﻿using Core.EntitiesQueryUtilities.Replies;
-using Infrastructure.Models.ReplyEntity;
+﻿using Core.Entities.ReplyEntity;
+using Core.EntitiesQueryUtilities.Replies;
 
 namespace Core.EntitiesQueryUtilities.QueryParameters.Replies
 {

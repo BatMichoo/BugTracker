@@ -2,13 +2,13 @@
 using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
+using Core.Entities.UserEntity;
 using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Models.Bugs.BugEnums;
 using Core.Other;
 using Core.Services.BugService;
 using Core.Services.UserService;
-using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

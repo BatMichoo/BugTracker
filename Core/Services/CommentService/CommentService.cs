@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Core.DTOs.Comments;
+using Core.Entities.CommentEntity;
 using Core.EntitiesQueryUtilities.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Repository.CommentRepo;
 using Core.Services.EntityService;
-using Infrastructure.Models.CommentEntity;
 
 namespace Core.Services.CommentService
 {

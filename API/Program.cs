@@ -1,5 +1,6 @@
 using API.AutoMapper;
 using Core.AutoMapper;
+using Core.Entities.UserEntity;
 using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.Comments;
 using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
@@ -19,7 +20,7 @@ using Core.Services.ReplyService;
 using Core.Services.UserService;
 using Core.Utilities.JsonConverters;
 using Infrastructure;
-using Infrastructure.Models.UserEntity;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

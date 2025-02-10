@@ -1,5 +1,5 @@
-﻿using Core.EntitiesQueryUtilities.Comments;
-using Infrastructure.Models.CommentEntity;
+﻿using Core.Entities.CommentEntity;
+using Core.EntitiesQueryUtilities.Comments;
 
 namespace Core.EntitiesQueryUtilities.QueryParameters.Comments
 {

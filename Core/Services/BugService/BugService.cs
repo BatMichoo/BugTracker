@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Core.DTOs.Bugs;
+using Core.Entities.BugEntity;
 using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.Repository.BugRepo;
 using Core.Services.EntityService;
-using Infrastructure.Models.BugEntity;
 
 namespace Core.Services.BugService
 {

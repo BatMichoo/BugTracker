@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models.ReplyEntity
+﻿namespace Core.Entities.ReplyEntity
 {
     public class ReplyValidation
     {

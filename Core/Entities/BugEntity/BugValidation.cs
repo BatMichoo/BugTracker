@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models.BugEntity
+﻿namespace Core.Entities.BugEntity
 {
     public class BugValidation
     {

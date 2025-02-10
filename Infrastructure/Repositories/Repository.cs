@@ -1,12 +1,12 @@
-﻿using Core.EntitiesQueryUtilities.QueryBuilders;
+﻿using Core.Entities;
+using Core.EntitiesQueryUtilities.QueryBuilders;
 using Core.EntitiesQueryUtilities.QueryParameters;
-using Infrastructure;
-using Infrastructure.Models;
+using Core.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Repository
+namespace Infrastructure.Repositories
 {
-    public abstract class Repository<T> : IRepository<T> where T : BaseEntity
+    public abstract class Repository<T> : IRepository<T> where T : BaseModel
     {
         private readonly TrackerDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
@@ -89,7 +89,7 @@ namespace Core.Repository
             await SaveChangesAsync();
         }
 
-        internal virtual IQueryable<T> AddInclusions(IQueryable<T> query)
+        protected virtual IQueryable<T> AddInclusions(IQueryable<T> query)
             => query;
 
         public async Task<int> Count(QueryParameters<T> queryParameters)
@@ -104,6 +104,6 @@ namespace Core.Repository
         public async Task<bool> DoesExist(int id)
             => await _dbSet.AsNoTracking()
             .Where(e => e.Id == id)
-            .AnyAsync();        
+            .AnyAsync();
     }
 }

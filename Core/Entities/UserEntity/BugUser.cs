@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models.BugEntity;
-using Infrastructure.Models.CommentEntity;
+﻿using Core.Entities.BugEntity;
+using Core.Entities.CommentEntity;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Models.UserEntity
+namespace Core.Entities.UserEntity
 {
     public class BugUser : IdentityUser
     {

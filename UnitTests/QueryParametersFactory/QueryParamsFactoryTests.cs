@@ -1,8 +1,8 @@
-﻿using Core.EntitiesQueryUtilities.Bugs;
+﻿using Core.Entities.BugEntity;
+using Core.Entities.UserEntity;
+using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
 using Infrastructure;
-using Infrastructure.Models.BugEntity;
-using Infrastructure.Models.UserEntity;
 using Microsoft.EntityFrameworkCore;
 using UnitTests.Repository;
 

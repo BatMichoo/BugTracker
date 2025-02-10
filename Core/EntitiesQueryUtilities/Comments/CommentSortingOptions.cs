@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.CommentEntity;
+﻿using Core.Entities.CommentEntity;
 using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Comments

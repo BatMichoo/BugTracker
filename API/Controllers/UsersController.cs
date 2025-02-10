@@ -1,9 +1,9 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs.Users;
+using Core.Entities.UserEntity;
 using Core.Other;
 using Core.Services.UserService;
-using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;

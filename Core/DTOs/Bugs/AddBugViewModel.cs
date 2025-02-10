@@ -1,5 +1,5 @@
-﻿using Core.Models.Bugs.BugEnums;
-using Infrastructure.Models.BugEntity;
+﻿using Core.Entities.BugEntity;
+using Core.Models.Bugs.BugEnums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.DTOs.Bugs

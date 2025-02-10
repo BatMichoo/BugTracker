@@ -1,12 +1,12 @@
 ﻿using Core.DTOs.Comments;
 using Core.DTOs.Users;
+using Core.Entities;
 using Core.Models.Bugs.BugEnums;
 
 namespace Core.DTOs.Bugs
 {
-    public class BugModel
+    public class BugModel : BaseModel
     {
-        public int Id { get; set; }
         public DateTime CreatedOn { get; set; }
         public BugStatus Status { get; set; }
         public DateTime LastUpdatedOn { get; set; }

@@ -1,6 +1,6 @@
 ﻿using Core.DTOs.Bugs;
+using Core.Entities.BugEntity;
 using Core.Services.EntityService;
-using Infrastructure.Models.BugEntity;
 
 namespace Core.Services.BugService
 {

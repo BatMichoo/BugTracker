@@ -1,5 +1,5 @@
-﻿using Core.EntitiesQueryUtilities.Bugs;
-using Infrastructure.Models.BugEntity;
+﻿using Core.Entities.BugEntity;
+using Core.EntitiesQueryUtilities.Bugs;
 
 namespace UnitTests.Filters
 {

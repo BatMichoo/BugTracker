@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Comments;
-using Infrastructure.Models.CommentEntity;
+using Core.Entities.CommentEntity;
 
 namespace Core.AutoMapper
 {

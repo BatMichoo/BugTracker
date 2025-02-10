@@ -1,6 +1,5 @@
 ﻿using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.Bugs.Filters;
-using Infrastructure.Models.BugEntity;
 
 namespace UnitTests.FilterFactory
 {

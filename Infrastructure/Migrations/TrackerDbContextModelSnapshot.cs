@@ -22,7 +22,7 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Infrastructure.Models.BugEntity.Bug", b =>
+            modelBuilder.Entity("Core.Entities.BugEntity.Bug", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Bugs");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.CommentEntity.Comment", b =>
+            modelBuilder.Entity("Core.Entities.CommentEntity.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,9 +110,11 @@ namespace Infrastructure.Migrations
                     b.HasIndex("BugId");
 
                     b.ToTable("Comments");
+
+                    b.HasCheckConstraint("CK_Comment_Likes_NonNegative", "[Likes] >= 0");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.ReplyEntity.Reply", b =>
+            modelBuilder.Entity("Core.Entities.ReplyEntity.Reply", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +146,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Replies");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.UserEntity.BugUser", b =>
+            modelBuilder.Entity("Core.Entities.UserEntity.BugUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -170,6 +172,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -345,20 +348,20 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.BugEntity.Bug", b =>
+            modelBuilder.Entity("Core.Entities.BugEntity.Bug", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", "Assignee")
+                    b.HasOne("Core.Entities.UserEntity.BugUser", "Assignee")
                         .WithMany("AssignedBugs")
                         .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", "Creator")
+                    b.HasOne("Core.Entities.UserEntity.BugUser", "Creator")
                         .WithMany("CreatedBugs")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", "LastUpdatedBy")
+                    b.HasOne("Core.Entities.UserEntity.BugUser", "LastUpdatedBy")
                         .WithMany()
                         .HasForeignKey("LastUpdatedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,15 +374,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("LastUpdatedBy");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.CommentEntity.Comment", b =>
+            modelBuilder.Entity("Core.Entities.CommentEntity.Comment", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", "Author")
+                    b.HasOne("Core.Entities.UserEntity.BugUser", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Models.BugEntity.Bug", "Bug")
+                    b.HasOne("Core.Entities.BugEntity.Bug", "Bug")
                         .WithMany("Comments")
                         .HasForeignKey("BugId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -390,15 +393,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Bug");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.ReplyEntity.Reply", b =>
+            modelBuilder.Entity("Core.Entities.ReplyEntity.Reply", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", "Author")
+                    b.HasOne("Core.Entities.UserEntity.BugUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Models.CommentEntity.Comment", "Comment")
+                    b.HasOne("Core.Entities.CommentEntity.Comment", "Comment")
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -420,7 +423,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", null)
+                    b.HasOne("Core.Entities.UserEntity.BugUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -429,7 +432,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", null)
+                    b.HasOne("Core.Entities.UserEntity.BugUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,7 +447,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", null)
+                    b.HasOne("Core.Entities.UserEntity.BugUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -453,24 +456,24 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Infrastructure.Models.UserEntity.BugUser", null)
+                    b.HasOne("Core.Entities.UserEntity.BugUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.BugEntity.Bug", b =>
+            modelBuilder.Entity("Core.Entities.BugEntity.Bug", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.CommentEntity.Comment", b =>
+            modelBuilder.Entity("Core.Entities.CommentEntity.Comment", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("Infrastructure.Models.UserEntity.BugUser", b =>
+            modelBuilder.Entity("Core.Entities.UserEntity.BugUser", b =>
                 {
                     b.Navigation("AssignedBugs");
 

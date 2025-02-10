@@ -1,9 +1,9 @@
-﻿using Infrastructure.Models;
+﻿using Core.Entities;
 
 namespace Core.EntitiesQueryUtilities
 {
     public interface ISortingOptionsFactory<T, TOrderByEnum>
-        where T : BaseEntity
+        where T : BaseModel
         where TOrderByEnum : Enum
     {
         ISortingOptions<T> CreateSortingOptions(string? sortOptions = null);

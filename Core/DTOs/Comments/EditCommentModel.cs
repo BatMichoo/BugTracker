@@ -1,4 +1,6 @@
-﻿namespace Core.DTOs.Comments
+﻿using Core.Entities;
+
+namespace Core.DTOs.Comments
 {
     public class EditCommentModel : BaseModel
     {

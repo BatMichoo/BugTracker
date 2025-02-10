@@ -1,5 +1,5 @@
-﻿using Core.Models.Bugs.BugEnums;
-using Infrastructure.Models.BugEntity;
+﻿using Core.Entities.BugEntity;
+using Core.Models.Bugs.BugEnums;
 using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Bugs.Filters

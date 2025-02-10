@@ -1,7 +1,8 @@
-﻿using Infrastructure.Models.BugEntity;
-using Infrastructure.Models.CommentEntity;
-using Infrastructure.Models.ReplyEntity;
-using Infrastructure.Models.UserEntity;
+﻿using Core.Entities.BugEntity;
+using Core.Entities.CommentEntity;
+using Core.Entities.ReplyEntity;
+using Core.Entities.UserEntity;
+using Infrastructure.EntityConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Entities.ReplyEntity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Models.ReplyEntity
+namespace Infrastructure.EntityConfigurations
 {
     public class ReplyConfiguration : IEntityTypeConfiguration<Reply>
     {
@@ -10,10 +11,15 @@ namespace Infrastructure.Models.ReplyEntity
         {
             builder.HasKey(r => r.Id);
 
+            builder.Property(r => r.Content)
+                .IsRequired()
+                .HasMaxLength(ReplyValidation.MaxContentLenght);
+
             builder.HasOne(r => r.Author);
 
             builder.HasOne(r => r.Comment)
                 .WithMany(c => c.Replies)
+                .HasForeignKey(r => r.CommentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(r => r.CreatedOn)

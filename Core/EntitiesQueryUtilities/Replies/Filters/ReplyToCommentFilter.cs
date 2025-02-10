@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.ReplyEntity;
+﻿using Core.Entities.ReplyEntity;
 using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Replies.Filters

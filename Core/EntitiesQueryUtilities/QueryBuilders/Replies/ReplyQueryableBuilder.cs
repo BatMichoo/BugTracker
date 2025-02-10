@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.ReplyEntity;
+﻿using Core.Entities.ReplyEntity;
 
 namespace Core.EntitiesQueryUtilities.QueryBuilders.Replies
 {

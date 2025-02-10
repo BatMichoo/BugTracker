@@ -1,9 +1,9 @@
-﻿using Infrastructure.Models;
+﻿using Core.Entities;
 
 namespace Core.EntitiesQueryUtilities
 {
     public interface IFilterFactory<TEntity, TFilterByEnum>
-        where TEntity : BaseEntity
+        where TEntity : BaseModel
         where TFilterByEnum : struct, Enum
     {
         IList<IFilter<TEntity>> CreateFilters(string? filter = null);

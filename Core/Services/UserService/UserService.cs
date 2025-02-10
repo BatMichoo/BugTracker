@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.DTOs.Users;
+using Core.Entities.UserEntity;
 using Core.Other;
-using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Core.DTOs;
+using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Repository;
-using Infrastructure.Models;
 
 namespace Core.Services.EntityService
 {
     public abstract class EntityService<TEntity, TModel, TCreate, TUpdate, TSortBy, TFilterBy> : IEntityService<TEntity, TModel, TCreate, TUpdate>
-        where TEntity : BaseEntity
+        where TEntity : BaseModel
         where TModel : class
         where TCreate : class
         where TUpdate : BaseModel

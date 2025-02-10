@@ -1,6 +1,6 @@
 ﻿using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
-using Core.Repository.BugRepo;
 using Infrastructure;
+using Infrastructure.Repositories;
 
 namespace UnitTests.Repository
 {

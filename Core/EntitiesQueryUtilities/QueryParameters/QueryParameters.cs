@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models;
+﻿using Core.Entities;
 
 namespace Core.EntitiesQueryUtilities.QueryParameters
 {
-    public class QueryParameters<T> where T : BaseEntity
+    public class QueryParameters<T> where T : BaseModel
     {
         public QueryParameters(IList<IFilter<T>>? filters = null, PagingInfo? pagingInfo = null, ISortingOptions<T> sortOptions = null, string? searchTerm = null)
         {

@@ -1,4 +1,6 @@
-﻿namespace Core.DTOs.Replies
+﻿using Core.Entities;
+
+namespace Core.DTOs.Replies
 {
     public class EditReplyModel : BaseModel
     {

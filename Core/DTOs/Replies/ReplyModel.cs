@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.UserEntity;
+﻿using Core.Entities.UserEntity;
 
 namespace Core.DTOs.Replies
 {

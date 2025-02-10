@@ -1,11 +1,11 @@
 ﻿using Core.DTOs;
+using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryParameters;
-using Infrastructure.Models;
 
 namespace Core.Services.EntityService
 {
     public interface IEntityService<TEntity, TModel, TCreate, TUpdate>
-        where TEntity : BaseEntity
+        where TEntity : BaseModel
         where TModel : class
         where TCreate : class
         where TUpdate : class

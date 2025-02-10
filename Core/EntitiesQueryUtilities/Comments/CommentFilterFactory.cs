@@ -1,5 +1,5 @@
-﻿using Core.EntitiesQueryUtilities.Comments.Filters;
-using Infrastructure.Models.CommentEntity;
+﻿using Core.Entities.CommentEntity;
+using Core.EntitiesQueryUtilities.Comments.Filters;
 
 namespace Core.EntitiesQueryUtilities.Comments
 {

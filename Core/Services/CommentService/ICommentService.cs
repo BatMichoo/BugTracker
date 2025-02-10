@@ -1,6 +1,6 @@
 ﻿using Core.DTOs.Comments;
+using Core.Entities.CommentEntity;
 using Core.Services.EntityService;
-using Infrastructure.Models.CommentEntity;
 
 namespace Core.Services.CommentService
 {

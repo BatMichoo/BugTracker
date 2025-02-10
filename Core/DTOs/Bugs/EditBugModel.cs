@@ -1,4 +1,5 @@
-﻿using Core.Models.Bugs.BugEnums;
+﻿using Core.Entities;
+using Core.Models.Bugs.BugEnums;
 
 namespace Core.DTOs.Bugs
 {

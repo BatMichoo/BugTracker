@@ -1,6 +1,6 @@
-﻿using Core.EntitiesQueryUtilities.Bugs.Filters;
+﻿using Core.Entities.BugEntity;
+using Core.EntitiesQueryUtilities.Bugs.Filters;
 using Core.Models.Bugs.BugEnums;
-using Infrastructure.Models.BugEntity;
 
 namespace Core.EntitiesQueryUtilities.Bugs
 {

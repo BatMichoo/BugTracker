@@ -1,9 +1,9 @@
-﻿using Core.EntitiesQueryUtilities.QueryParameters;
-using Infrastructure.Models;
+﻿using Core.Entities;
+using Core.EntitiesQueryUtilities.QueryParameters;
 
 namespace Core.EntitiesQueryUtilities.QueryBuilders
 {
-    public class QueryableBuilder<T> : IQueryableBuilder<T> where T : BaseEntity
+    public abstract class QueryableBuilder<T> : IQueryableBuilder<T> where T : BaseModel
     {
         public IQueryable<T> BuildQuery(IQueryable<T> query, QueryParameters<T>? queryParameters)
         {

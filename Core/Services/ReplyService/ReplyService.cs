@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Core.DTOs.Replies;
+using Core.Entities.ReplyEntity;
 using Core.EntitiesQueryUtilities.QueryParameters.Replies;
 using Core.EntitiesQueryUtilities.Replies;
 using Core.Repository.ReplyRepo;
 using Core.Services.EntityService;
-using Infrastructure.Models.ReplyEntity;
 
 namespace Core.Services.ReplyService
 {

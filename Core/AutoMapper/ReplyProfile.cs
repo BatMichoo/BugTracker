@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Replies;
-using Infrastructure.Models.ReplyEntity;
+using Core.Entities.ReplyEntity;
 
 namespace Core.AutoMapper
 {

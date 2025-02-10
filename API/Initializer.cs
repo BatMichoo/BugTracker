@@ -1,5 +1,5 @@
-﻿using Infrastructure;
-using Infrastructure.Models.UserEntity;
+﻿using Core.Entities.UserEntity;
+using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

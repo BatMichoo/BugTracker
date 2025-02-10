@@ -1,4 +1,4 @@
-﻿using Infrastructure.Models.BugEntity;
+﻿using Core.Entities.BugEntity;
 
 namespace Core.EntitiesQueryUtilities.QueryBuilders.Bugs
 {

@@ -1,6 +1,6 @@
 ﻿using Core.DTOs.Replies;
+using Core.Entities.ReplyEntity;
 using Core.Services.EntityService;
-using Infrastructure.Models.ReplyEntity;
 
 namespace Core.Services.ReplyService
 {

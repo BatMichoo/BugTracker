@@ -1,9 +1,9 @@
-﻿using Infrastructure.Models;
+﻿using Core.Entities;
 using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities
 {
-    public interface ISortingOptions<T> where T : BaseEntity
+    public interface ISortingOptions<T> where T : BaseModel
     {
         public SortOrder SortOrder { get; }
 

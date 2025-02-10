@@ -1,9 +1,9 @@
-﻿using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
-using Infrastructure;
-using Infrastructure.Models.ReplyEntity;
+﻿using Core.Entities.ReplyEntity;
+using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
+using Core.Repository.ReplyRepo;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Repository.ReplyRepo
+namespace Infrastructure.Repositories
 {
     public class ReplyRepository : Repository<Reply>, IReplyRepository
     {
@@ -12,7 +12,7 @@ namespace Core.Repository.ReplyRepo
         {
         }
 
-        internal override IQueryable<Reply> AddInclusions(IQueryable<Reply> query)
+        protected override IQueryable<Reply> AddInclusions(IQueryable<Reply> query)
             => query.Include(r => r.Author);
     }
 }

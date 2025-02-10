@@ -1,14 +1,14 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs.Replies;
+using Core.Entities.ReplyEntity;
+using Core.Entities.UserEntity;
 using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.EntitiesQueryUtilities.Replies.Filters;
 using Core.Other;
 using Core.Services.ReplyService;
 using Core.Services.UserService;
-using Infrastructure.Models.ReplyEntity;
-using Infrastructure.Models.UserEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

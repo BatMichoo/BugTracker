@@ -2,7 +2,7 @@
 using Core.DTOs;
 using Core.DTOs.Bugs;
 using Core.DTOs.Users;
-using Infrastructure.Models.BugEntity;
+using Core.Entities.BugEntity;
 
 namespace API.AutoMapper
 {

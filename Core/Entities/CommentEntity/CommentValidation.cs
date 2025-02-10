@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models.CommentEntity
+﻿namespace Core.Entities.CommentEntity
 {
     public class CommentValidation
     {

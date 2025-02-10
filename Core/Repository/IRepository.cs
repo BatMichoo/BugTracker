@@ -1,9 +1,9 @@
-﻿using Core.EntitiesQueryUtilities.QueryParameters;
-using Infrastructure.Models;
+﻿using Core.Entities;
+using Core.EntitiesQueryUtilities.QueryParameters;
 
 namespace Core.Repository
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : BaseModel
     {
         Task<T?> GetById(int id);
         Task<bool> DoesExist(int id);
