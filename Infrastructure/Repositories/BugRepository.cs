@@ -1,6 +1,6 @@
 ﻿using Core.Entities.BugEntity;
-using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
-using Core.Repository.BugRepo;
+using Core.EntitiesQueryUtilities.QueryBuilders;
+using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories

@@ -1,6 +1,6 @@
 ﻿using Core.Entities.ReplyEntity;
-using Core.EntitiesQueryUtilities.QueryBuilders.Replies;
-using Core.Repository.ReplyRepo;
+using Core.EntitiesQueryUtilities.QueryBuilders;
+using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories

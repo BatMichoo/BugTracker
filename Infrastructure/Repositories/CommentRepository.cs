@@ -1,6 +1,6 @@
 ﻿using Core.Entities.CommentEntity;
-using Core.EntitiesQueryUtilities.QueryBuilders.Comments;
-using Core.Repository.CommentRepo;
+using Core.EntitiesQueryUtilities.QueryBuilders;
+using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories

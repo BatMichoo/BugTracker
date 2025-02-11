@@ -1,6 +1,6 @@
 ﻿using Core.Entities.BugEntity;
 
-namespace Core.Repository.BugRepo
+namespace Core.Repositories
 {
     public interface IBugRepository : IRepository<Bug>
     {

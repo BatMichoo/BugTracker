@@ -12,7 +12,10 @@ namespace Core.EntitiesQueryUtilities.QueryParameters.Comments
         public QueryParameters<Comment> GetByBugId(int bugId)
         {
             var filter = _filterFactory.CreateFilter(CommentFilterType.BugId, bugId.ToString());
-            var sortingOptions = _sortingOptionsFactory.CreateSortingOptions(SortOrder.Ascending, CommentOrderBy.Id);
+            var sortingOptions = new List<ISortingOptions<Comment>>() 
+            {
+                _sortingOptionsFactory.CreateSortingOptions(SortOrder.Ascending, CommentOrderBy.Id)
+            };
 
             var filterList = new List<IFilter<Comment>>() { filter };
 

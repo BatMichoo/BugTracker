@@ -1,6 +1,6 @@
 ﻿using Core.Entities.ReplyEntity;
 
-namespace Core.Repository.ReplyRepo
+namespace Core.Repositories
 {
     public interface IReplyRepository : IRepository<Reply>
     {

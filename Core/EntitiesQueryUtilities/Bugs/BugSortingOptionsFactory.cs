@@ -4,25 +4,37 @@ namespace Core.EntitiesQueryUtilities.Bugs
 {
     public class BugSortingOptionsFactory : IBugSortingOptionsFactory
     {
-        public ISortingOptions<Bug> CreateSortingOptions(string? sortOptions)
+        public IList<ISortingOptions<Bug>> CreateSortingOptions(string? sortOptions)
         {
+            var sortingList = new List<ISortingOptions<Bug>>();
+
             if (sortOptions != null)
             {
-                string[] sortingInfo = sortOptions.Split(FilterQuerySeparators.KeyValue);
+                string[] sortingFilters = sortOptions.Split(FilterQuerySeparators.Filter);
 
-                string sortBy = sortingInfo[0];
-                string order = sortingInfo[1];
-
-                if (Enum.TryParse(sortBy, true, out BugSortBy sortingBy))
+                foreach (string filter in sortingFilters)
                 {
-                    if (Enum.TryParse(order, true, out SortOrder sortOrder))
+                    string[] sortingInfo = filter.Split(FilterQuerySeparators.KeyValue);
+
+                    string sortBy = sortingInfo[0];
+                    string order = sortingInfo[1];
+
+                    if (Enum.TryParse(sortBy, true, out BugSortBy sortingBy))
                     {
-                        return new BugSortingOptions(sortOrder, sortingBy);
+                        if (Enum.TryParse(order, true, out SortOrder sortOrder))
+                        {
+                            sortingList.Add(new BugSortingOptions(sortOrder, sortingBy));
+                        }
+                    }
+                    else
+                    {
+                        sortingList.Add(new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status));
+                        break;
                     }
                 }
             }
 
-            return new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status);
+            return sortingList;
         }        
 
         public ISortingOptions<Bug> CreateSortingOptions(SortOrder order, BugSortBy orderBy)

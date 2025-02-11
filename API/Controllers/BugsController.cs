@@ -1,4 +1,5 @@
-﻿using API.Utilities.ErrorMessages;
+﻿using API.ResponseModels;
+using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
@@ -60,7 +61,18 @@ namespace API.Controllers
 
             var bugs = await _bugService.Fetch(queryParameters);
 
-            return Ok(_mapper.Map<PagedList<BugViewModel>>(bugs));
+            var response = new SearchResponseViewModel<BugViewModel>()
+            {
+                PagedList = _mapper.Map<PagedList<BugViewModel>>(bugs),
+                SearchParameters = new SearchParameters()
+                {
+                    Filters = queryParameters.Filters.Select(f => f.ToString()).ToList(),
+                    SearchTerm = queryParameters.SearchTerm,
+                    SortOptions = queryParameters.SortOptions.ToString()
+                }
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]

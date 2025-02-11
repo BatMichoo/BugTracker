@@ -1,5 +1,4 @@
 ﻿using Core.Entities.BugEntity;
-using Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

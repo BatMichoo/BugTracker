@@ -2,7 +2,7 @@
 using Core.DTOs;
 using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryParameters;
-using Core.Repository;
+using Core.Repositories;
 
 namespace Core.Services.EntityService
 {
@@ -79,6 +79,7 @@ namespace Core.Services.EntityService
         public async Task<TModel> Update(TUpdate updateModel)
         {
             var existingModel = await _repository.GetById(updateModel.Id);
+
             _mapper.Map(updateModel, existingModel);
 
             var updatedEntity = await _repository.Update(_mapper.Map<TEntity>(existingModel));

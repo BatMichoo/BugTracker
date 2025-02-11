@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
-using Core.Repository.BugRepo;
+using Core.Repositories;
 using Core.Services.BugService;
 
 namespace UnitTests.Service

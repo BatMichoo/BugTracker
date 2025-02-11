@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryBuilders;
 using Core.EntitiesQueryUtilities.QueryParameters;
-using Core.Repository;
+using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories

@@ -3,7 +3,7 @@ using Core.DTOs.Comments;
 using Core.Entities.CommentEntity;
 using Core.EntitiesQueryUtilities.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
-using Core.Repository.CommentRepo;
+using Core.Repositories;
 using Core.Services.EntityService;
 
 namespace Core.Services.CommentService

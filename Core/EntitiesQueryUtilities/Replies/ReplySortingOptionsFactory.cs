@@ -13,5 +13,10 @@ namespace Core.EntitiesQueryUtilities.Replies
         {
             throw new NotImplementedException();
         }
+
+        IList<ISortingOptions<Reply>> ISortingOptionsFactory<Reply, ReplySortBy>.CreateSortingOptions(string? sortOptions)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

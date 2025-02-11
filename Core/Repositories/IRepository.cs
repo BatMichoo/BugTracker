@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryParameters;
 
-namespace Core.Repository
+namespace Core.Repositories
 {
     public interface IRepository<T> where T : BaseModel
     {

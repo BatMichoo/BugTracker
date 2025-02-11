@@ -3,7 +3,7 @@ using Core.DTOs.Bugs;
 using Core.Entities.BugEntity;
 using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
-using Core.Repository.BugRepo;
+using Core.Repositories;
 using Core.Services.EntityService;
 
 namespace Core.Services.BugService

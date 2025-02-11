@@ -1,6 +1,7 @@
 ﻿using Core.Entities.BugEntity;
+using Core.EntitiesQueryUtilities.QueryBuilders;
 
-namespace Core.EntitiesQueryUtilities.QueryBuilders.Bugs
+namespace Infrastructure.QueryBuilders
 {
     public class BugQueryableBuilder : QueryableBuilder<Bug>, IBugQueryableBuilder
     {

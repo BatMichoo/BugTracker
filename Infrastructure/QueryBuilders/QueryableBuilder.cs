@@ -1,7 +1,9 @@
 ﻿using Core.Entities;
+using Core.EntitiesQueryUtilities;
+using Core.EntitiesQueryUtilities.QueryBuilders;
 using Core.EntitiesQueryUtilities.QueryParameters;
 
-namespace Core.EntitiesQueryUtilities.QueryBuilders
+namespace Infrastructure.QueryBuilders
 {
     public abstract class QueryableBuilder<T> : IQueryableBuilder<T> where T : BaseModel
     {
@@ -35,7 +37,7 @@ namespace Core.EntitiesQueryUtilities.QueryBuilders
                     query = ApplySearch(query, queryParameters.SearchTerm);
                 }
 
-                if (queryParameters.SortOptions != null)
+                if (queryParameters.SortOptions != null && queryParameters.SortOptions.Count > 0)
                 {
                     query = ApplySort(query, queryParameters.SortOptions);
                 }
@@ -76,21 +78,43 @@ namespace Core.EntitiesQueryUtilities.QueryBuilders
             return query;
         }
 
-        private static IQueryable<T> ApplySort(IQueryable<T> query, ISortingOptions<T> sortOptions)
+        private static IQueryable<T> ApplySort(IQueryable<T> query, IList<ISortingOptions<T>> sortOptions)
         {
-            switch (sortOptions.SortOrder)
+            IOrderedQueryable<T> orderedQuery;
+
+            var firstSort = sortOptions.First();
+
+            switch (firstSort.SortOrder)
             {
                 case SortOrder.Descending:
-                    query = query.OrderByDescending(sortOptions.Sort());
+                    orderedQuery = query
+                        .OrderByDescending(firstSort.Sort());
                     break;
                 default:
-                    query = query.OrderBy(sortOptions.Sort());
+                    orderedQuery = query
+                        .OrderBy(firstSort.Sort());
                     break;
             }
 
-            return query;
-        }
+            if (sortOptions.Count > 1)
+            {
+                foreach (var sortOption in sortOptions.Skip(1))
+                {
+                    switch (sortOption.SortOrder)
+                    {
+                        case SortOrder.Descending:
+                            orderedQuery = orderedQuery
+                                .ThenByDescending(sortOption.Sort());
+                            break;
+                        default:
+                            orderedQuery = orderedQuery
+                                .ThenBy(sortOption.Sort());
+                            break;
+                    }
+                }
+            }
 
-        
+            return orderedQuery;
+        }
     }
 }

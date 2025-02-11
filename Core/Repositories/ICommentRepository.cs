@@ -1,6 +1,6 @@
 ﻿using Core.Entities.CommentEntity;
 
-namespace Core.Repository.CommentRepo
+namespace Core.Repositories
 {
     public interface ICommentRepository : IRepository<Comment>
     {

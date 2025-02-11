@@ -6,7 +6,7 @@ namespace Core.EntitiesQueryUtilities
         where T : BaseModel
         where TOrderByEnum : Enum
     {
-        ISortingOptions<T> CreateSortingOptions(string? sortOptions = null);
+        IList<ISortingOptions<T>> CreateSortingOptions(string? sortOptions = null);
         ISortingOptions<T> CreateSortingOptions(SortOrder order, TOrderByEnum orderBy);
     }
 }

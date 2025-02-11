@@ -1,4 +1,4 @@
-﻿using Core.EntitiesQueryUtilities.QueryBuilders.Bugs;
+﻿using Core.EntitiesQueryUtilities.QueryBuilders;
 using Infrastructure;
 using Infrastructure.Repositories;
 
