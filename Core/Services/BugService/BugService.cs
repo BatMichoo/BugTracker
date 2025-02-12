@@ -8,10 +8,10 @@ using Core.Services.EntityService;
 
 namespace Core.Services.BugService
 {
-    public class BugService : EntityService<Bug, BugModel, AddBugModel, EditBugModel, BugSortBy, BugFilterType>, IBugService
+    public class BugService : QueryEntityService<Bug, BugModel, AddBugModel, EditBugModel, BugSortBy, BugFilterType>, IBugService
     {
-        public BugService(IBugRepository repository, IBugQueryParametersFactory queryParametersFactory, IMapper mapper)
-            : base(repository, mapper, queryParametersFactory)
+        public BugService(IBugRepository repository, IMapper mapper)
+            : base(repository, mapper)
         {
         }
     }

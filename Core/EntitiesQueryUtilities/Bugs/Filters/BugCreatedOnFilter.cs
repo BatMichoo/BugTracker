@@ -3,12 +3,13 @@ using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
-    public class BugCreatedOnFilter : IFilter<Bug>
+    public class BugCreatedOnFilter : Filter, IFilter<Bug>
     {
+        private const string _name = nameof(BugCreatedOnFilter);
         private readonly DateTime _targetDate;
         private readonly string _operation;
 
-        public BugCreatedOnFilter(DateTime targetDate, string operation)
+        public BugCreatedOnFilter(DateTime targetDate, string operation) : base(_name, $"{targetDate}{(operation != string.Empty ? $"_{operation}" : string.Empty)}")
         {
             _targetDate = targetDate;
             _operation = operation;

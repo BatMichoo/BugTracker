@@ -171,6 +171,7 @@ namespace API
                 opt.AddProfile(typeof(BugUserProfile));
                 opt.AddProfile(typeof(CommentProfile));
                 opt.AddProfile(typeof(ReplyProfile));
+                opt.AddProfile(typeof(QueryProfile));
             });
 
             builder.Services.AddControllers()
@@ -193,7 +194,7 @@ namespace API
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.",
+                    Description = "Enter your valid Bearer token in the text input below.",
                 });
 
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement

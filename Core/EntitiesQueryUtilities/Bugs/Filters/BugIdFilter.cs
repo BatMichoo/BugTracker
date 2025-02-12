@@ -3,11 +3,12 @@ using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
-    public class BugIdFilter : IFilter<Bug>
+    public class BugIdFilter : Filter, IFilter<Bug>
     {
+        private const string _name = nameof(BugIdFilter);
         private readonly int _id;
 
-        public BugIdFilter(int id)
+        public BugIdFilter(int id) : base(_name, id.ToString())
         {
             _id = id;
         }

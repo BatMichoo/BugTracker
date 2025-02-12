@@ -4,5 +4,6 @@ namespace Core.Repositories
 {
     public interface ICommentRepository : IRepository<Comment>
     {
+        Task<List<Comment>> GetByBugId(int bugId);
     }
 }

@@ -43,7 +43,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
             }
         }
 
-        public IList<IFilter<Bug>> CreateFilters(string? filterInput = null)
+        public List<IFilter<Bug>> CreateFilters(string? filterInput = null)
         {
             var filters = new List<IFilter<Bug>>();
 

@@ -1,6 +1,4 @@
-﻿using Core.DTOs;
-using Core.Entities;
-using Core.EntitiesQueryUtilities.QueryParameters;
+﻿using Core.Entities;
 
 namespace Core.Services.EntityService
 {
@@ -11,11 +9,10 @@ namespace Core.Services.EntityService
         where TUpdate : class
     {
         Task<TModel?> GetById(int id);
-        Task<List<TModel>> GetAll();
+        abstract Task<List<TModel>> GetAll();
         Task<TModel> Create(TCreate createModel);
         Task<TModel> Update(TUpdate updateModel);
         Task<bool> DoesExist(int id);
         Task Delete(int id);
-        abstract Task<PagedList<TModel>> Fetch(QueryParameters<TEntity> queryParameters);
     }
 }

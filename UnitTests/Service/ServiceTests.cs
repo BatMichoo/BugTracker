@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using Core.DTOs.Bugs;
+﻿using Core.DTOs.Bugs;
 using Core.Entities.BugEntity;
-using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Models.Bugs.BugEnums;
 using Infrastructure;
 using Infrastructure.QueryBuilders;
-using UnitTests.QueryParametersFactory;
 using UnitTests.Repository;
 using UnitTests.Utilities;
 
@@ -24,7 +21,7 @@ namespace UnitTests.Service
             var mapper = Mappings.CreateMapper();
             var repository = new TestRepository(_context, new BugQueryableBuilder());
 
-            _service = new TestService(repository, new TestQueryParamsFactory(new BugSortingOptionsFactory(), new BugFilterFactory()), mapper);
+            _service = new TestService(repository, mapper);
         }
 
         [TearDown]
@@ -103,7 +100,7 @@ namespace UnitTests.Service
 
             var result = await _service!.Fetch(new QueryParameters<Bug>());
 
-            Assert.That(result.ResultItemCount, Is.EqualTo(expectedResult));
+            Assert.That(result.Items.Count, Is.EqualTo(expectedResult));
         }
 
         [Test]

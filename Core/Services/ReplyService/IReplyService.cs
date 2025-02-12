@@ -6,5 +6,6 @@ namespace Core.Services.ReplyService
 {
     public interface IReplyService : IEntityService<Reply, ReplyModel, AddReplyModel, EditReplyModel>
     {
+        Task<List<Reply>> GetByCommentId(int commentId);
     }
 }

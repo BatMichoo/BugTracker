@@ -3,8 +3,6 @@ using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Comments;
 using Core.Entities.UserEntity;
-using Core.EntitiesQueryUtilities;
-using Core.EntitiesQueryUtilities.Comments.Filters;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Other;
 using Core.Services.CommentService;
@@ -19,7 +17,6 @@ namespace API.Controllers
     public class CommentsController : BaseController
     {
         private readonly ICommentService _commentService;
-        private readonly ICommentQueryParametersFactory _queryFactory;
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
 
@@ -29,7 +26,6 @@ namespace API.Controllers
             _commentService = commentService;
             _userService = userService;
             _mapper = mapper;
-            _queryFactory = commentQueryFactory;
         }
 
         [HttpGet("{commentId}")]
@@ -64,30 +60,9 @@ namespace API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCommentsByBugId(int bugId, string? searchTerm, string? sortOptions, string? filter,
-            int pageInput = PagingDefaults.StartingPageNumber, int pageSizeInput = PagingDefaults.ElementsPerPage)
+        public async Task<IActionResult> GetCommentsByBugId(int bugId)
         {
-            var queryParameters = await _queryFactory.ProcessQueryParametersInput(pageInput, pageSizeInput, searchTerm, sortOptions, filter);
-
-            var inputFilter = queryParameters.Filters.FirstOrDefault(f => f.GetType() == typeof(CommentByBugIdFilter));
-
-            var bugIdFilter = _queryFactory.GetByBugId(bugId).Filters[0];
-
-            if (inputFilter is not null)
-            {
-                int index = queryParameters.Filters.IndexOf(inputFilter);
-
-                if (!inputFilter.Equals(bugIdFilter))
-                {
-                    queryParameters.Filters[index] = bugIdFilter;
-                }
-            }
-            else
-            {
-                queryParameters.Filters.Add(bugIdFilter);
-            }
-
-            var comments = await _commentService.Fetch(queryParameters);
+            var comments = await _commentService.GetByBugId(bugId);
 
             return Ok(_mapper.Map<PagedList<CommentViewModel>>(comments));
         }

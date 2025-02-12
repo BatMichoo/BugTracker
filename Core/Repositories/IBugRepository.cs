@@ -2,7 +2,7 @@
 
 namespace Core.Repositories
 {
-    public interface IBugRepository : IRepository<Bug>
+    public interface IBugRepository : IQueryRepository<Bug>
     {
     }
 }

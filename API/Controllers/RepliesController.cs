@@ -53,14 +53,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ReplyViewModel>>> GetAllByCommentId(int commentId)
         {
-            var filterList = new List<IFilter<Reply>> { new ReplyToCommentFilter(commentId) };
-            var pagingInfo = PagingInfo.CreatePage(0, 0, 0);
+            var replies = await _replyService.GetByCommentId(commentId);
 
-            var queryParameters = new QueryParameters<Reply>(filterList, pagingInfo);
-
-            var replies = await _replyService.Fetch(queryParameters);
-
-            return Ok(_mapper.Map<List<ReplyViewModel>>(replies.Items));
+            return Ok(_mapper.Map<List<ReplyViewModel>>(replies));
         }
 
         [HttpPost]

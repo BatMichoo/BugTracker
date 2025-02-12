@@ -18,7 +18,7 @@ namespace Core.EntitiesQueryUtilities.Replies
             }
         }
 
-        public IList<IFilter<Reply>> CreateFilters(string? filter = null)
+        public List<IFilter<Reply>> CreateFilters(string? filter = null)
         {
             return new List<IFilter<Reply>>();
         }

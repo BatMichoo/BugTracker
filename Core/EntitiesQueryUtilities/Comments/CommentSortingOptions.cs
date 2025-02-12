@@ -14,6 +14,8 @@ namespace Core.EntitiesQueryUtilities.Comments
         public SortOrder SortOrder { get; }
         public CommentOrderBy OrderBy { get; }
 
+        public string SortingOn => OrderBy.ToString();
+
         public Expression<Func<Comment, object>> Sort()
         {
             switch (OrderBy)

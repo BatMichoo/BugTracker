@@ -1,11 +1,11 @@
 ﻿using Core.Entities;
-using Core.EntitiesQueryUtilities.QueryParameters;
 
 namespace Core.Repositories
 {
     public interface IRepository<T> where T : BaseModel
     {
         Task<T?> GetById(int id);
+        abstract Task<List<T>> GetAll();
         Task<bool> DoesExist(int id);
 
         Task<T> Create(T entity);
@@ -14,9 +14,5 @@ namespace Core.Repositories
 
         Task DeleteById(int id);
         Task Delete(T entity);
-
-        Task<int> Count(QueryParameters<T> queryParameters);
-
-        Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters);
     }
 }

@@ -4,11 +4,12 @@ using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
-    public class BugStatusFilter : IFilter<Bug>
+    public class BugStatusFilter : Filter, IFilter<Bug>
     {
+        private const string _name = nameof(BugStatusFilter);
         private readonly BugStatus _status;
 
-        public BugStatusFilter(BugStatus status)
+        public BugStatusFilter(BugStatus status) : base(_name, status.ToString())
         {
             _status = status;
         }

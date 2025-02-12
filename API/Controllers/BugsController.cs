@@ -61,16 +61,7 @@ namespace API.Controllers
 
             var bugs = await _bugService.Fetch(queryParameters);
 
-            var response = new SearchResponseViewModel<BugViewModel>()
-            {
-                PagedList = _mapper.Map<PagedList<BugViewModel>>(bugs),
-                SearchParameters = new SearchParameters()
-                {
-                    Filters = queryParameters.Filters.Select(f => f.ToString()).ToList(),
-                    SearchTerm = queryParameters.SearchTerm,
-                    SortOptions = queryParameters.SortOptions.ToString()
-                }
-            };
+            var response = _mapper.Map<QueryViewModel<BugViewModel>>(bugs);
 
             return Ok(response);
         }

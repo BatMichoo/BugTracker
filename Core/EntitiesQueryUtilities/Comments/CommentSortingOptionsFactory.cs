@@ -28,7 +28,7 @@ namespace Core.EntitiesQueryUtilities.Comments
         public ISortingOptions<Comment> CreateSortingOptions(SortOrder order, CommentOrderBy orderBy)
             => new CommentSortingOptions(order, orderBy);
 
-        IList<ISortingOptions<Comment>> ISortingOptionsFactory<Comment, CommentOrderBy>.CreateSortingOptions(string? sortOptions)
+        List<ISortingOptions<Comment>> ISortingOptionsFactory<Comment, CommentOrderBy>.CreateSortingOptions(string? sortOptions)
         {
             throw new NotImplementedException();
         }

@@ -3,16 +3,17 @@ using System.Linq.Expressions;
 
 namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
-    public class BugAssignedToFilter : IFilter<Bug>
+    public class BugAssignedToFilter : Filter, IFilter<Bug>
     {
-        private readonly string? userId;
+        private const string _name = nameof(BugAssignedToFilter);
+        private readonly string? _userId;
 
-        public BugAssignedToFilter(string? userId)
+        public BugAssignedToFilter(string? userId) : base(_name, userId)
         {
-            this.userId = userId;
+            _userId = userId;
         }
 
         public Expression<Func<Bug, bool>> Apply()
-            => b => b.AssigneeId == userId;
+            => b => b.AssigneeId == _userId;
     }
 }

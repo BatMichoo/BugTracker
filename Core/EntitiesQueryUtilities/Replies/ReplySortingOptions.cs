@@ -14,6 +14,8 @@ namespace Core.EntitiesQueryUtilities.Replies
         public SortOrder SortOrder { get; private set; }
         public ReplySortBy OrderBy { get; private set; }
 
+        public string SortingOn => OrderBy.ToString();
+
         public Expression<Func<Reply, object>> Sort()
         {
             switch (OrderBy)

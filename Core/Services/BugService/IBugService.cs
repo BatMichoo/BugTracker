@@ -4,7 +4,7 @@ using Core.Services.EntityService;
 
 namespace Core.Services.BugService
 {
-    public interface IBugService : IEntityService<Bug, BugModel, AddBugModel, EditBugModel>
+    public interface IBugService : IQueryEntityService<Bug, BugModel, AddBugModel, EditBugModel>
     {
     }
 }

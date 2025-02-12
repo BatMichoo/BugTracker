@@ -2,7 +2,6 @@
 using Core.DTOs.Comments;
 using Core.Entities.CommentEntity;
 using Core.EntitiesQueryUtilities.Comments;
-using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Repositories;
 using Core.Services.EntityService;
 
@@ -10,9 +9,16 @@ namespace Core.Services.CommentService
 {
     public class CommentService : EntityService<Comment, CommentModel, AddCommentModel, EditCommentModel, CommentOrderBy, CommentFilterType>, ICommentService
     {
-        public CommentService(ICommentRepository repository, ICommentQueryParametersFactory queryableParametersFactory, IMapper mapper)
-            : base(repository, mapper, queryableParametersFactory)
+        public CommentService(ICommentRepository repository, IMapper mapper)
+            : base(repository, mapper)
         {
+        }
+
+        public async Task<List<Comment>> GetByBugId(int bugId)
+        {
+            var comments = await ((ICommentRepository) _repository).GetByBugId(bugId);
+
+            return comments;
         }
 
         public async Task<int> Interact(int commentId, char operation)

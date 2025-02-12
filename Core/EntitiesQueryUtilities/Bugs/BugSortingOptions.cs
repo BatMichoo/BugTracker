@@ -14,6 +14,8 @@ namespace Core.EntitiesQueryUtilities.Bugs
         public SortOrder SortOrder { get; private set; }
         public BugSortBy SortBy { get; private set; }
 
+        public string SortingOn => SortBy.ToString();
+
         public Expression<Func<Bug, object>> Sort()
         {
             switch (SortBy)

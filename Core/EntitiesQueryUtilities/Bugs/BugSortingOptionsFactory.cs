@@ -4,7 +4,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
 {
     public class BugSortingOptionsFactory : IBugSortingOptionsFactory
     {
-        public IList<ISortingOptions<Bug>> CreateSortingOptions(string? sortOptions)
+        public List<ISortingOptions<Bug>> CreateSortingOptions(string? sortOptions)
         {
             var sortingList = new List<ISortingOptions<Bug>>();
 

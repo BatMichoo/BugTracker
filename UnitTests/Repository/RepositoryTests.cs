@@ -1,7 +1,5 @@
 ﻿using Core.Entities.BugEntity;
-using Core.EntitiesQueryUtilities.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters;
-using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Infrastructure;
 using Infrastructure.QueryBuilders;
 using UnitTests.Utilities;
@@ -12,11 +10,9 @@ namespace UnitTests.Repository
     {
         private TestRepository? _repository;
         private TrackerDbContext _dbContext;
-        private readonly IBugQueryParametersFactory _paramsFactory;
 
         public RepositoryTests()
         {
-            _paramsFactory = new BugQueryParametersFactory(new BugSortingOptionsFactory(), new BugFilterFactory());
         }
 
         [SetUp]
@@ -90,9 +86,8 @@ namespace UnitTests.Repository
         public async Task GetAll_ReturnsNonEmptyCollection()
         {
             int mininumTreshold = 1;
-            var queryParams = _paramsFactory.CreateGetAllQuery();
 
-            var result = await _repository!.ExecuteQuery(queryParams);
+            var result = await _repository!.GetAll();
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.AtLeast(mininumTreshold));

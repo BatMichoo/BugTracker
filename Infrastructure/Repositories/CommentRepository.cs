@@ -1,5 +1,4 @@
 ﻿using Core.Entities.CommentEntity;
-using Core.EntitiesQueryUtilities.QueryBuilders;
 using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +6,18 @@ namespace Infrastructure.Repositories
 {
     public class CommentRepository : Repository<Comment>, ICommentRepository
     {
-        public CommentRepository(TrackerDbContext dbContext, ICommentQueryableBuilder queryableBuilder)
-            : base(dbContext, queryableBuilder)
+        public CommentRepository(TrackerDbContext dbContext)
+            : base(dbContext)
         {
+        }
+
+        public async Task<List<Comment>> GetByBugId(int bugId)
+        {
+            var entities = await AddInclusions(AsQueryable())
+                .Where(c => c.BugId == bugId)
+                .ToListAsync();
+
+            return entities;
         }
 
         protected override IQueryable<Comment> AddInclusions(IQueryable<Comment> query)

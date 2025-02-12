@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTOs;
 using Core.Entities;
-using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Repositories;
 
 namespace Core.Services.EntityService
@@ -17,13 +15,11 @@ namespace Core.Services.EntityService
     {
         protected readonly IRepository<TEntity> _repository;
         protected readonly IMapper _mapper;
-        protected readonly IQueryParametersFactory<TEntity, TSortBy, TFilterBy> _queryParametersFactory;
 
-        protected EntityService(IRepository<TEntity> repository, IMapper mapper, IQueryParametersFactory<TEntity, TSortBy, TFilterBy> queryParametersFactory)
+        protected EntityService(IRepository<TEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _queryParametersFactory = queryParametersFactory;
         }
 
         public async Task<TModel> Create(TCreate createModel)
@@ -41,25 +37,9 @@ namespace Core.Services.EntityService
         public async Task<bool> DoesExist(int id)
             => await _repository.DoesExist(id);
 
-        public async Task<PagedList<TModel>> Fetch(QueryParameters<TEntity> queryParameters)
+        public virtual async Task<List<TModel>> GetAll()
         {
-            var totalElementCount = await _repository.Count(queryParameters);
-
-            queryParameters.PagingInfo.UpdatePaging(totalElementCount);
-            var entitiesList = await _repository.ExecuteQuery(queryParameters);
-
-            return new PagedList<TModel>
-            {
-                PageInfo = queryParameters.PagingInfo,
-                Items = _mapper.Map<List<TModel>>(entitiesList)
-            };
-        }
-
-        public async Task<List<TModel>> GetAll()
-        {
-            var allEntitiesQuery = _queryParametersFactory.CreateGetAllQuery();
-
-            var modelList = await _repository.ExecuteQuery(allEntitiesQuery);
+            var modelList = await _repository.GetAll();
 
             return _mapper.Map<List<TModel>>(modelList);
         }

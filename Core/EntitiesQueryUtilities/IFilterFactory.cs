@@ -6,7 +6,7 @@ namespace Core.EntitiesQueryUtilities
         where TEntity : BaseModel
         where TFilterByEnum : struct, Enum
     {
-        IList<IFilter<TEntity>> CreateFilters(string? filter = null);
+        List<IFilter<TEntity>> CreateFilters(string? filter = null);
         IFilter<TEntity> CreateFilter(TFilterByEnum filterBy, string? value = null);
     }
 }

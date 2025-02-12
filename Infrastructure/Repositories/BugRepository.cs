@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class BugRepository : Repository<Bug>, IBugRepository
+    public class BugRepository : QueryRepository<Bug>, IBugRepository
     {
         public BugRepository(TrackerDbContext dbContext, IBugQueryableBuilder queryableBuilder)
             : base(dbContext, queryableBuilder)

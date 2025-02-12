@@ -16,7 +16,7 @@ namespace Core.EntitiesQueryUtilities.Comments
             }
         }
 
-        public IList<IFilter<Comment>> CreateFilters(string? filterInput)
+        public List<IFilter<Comment>> CreateFilters(string? filterInput)
         {
             var filters = new List<IFilter<Comment>>();
 

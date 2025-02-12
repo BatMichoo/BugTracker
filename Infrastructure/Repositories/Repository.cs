@@ -1,6 +1,4 @@
 ﻿using Core.Entities;
-using Core.EntitiesQueryUtilities.QueryBuilders;
-using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +7,12 @@ namespace Infrastructure.Repositories
     public abstract class Repository<T> : IRepository<T> where T : BaseModel
     {
         private readonly TrackerDbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
-        private readonly IQueryableBuilder<T> _queryableBuilder;
+        protected readonly DbSet<T> _dbSet;
 
-        public Repository(TrackerDbContext dbContext, IQueryableBuilder<T> queryableBuilder)
+        public Repository(TrackerDbContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
-            _queryableBuilder = queryableBuilder;
         }
 
         public async Task<T> Create(T entity)
@@ -50,16 +46,18 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<List<T>> ExecuteQuery(QueryParameters<T> queryParameters)
+        public virtual Task<List<T>> GetAll()
         {
-            var query = AddInclusions(AsQueryable());
-
-            query = _queryableBuilder.BuildQuery(query, queryParameters);
-
-            var entityList = await query.ToListAsync();
+            var entityList = _dbSet.ToListAsync();
 
             return entityList;
         }
+
+        protected IQueryable<T> AsQueryable()
+            => _dbSet.AsQueryable();
+
+        protected virtual IQueryable<T> AddInclusions(IQueryable<T> query)
+            => query;
 
         public async Task<T> Update(T updatedEntity)
         {
@@ -79,26 +77,11 @@ namespace Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        private IQueryable<T> AsQueryable()
-            => _dbSet.AsQueryable();
-
         public async Task Delete(T entity)
         {
             _dbSet.Remove(entity);
 
             await SaveChangesAsync();
-        }
-
-        protected virtual IQueryable<T> AddInclusions(IQueryable<T> query)
-            => query;
-
-        public async Task<int> Count(QueryParameters<T> queryParameters)
-        {
-            var query = _queryableBuilder.BuildCountQuery(AsQueryable(), queryParameters);
-
-            var count = await query.CountAsync();
-
-            return count;
         }
 
         public async Task<bool> DoesExist(int id)

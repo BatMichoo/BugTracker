@@ -1,5 +1,4 @@
 ﻿using Core.Entities.ReplyEntity;
-using Core.EntitiesQueryUtilities.QueryBuilders;
 using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +6,18 @@ namespace Infrastructure.Repositories
 {
     public class ReplyRepository : Repository<Reply>, IReplyRepository
     {
-        public ReplyRepository(TrackerDbContext dbContext, IReplyQueryableBuilder queryableBuilder)
-            : base(dbContext, queryableBuilder)
+        public ReplyRepository(TrackerDbContext dbContext)
+            : base(dbContext)
         {
+        }
+
+        public async Task<List<Reply>> GetByCommentId(int commentId)
+        {
+            var entities = await AddInclusions(AsQueryable())
+                .Where(r => r.CommentId == commentId)
+                .ToListAsync();
+
+            return entities;
         }
 
         protected override IQueryable<Reply> AddInclusions(IQueryable<Reply> query)
