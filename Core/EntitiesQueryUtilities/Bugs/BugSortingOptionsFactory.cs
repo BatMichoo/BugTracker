@@ -4,7 +4,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
 {
     public class BugSortingOptionsFactory : IBugSortingOptionsFactory
     {
-        public List<ISortingOptions<Bug>> CreateSortingOptions(string? sortOptions)
+        public List<ISortingOptions<Bug>> CreateSortingOptions(string? sortOptions = null)
         {
             var sortingList = new List<ISortingOptions<Bug>>();
 
@@ -32,6 +32,10 @@ namespace Core.EntitiesQueryUtilities.Bugs
                         break;
                     }
                 }
+            }
+            else
+            {
+                sortingList.Add(new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status));
             }
 
             return sortingList;

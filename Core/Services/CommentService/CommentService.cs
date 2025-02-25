@@ -14,11 +14,13 @@ namespace Core.Services.CommentService
         {
         }
 
-        public async Task<List<Comment>> GetByBugId(int bugId)
+        public async Task<List<CommentModel>> GetByBugId(int bugId)
         {
             var comments = await ((ICommentRepository) _repository).GetByBugId(bugId);
 
-            return comments;
+            var models = _mapper.Map<List<CommentModel>>(comments);
+
+            return models;
         }
 
         public async Task<int> Interact(int commentId, char operation)

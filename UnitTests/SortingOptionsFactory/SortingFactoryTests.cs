@@ -20,6 +20,17 @@ namespace UnitTests.SortingOptionsFactory
         }
 
         [Test]
+        public void Test_Create_ReturnsDefault_Status_Ascending()
+        {
+            var expected = new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status);
+
+            var result = _factory!.CreateSortingOptions()[0];
+
+            Assert.That(result.SortingOn, Is.EqualTo(BugSortBy.Status.ToString()));
+            Assert.That(result.SortOrder, Is.EqualTo(SortOrder.Ascending));
+        }
+
+        [Test]
         public void Test_Create_Returns_SingleByIdDesc()
         {
             var expected = new BugSortingOptions(SortOrder.Descending, BugSortBy.Id);

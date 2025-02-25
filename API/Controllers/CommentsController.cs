@@ -1,9 +1,7 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
-using Core.DTOs;
 using Core.DTOs.Comments;
 using Core.Entities.UserEntity;
-using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.Other;
 using Core.Services.CommentService;
 using Core.Services.UserService;
@@ -21,7 +19,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
 
         public CommentsController(ICommentService commentService, IUserService<BugUser> userService,
-            IMapper mapper, ICommentQueryParametersFactory commentQueryFactory)
+            IMapper mapper)
         {
             _commentService = commentService;
             _userService = userService;
@@ -32,7 +30,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetComment(int bugId, int commentId)
+        public async Task<ActionResult<CommentViewModel>> GetComment(int bugId, int commentId)
         {
             var comment = await _commentService.GetById(commentId);
 
@@ -60,17 +58,17 @@ namespace API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCommentsByBugId(int bugId)
+        public async Task<ActionResult<CommentViewModel>> GetCommentsByBugId(int bugId)
         {
             var comments = await _commentService.GetByBugId(bugId);
 
-            return Ok(_mapper.Map<PagedList<CommentViewModel>>(comments));
+            return Ok(_mapper.Map<List<CommentViewModel>>(comments));
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PostComment(int bugId, AddCommentViewModel comment)
+        public async Task<ActionResult<CommentViewModel>> PostComment(int bugId, AddCommentViewModel comment)
         {
             string userId = _userService.RetrieveUserId();
 
@@ -116,7 +114,7 @@ namespace API.Controllers
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateComment(int bugId, EditCommentViewModel editModel)
+        public async Task<ActionResult<CommentViewModel>> UpdateComment(int bugId, EditCommentViewModel editModel)
         {
             bool doesExist = await _commentService.DoesExist(editModel.Id);
 

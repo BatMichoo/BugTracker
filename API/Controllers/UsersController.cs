@@ -19,8 +19,8 @@ namespace API.Controllers
 
         public UsersController(IUserService<BugUser> userService, IMapper mapper)
         {
-            this._userService = userService;
-            this._mapper = mapper;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]

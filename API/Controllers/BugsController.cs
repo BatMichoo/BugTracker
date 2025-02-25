@@ -36,7 +36,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<BugViewModel>> Get(int id)
         {
             var bug = await _bugService.GetById(id);
 
@@ -69,7 +69,7 @@ namespace API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post(AddBugViewModel addBugView)
+        public async Task<ActionResult<BugViewModel>> Post(AddBugViewModel addBugView)
         {
             var newBugModel = _mapper.Map<AddBugModel>(addBugView);
 
@@ -96,7 +96,7 @@ namespace API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Put(EditBugViewModel editBugViewModel)
+        public async Task<ActionResult<BugViewModel>> Put(EditBugViewModel editBugViewModel)
         {
             if (!editBugViewModel.Validate())
             {
@@ -138,7 +138,7 @@ namespace API.Controllers
         [HttpGet("assigned-to/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAssignedBugs(string userId)
+        public async Task<ActionResult<QueryViewModel<BugViewModel>>> GetAssignedBugs(string userId)
         {
             var user = await _userService.RetrieveUserById(userId);
 
@@ -155,13 +155,15 @@ namespace API.Controllers
 
             var userWithBugs = await _bugService.Fetch(queryParameters);
 
-            return Ok(userWithBugs);
+            var models = _mapper.Map<QueryViewModel<BugViewModel>>(userWithBugs);
+
+            return Ok(models);
         }
 
         [HttpGet("created-by/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCreatedByBugs(string userId)
+        public async Task<ActionResult<QueryViewModel<BugViewModel>>> GetCreatedByBugs(string userId)
         {
             var user = await _userService.RetrieveUserById(userId);
 
@@ -178,7 +180,9 @@ namespace API.Controllers
 
             var userWithBugs = await _bugService.Fetch(queryParameters);
 
-            return Ok(userWithBugs);
+            var models = _mapper.Map<QueryViewModel<BugViewModel>>(userWithBugs);
+
+            return Ok(models);
         }
 
         [HttpGet("close/{id}")]
