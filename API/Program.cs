@@ -213,6 +213,16 @@ namespace API
                 });
             });
 
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("ReactFrontEnd", p =>
+                {
+                    p.WithOrigins("https://localhost:5173");
+                    p.AllowAnyHeader();
+                    p.AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             await Initialize(builder, app);
@@ -223,6 +233,8 @@ namespace API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("ReactFrontEnd");
 
             app.UseHttpsRedirection();
 

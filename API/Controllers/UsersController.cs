@@ -118,7 +118,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RetrieveRoles()
         {
-            var roles = await _userService.GetAllRoles();
+            var roles = await _userService.GetAllUserRoles();
 
             return Ok(roles);
         }

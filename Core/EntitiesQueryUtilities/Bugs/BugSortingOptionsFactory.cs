@@ -36,6 +36,7 @@ namespace Core.EntitiesQueryUtilities.Bugs
             else
             {
                 sortingList.Add(new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status));
+                sortingList.Add(new BugSortingOptions(SortOrder.Descending, BugSortBy.Priority));
             }
 
             return sortingList;

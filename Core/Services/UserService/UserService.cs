@@ -98,7 +98,6 @@ namespace Core.Services.UserService
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
             var users = await _userManager.Users
-                .Where(u => u.UserName != "Administrator")
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -110,7 +109,7 @@ namespace Core.Services.UserService
             return new List<UserViewModel>();
         }
 
-        public async Task<List<string>> GetAllRoles()
+        public async Task<List<string>> GetAllUserRoles()
         {
             var roles = await _roleManager.Roles
                 .AsNoTracking()
@@ -135,7 +134,7 @@ namespace Core.Services.UserService
 
         public async Task<LoginResponseModel> GenerateLoginResponse(T user)
         {
-            var userRoles = await GetAllRoles();
+            var userRoles = await GetAllUserRoles();
 
             var roleClaims = userRoles.Select(r => new Claim(ClaimTypes.Role, r));
 

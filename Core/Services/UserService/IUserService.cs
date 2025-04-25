@@ -16,7 +16,7 @@ namespace Core.Services.UserService
         Task<bool> SignInUserWithPassword(T user, string password);
         Task SignOut();
 
-        Task<List<string>> GetAllRoles();
+        Task<List<string>> GetAllUserRoles();
         Task<LoginResponseModel> GenerateLoginResponse(T user);
     }
 }
