@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.DTOs;
-using Core.DTOs.Bugs;
 using Core.Entities;
 using Core.EntitiesQueryUtilities.QueryParameters;
 using Core.Repositories;

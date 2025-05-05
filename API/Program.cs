@@ -40,12 +40,33 @@ namespace API
 
             // Add services to the container.
 
-            string dbAccessCreds = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:DbAccessEnvName"]) ??
+            string? dbConnString = string.Empty;
+
+            if (builder.Environment.IsDevelopment())
+            {
+                dbConnString = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:BugTracker"]);
+
+                string? server = Environment.GetEnvironmentVariable("SQL_SERVER_HOST");
+                string? database = Environment.GetEnvironmentVariable("SQL_DATABASE");
+                string? user = Environment.GetEnvironmentVariable("SQL_USER");
+                string? password = Environment.GetEnvironmentVariable("SA_PASSWORD");
+
+                dbConnString = string.Format(dbConnString, server, database, user, password);
+            }
+            else
+            {
+                dbConnString = Environment.GetEnvironmentVariable("ConnectionString");                
+            }                
+
+            if (dbConnString == null)
+            {
                 throw new ArgumentNullException("No connection string to the DB.");
+            }
+
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
-                opt.UseSqlServer(string.Format(builder.Configuration.GetConnectionString("BugTracker"), dbAccessCreds));
+                opt.UseSqlServer(dbConnString);
             })
                 .AddIdentity<BugUser, IdentityRole>(opt =>
                 {
@@ -64,11 +85,22 @@ namespace API
                 .AddUserManager<UserManager<BugUser>>()
                 .AddRoleManager<RoleManager<IdentityRole>>();
 
+            string? uiDomainUrl = Environment.GetEnvironmentVariable("DOMAIN_URL");
+            string? uiPort = Environment.GetEnvironmentVariable("REACT_APP_PORT");
+
+            if (uiDomainUrl == null)
+                throw new ArgumentNullException(nameof(uiDomainUrl), $"Url is: {uiDomainUrl}");
+
+            if (uiPort == null)
+                throw new ArgumentNullException(nameof(uiPort), $"Url is: {uiPort}");
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
             {
-                string jwtSecretKey = Environment.GetEnvironmentVariable(builder.Configuration["Jwt:SecretKeyEnvName"]) ?? 
+                string? jwtSecretKey = Environment.GetEnvironmentVariable(builder.Configuration["Jwt:SecretKeyEnvName"]) ?? 
                     throw new ArgumentNullException("No secret key for Jwt signing.");
+
+                string? serverPort = Environment.GetEnvironmentVariable("HTTP_SERVER_PORT");
 
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -76,8 +108,8 @@ namespace API
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "https://localhost:7272",
-                    ValidAudience = "https://localhost:7094",
+                    ValidIssuer = $"http://localhost:{serverPort}",
+                    ValidAudience = $"http://{uiDomainUrl}:{uiPort}",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
                     RoleClaimType = ClaimTypes.Role,
                     NameClaimType = ClaimTypes.Name,                    
@@ -217,7 +249,7 @@ namespace API
             {
                 opt.AddPolicy("ReactFrontEnd", p =>
                 {
-                    p.WithOrigins("https://localhost:5173");
+                    p.WithOrigins($"http://{uiDomainUrl}:{uiPort}");
                     p.AllowAnyHeader();
                     p.AllowAnyMethod();
                 });

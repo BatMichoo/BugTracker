@@ -12,7 +12,8 @@ namespace Core.DTOs.Bugs
 
         [MaxLength(BugValidation.DescMaxLength)]
         public string? Description { get; set; }
-        public string? AssigneeId { get; set; } 
+        public string? AssigneeId { get; set; }
+        public string? Title { get; set; }
 
         public bool Validate()
         {
@@ -20,8 +21,9 @@ namespace Core.DTOs.Bugs
             bool hasPriority = Priority != null;
             bool hasDescription = !string.IsNullOrEmpty(Description);
             bool isAssigned = !string.IsNullOrEmpty(AssigneeId);
+            bool hasTitle = !string.IsNullOrEmpty(Title);
 
-            return hasStatus || hasPriority || hasDescription || isAssigned;
+            return hasStatus || hasPriority || hasDescription || isAssigned || hasTitle;
         }
     }
 }

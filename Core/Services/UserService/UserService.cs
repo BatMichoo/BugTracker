@@ -154,8 +154,8 @@ namespace Core.Services.UserService
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "https://localhost:7272",
-                audience: "https://localhost:7094",
+                issuer: "http://localhost:80",
+                audience: "http://localhost:3000",
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds

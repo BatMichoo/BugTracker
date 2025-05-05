@@ -19,12 +19,9 @@ namespace Core.EntitiesQueryUtilities.Bugs
                     string sortBy = sortingInfo[0];
                     string order = sortingInfo[1];
 
-                    if (Enum.TryParse(sortBy, true, out BugSortBy sortingBy))
+                    if (Enum.TryParse(sortBy, true, out BugSortBy sortingBy) && Enum.TryParse(order, true, out SortOrder sortOrder))
                     {
-                        if (Enum.TryParse(order, true, out SortOrder sortOrder))
-                        {
-                            sortingList.Add(new BugSortingOptions(sortOrder, sortingBy));
-                        }
+                        sortingList.Add(new BugSortingOptions(sortOrder, sortingBy));
                     }
                     else
                     {

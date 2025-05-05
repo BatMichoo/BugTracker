@@ -11,5 +11,6 @@ namespace Core.DTOs.Bugs
         public string? AssigneeId { get; set; }
         public string? LastUpdatedById { get; set; }
         public DateTime LastUpdatedOn { get; set; }
+        public string? Title { get; set; }
     }
 }
