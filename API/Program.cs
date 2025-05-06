@@ -14,7 +14,10 @@ using Core.Services.BugService;
 using Core.Services.CommentService;
 using Core.Services.ReplyService;
 using Core.Services.UserService;
+using Core.Utilities;
 using Core.Utilities.JsonConverters;
+using DotNetEnv;
+using DotNetEnv.Extensions;
 using Infrastructure;
 using Infrastructure.QueryBuilders;
 using Infrastructure.Repositories;
@@ -40,29 +43,18 @@ namespace API
 
             // Add services to the container.
 
-            string? dbConnString = string.Empty;
+            var envVars = Env.Load("../.env.development").ToDotEnvDictionary();
+
+            EnvVariableService.LoadEnvironmentVariables(envVars);
 
             if (builder.Environment.IsDevelopment())
             {
-                dbConnString = Environment.GetEnvironmentVariable(builder.Configuration["ConnectionStrings:BugTracker"]);
+                string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"];
 
-                string? server = Environment.GetEnvironmentVariable("SQL_SERVER_HOST");
-                string? database = Environment.GetEnvironmentVariable("SQL_DATABASE");
-                string? user = Environment.GetEnvironmentVariable("SQL_USER");
-                string? password = Environment.GetEnvironmentVariable("SA_PASSWORD");
-
-                dbConnString = string.Format(dbConnString, server, database, user, password);
-            }
-            else
-            {
-                dbConnString = Environment.GetEnvironmentVariable("ConnectionString");                
-            }                
-
-            if (dbConnString == null)
-            {
-                throw new ArgumentNullException("No connection string to the DB.");
+                EnvVariableService.SetConnectionString(dbConnStringDev);
             }
 
+            string dbConnString = EnvVariableService.GetConnectionString();
 
             builder.Services.AddDbContext<TrackerDbContext>(opt =>
             {
@@ -85,22 +77,10 @@ namespace API
                 .AddUserManager<UserManager<BugUser>>()
                 .AddRoleManager<RoleManager<IdentityRole>>();
 
-            string? uiDomainUrl = Environment.GetEnvironmentVariable("DOMAIN_URL");
-            string? uiPort = Environment.GetEnvironmentVariable("REACT_APP_PORT");
-
-            if (uiDomainUrl == null)
-                throw new ArgumentNullException(nameof(uiDomainUrl), $"Url is: {uiDomainUrl}");
-
-            if (uiPort == null)
-                throw new ArgumentNullException(nameof(uiPort), $"Url is: {uiPort}");
-
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
             {
-                string? jwtSecretKey = Environment.GetEnvironmentVariable(builder.Configuration["Jwt:SecretKeyEnvName"]) ?? 
-                    throw new ArgumentNullException("No secret key for Jwt signing.");
-
-                string? serverPort = Environment.GetEnvironmentVariable("HTTP_SERVER_PORT");
+                string jwtSecretKey = EnvVariableService.GetJwtSecretKey();
 
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -108,8 +88,8 @@ namespace API
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = $"http://localhost:{serverPort}",
-                    ValidAudience = $"http://{uiDomainUrl}:{uiPort}",
+                    ValidIssuer = EnvVariableService.GetJwtIssuer(),
+                    ValidAudience = EnvVariableService.GetJwtAudience(),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
                     RoleClaimType = ClaimTypes.Role,
                     NameClaimType = ClaimTypes.Name,                    
@@ -249,7 +229,7 @@ namespace API
             {
                 opt.AddPolicy("ReactFrontEnd", p =>
                 {
-                    p.WithOrigins($"http://{uiDomainUrl}:{uiPort}");
+                    p.WithOrigins(EnvVariableService.GetCorsOriginsUrl());
                     p.AllowAnyHeader();
                     p.AllowAnyMethod();
                 });

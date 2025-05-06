@@ -2,6 +2,7 @@
 using Core.DTOs.Users;
 using Core.Entities.UserEntity;
 using Core.Other;
+using Core.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -148,14 +149,14 @@ namespace Core.Services.UserService
 
             claims.AddRange(roleClaims);
 
-            string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey")!;
+            string secretKey = EnvVariableService.GetJwtSecretKey();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "http://localhost:80",
-                audience: "http://localhost:3000",
+                issuer: EnvVariableService.GetJwtIssuer(),
+                audience: EnvVariableService.GetJwtAudience(),
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds
