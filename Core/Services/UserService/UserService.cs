@@ -53,7 +53,7 @@ namespace Core.Services.UserService
                 throw new ArgumentException("Roles could not be added.");
             }
 
-            throw new ArgumentException(string.Join(Environment.NewLine, result.Errors));
+            throw new ArgumentException(string.Join(Environment.NewLine, result.Errors.Select(r => r.Description)));
         }
 
         public async Task<T> RetrieveUser()

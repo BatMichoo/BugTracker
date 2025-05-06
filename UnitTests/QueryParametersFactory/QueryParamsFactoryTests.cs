@@ -38,7 +38,8 @@ namespace UnitTests.QueryParametersFactory
         [Test]
         public async Task Test_AssignedToUserQueryParams()
         {
-            string userId = "abc";
+            var user = _dbContext.Users.FirstOrDefault()!;
+            string userId = user.Id;
 
             var queryParameters = _factory.CreateAssignedToUserQuery(userId);
             var result = await _repository.ExecuteQuery(queryParameters);
@@ -51,7 +52,8 @@ namespace UnitTests.QueryParametersFactory
         [Test]
         public async Task Test_CreatedByUserQueryParams()
         {
-            string userId = "abc";
+            var user = _dbContext.Users.FirstOrDefault()!;
+            string userId = user.Id;
 
             var queryParameters = _factory.CreateMadeByUserQuery(userId);
             var result = await _repository.ExecuteQuery(queryParameters);
@@ -74,17 +76,17 @@ namespace UnitTests.QueryParametersFactory
         [Test]
         public async Task BetweenTwoDates_ReturnsOneResult()
         {
-            var startDate = DateTime.Parse("1.10.2024");
-            var endDate = DateTime.Parse("2.10.2024");
+            var startDate = DateTime.Now.AddMonths(-1);
+            var endDate = DateTime.Now.AddMonths(1);
             var queryParams = _factory.CreateBetweenTwoDatesQuery(startDate, endDate);
 
             var result = await _repository.ExecuteQuery(queryParams);
 
-            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result.Count, Is.EqualTo(2));
         }
 
         [Test]
-        public async Task NotAssignedQuery_ReturnsNoResults()
+        public async Task NotAssignedQuery_ReturnsNoResult()
         {
             var queryParams = _factory.CreateNotAssignedQuery();
 

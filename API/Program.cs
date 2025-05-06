@@ -62,14 +62,18 @@ namespace API
             })
                 .AddIdentity<BugUser, IdentityRole>(opt =>
                 {
+                    opt.User.RequireUniqueEmail = true;
                     opt.SignIn.RequireConfirmedAccount = false;
                     opt.SignIn.RequireConfirmedEmail = false;
-                    opt.User.RequireUniqueEmail = true;
-                    opt.Password.RequireDigit = false;
-                    opt.Password.RequiredUniqueChars = 0;
-                    opt.Password.RequireNonAlphanumeric = false;
-                    opt.Password.RequireUppercase = false;
-                    opt.Password.RequireLowercase = false;
+
+                    if (builder.Environment.IsDevelopment())
+                    {
+                        opt.Password.RequireDigit = false;
+                        opt.Password.RequiredUniqueChars = 0;
+                        opt.Password.RequireNonAlphanumeric = false;
+                        opt.Password.RequireUppercase = false;
+                        opt.Password.RequireLowercase = false;
+                    }
                 })
                 .AddEntityFrameworkStores<TrackerDbContext>()
                 .AddDefaultTokenProviders()
@@ -237,8 +241,6 @@ namespace API
 
             var app = builder.Build();
 
-            await Initialize(builder, app);
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -254,6 +256,8 @@ namespace API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            await Initialize(builder, app);
 
             app.Run();
         }

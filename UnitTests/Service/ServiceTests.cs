@@ -35,7 +35,8 @@ namespace UnitTests.Service
         [Test]
         public async Task Create_ShouldReturnCreatedItem()
         {
-            var entity = new AddBugModel { Title = "Title4", CreatorId = "ab", Description = "test 123456", Priority = BugPriority.Normal, Status = BugStatus.InProgress };
+            var user = _context.Users.FirstOrDefault();
+            var entity = new AddBugModel { Title = "Title4", CreatorId = user.Id, Description = "test 123456", Priority = BugPriority.Normal, Status = BugStatus.InProgress };
 
             var result = await _service!.Create(entity);
 
@@ -70,7 +71,9 @@ namespace UnitTests.Service
         [Test]
         public async Task Update()
         {
-            var updatedEntity = new EditBugModel { Id = 1, AssigneeId = "ab", Description = "test 1234 update", Priority = BugPriority.Normal, Status = BugStatus.Fixed, LastUpdatedById = "a" };
+            var user = _context.Users.FirstOrDefault();
+
+            var updatedEntity = new EditBugModel { Id = 1, Title = "Test Title", AssigneeId = user.Id, Description = "test 1234 update", Priority = BugPriority.Normal, Status = BugStatus.Fixed, LastUpdatedById = user.Id };
 
             var result = await _service!.Update(updatedEntity);
 

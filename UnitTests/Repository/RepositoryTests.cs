@@ -36,11 +36,12 @@ namespace UnitTests.Repository
         [Test]
         public async Task Create_ShouldReturnCreatedItem()
         {
-            var entity = new Bug { Id = 4, Title = "Title4", AssigneeId = "abcd", CreatorId = "ab", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = "ab" };
+            var user = _dbContext.Users.FirstOrDefault();
+            var entity = new Bug { Title = "Title4", AssigneeId = user.Id, CreatorId = "ab", Description = "test 123456", Priority = 2, Status = 2, LastUpdatedById = user.Id, Creator = user };
 
             var result = await _repository!.Create(entity);
 
-            Assert.That(result.Id, Is.EqualTo(entity.Id));
+            Assert.That(result.Title, Is.EqualTo(entity.Title));
         }
 
         [Test]
@@ -69,7 +70,9 @@ namespace UnitTests.Repository
         [Test]
         public async Task Update()
         {
-            var updatedEntity = new Bug { Id = 1, Title = "Title5", AssigneeId = "ab", CreatorId = "abc", Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = "b" };
+            var user = _dbContext.Users.FirstOrDefault();
+            var bug = _dbContext.Bugs.FirstOrDefault();
+            var updatedEntity = new Bug { Id = bug.Id, Title = "Title5", AssigneeId = user.Id , Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = user.Id};
 
             var result = await _repository!.Update(updatedEntity);
 

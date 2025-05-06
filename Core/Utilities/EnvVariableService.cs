@@ -3,6 +3,7 @@ namespace Core.Utilities
 {
     public class EnvVariableService
     {
+
         public static string GetJwtSecretKey()
         {
             string? JwtSecretKey = GetVariable("JWT_SECRET_KEY");
