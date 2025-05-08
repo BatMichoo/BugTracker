@@ -8,9 +8,9 @@ namespace Core.DTOs.Bugs
     {
         public int Id { get; set; }
         public DateTime CreatedOn { get; set; }
-        public BugStatus Status { get; set; }
+        public int Status { get; set; }
         public DateTime LastUpdatedOn { get; set; }
-        public BugPriority Priority { get; set; }
+        public int Priority { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public UserViewModel CreatedBy { get; set; } = null!;

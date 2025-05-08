@@ -112,11 +112,7 @@ namespace Core.Services.UserService
 
         public async Task<List<string>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles
-                .AsNoTracking()
-                .Where(r => r.Name != UserRoles.Admin)
-                .Select(r => r.Name)
-                .ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
 
             if (roles.Any())
             {
@@ -133,21 +129,39 @@ namespace Core.Services.UserService
             return user;
         }
 
+        private List<string> GeneratePermissions(string role)
+        {
+            List<string> permissions = new();
+
+            if (role != UserRoles.User)
+            {
+                permissions.Add("Delete");
+                permissions.Add("RoleAssign");
+
+                if (role == UserRoles.Admin)
+                {
+                    permissions.Add("DeleteUser");
+                }
+            }
+
+            return permissions;
+        }
+
         public async Task<LoginResponseModel> GenerateLoginResponse(T user)
         {
-            var userRoles = await GetAllUserRoles();
-
-            var roleClaims = userRoles.Select(r => new Claim(ClaimTypes.Role, r));
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.First();
+            var permissions = GeneratePermissions(userRole);
 
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, userRole),
+                new Claim("Permissions", string.Join(", ", permissions)),
             };
-
-            claims.AddRange(roleClaims);
 
             string secretKey = EnvVariableService.GetJwtSecretKey();
 

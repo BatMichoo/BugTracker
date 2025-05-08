@@ -5,7 +5,7 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugTitleFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugTitleFilter);
+        private const string _name = nameof(BugFilterType.Title);
         private readonly string _searchedTitle;
 
         public BugTitleFilter(string searchedTitle) : base(_name, searchedTitle)

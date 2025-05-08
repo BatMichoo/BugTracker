@@ -5,7 +5,7 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugCreatedByFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugCreatedByFilter);
+        private const string _name = nameof(BugFilterType.CreatedBy);
         private readonly string _userId;
 
         public BugCreatedByFilter(string userId) : base(_name, userId)

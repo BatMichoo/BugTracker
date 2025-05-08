@@ -126,6 +126,7 @@ namespace API.Controllers
             return await Post(_mapper.Map<AddBugViewModel>(editBugViewModel));
         }
 
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int id)

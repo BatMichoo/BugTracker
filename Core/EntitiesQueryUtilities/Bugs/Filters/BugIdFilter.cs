@@ -5,7 +5,7 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugIdFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugIdFilter);
+        private const string _name = nameof(BugFilterType.Id);
         private readonly int _id;
 
         public BugIdFilter(int id) : base(_name, id.ToString())

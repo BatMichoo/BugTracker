@@ -6,7 +6,7 @@ namespace Core.DTOs
 {
     public class QueryModel<T> where T : class
     {
-        public List<FilterModel> Filters { get; set; }
+        public Dictionary<string, string> Filters { get; set; }
         public List<SortingModel> Sortings { get; set; }
         public PagingInfo PageInfo { get; set; }
         public List<T> Items { get; set; }
@@ -44,19 +44,18 @@ namespace Core.DTOs
             return sortingList;
         }
 
-        private static List<FilterModel> ParseFilters<U>(List<IFilter<U>> filters) where U : BaseModel
+        private static Dictionary<string, string> ParseFilters<U>(List<IFilter<U>> filters) where U : BaseModel
         {
-            var filterList = new List<FilterModel>();
+            var filterList = new Dictionary<string, string>();
 
             foreach (Filter filter in filters)
             {
-                var newEntry = new FilterModel()
-                {
-                    Name = filter.Name,
-                    Value = filter.Value
-                };
+                var nameCharArr = filter.Name.ToCharArray();
+                nameCharArr[0] = char.ToLower(nameCharArr[0]);
 
-                filterList.Add(newEntry);
+                string name = string.Join(string.Empty, nameCharArr);
+
+                filterList.Add(name, filter.Value);
             }
 
             return filterList;

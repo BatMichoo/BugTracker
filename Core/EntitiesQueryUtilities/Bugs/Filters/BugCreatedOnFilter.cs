@@ -5,7 +5,7 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugCreatedOnFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugCreatedOnFilter);
+        private const string _name = nameof(BugFilterType.CreatedOn);
         private readonly DateTime _targetDate;
         private readonly string _operation;
 

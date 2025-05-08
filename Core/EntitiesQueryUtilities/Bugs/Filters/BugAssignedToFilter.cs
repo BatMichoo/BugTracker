@@ -5,7 +5,7 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugAssignedToFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugAssignedToFilter);
+        private const string _name = nameof(BugFilterType.AssignedTo);
         private readonly string? _userId;
 
         public BugAssignedToFilter(string? userId) : base(_name, userId)

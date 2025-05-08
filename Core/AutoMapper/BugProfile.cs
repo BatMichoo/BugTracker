@@ -50,7 +50,9 @@ namespace API.AutoMapper
                 .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.Assignee))
                 .ForMember(d => d.LastUpdatedBy, opt => opt.MapFrom(s => s.LastUpdatedBy));
 
-            CreateMap<BugModel, BugViewModel>();
+            CreateMap<BugModel, BugViewModel>()
+                .ForMember(d => d.Priority, opt => opt.MapFrom(s => (int) s.Priority))
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => (int) s.Status));
         }
 
         private static bool IsDifferentAndNotNullOrEmpty(EditBugModel s, BugModel d, string m)

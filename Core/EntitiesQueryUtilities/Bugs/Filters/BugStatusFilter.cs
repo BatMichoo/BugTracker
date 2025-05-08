@@ -6,10 +6,10 @@ namespace Core.EntitiesQueryUtilities.Bugs.Filters
 {
     public class BugStatusFilter : Filter, IFilter<Bug>
     {
-        private const string _name = nameof(BugStatusFilter);
+        private const string _name = nameof(BugFilterType.Status);
         private readonly BugStatus _status;
 
-        public BugStatusFilter(BugStatus status) : base(_name, status.ToString())
+        public BugStatusFilter(BugStatus status) : base(_name, ((int)status).ToString())
         {
             _status = status;
         }
