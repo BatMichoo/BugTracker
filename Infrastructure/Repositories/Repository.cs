@@ -38,7 +38,9 @@ namespace Infrastructure.Repositories
 
         public async Task<T?> GetById(int id)
         {
-            var query = AddInclusions(AsQueryable());
+            bool isFullyIncluded = true;
+
+            var query = AddInclusions(AsQueryable(), isFullyIncluded);
 
             T? entity = await query
                 .FirstOrDefaultAsync(b => b.Id == id);
@@ -56,7 +58,7 @@ namespace Infrastructure.Repositories
         protected IQueryable<T> AsQueryable()
             => _dbSet.AsQueryable();
 
-        protected virtual IQueryable<T> AddInclusions(IQueryable<T> query)
+        protected virtual IQueryable<T> AddInclusions(IQueryable<T> query, bool isFullyIncluded = false)
             => query;
 
         public async Task<T> Update(T updatedEntity)

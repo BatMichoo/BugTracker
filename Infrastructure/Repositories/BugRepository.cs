@@ -12,16 +12,20 @@ namespace Infrastructure.Repositories
         {
         }
 
-        protected override IQueryable<Bug> AddInclusions(IQueryable<Bug> query)
+        protected override IQueryable<Bug> AddInclusions(IQueryable<Bug> query, bool isFullyIncluded = false)
         {
             query = query
                 .Include(b => b.Creator)
                 .Include(b => b.Assignee)
-                .Include(b => b.LastUpdatedBy)
-                .Include(b => b.Comments)
-                .AsSplitQuery();
+                .Include(b => b.LastUpdatedBy);
 
-            return query;
+            if (isFullyIncluded) 
+            {
+                query = query
+                    .Include(b => b.Comments);
+            }
+
+            return query.AsSplitQuery();
         }
     }
 }

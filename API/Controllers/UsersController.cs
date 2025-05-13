@@ -141,14 +141,11 @@ namespace API.Controllers
                 });
             }
 
-            if (role == UserRoles.Admin || role == UserRoles.Manager)
-            {
-                var success = await _userService.AddRolesToUser(user, new List<string> { role });
+            var success = await _userService.AddRolesToUser(user, new List<string> { role });
 
-                if (success)
-                {
-                    return Ok();
-                }
+            if (success)
+            {
+                return Ok();
             }
 
             return BadRequest(new
@@ -176,14 +173,11 @@ namespace API.Controllers
                 });
             }
 
-            if (role == UserRoles.Admin || role == UserRoles.Manager)
-            {
-                var success = await _userService.RemoveRolesFromUser(user, new List<string> { role });
+            var success = await _userService.RemoveRolesFromUser(user, new List<string> { role });
 
-                if (success)
-                {
-                    return Ok();
-                }
+            if (success)
+            {
+                return Ok();
             }
 
             return BadRequest(new

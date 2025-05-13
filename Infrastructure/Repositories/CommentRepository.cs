@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
             return entities;
         }
 
-        protected override IQueryable<Comment> AddInclusions(IQueryable<Comment> query)
+        protected override IQueryable<Comment> AddInclusions(IQueryable<Comment> query, bool isFullyIncluded = false)
             => query.Include(c => c.Author);
     }
 }
