@@ -43,12 +43,13 @@ namespace API
 
             // Add services to the container.
 
-            var envVars = Env.Load("../.env.development").ToDotEnvDictionary();
-
-            EnvVariableService.LoadEnvironmentVariables(envVars);
 
             if (builder.Environment.IsDevelopment())
             {
+                var envVars = Env.Load("../.env.development").ToDotEnvDictionary();
+
+                EnvVariableService.LoadEnvironmentVariables(envVars);
+
                 string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"];
 
                 EnvVariableService.SetConnectionString(dbConnStringDev);
@@ -96,7 +97,7 @@ namespace API
                     ValidAudience = EnvVariableService.GetJwtAudience(),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
                     RoleClaimType = ClaimTypes.Role,
-                    NameClaimType = ClaimTypes.Name,                    
+                    NameClaimType = ClaimTypes.Name,
                 };
 
                 opt.Events = new JwtBearerEvents
@@ -110,19 +111,19 @@ namespace API
                         }
 
                         return Task.CompletedTask;
-                    },                    
+                    },
                     OnAuthenticationFailed = context =>
                     {
                         context.Response.ContentType = "application/json";
-                        context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
                         var errorMessage = new { error = "Authentication failed." };
 
                         return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
-                    },                    
+                    },
                     OnForbidden = context =>
                     {
-                        context.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         return Task.CompletedTask;
                     }
                 };
@@ -231,12 +232,24 @@ namespace API
 
             builder.Services.AddCors(opt =>
             {
-                opt.AddPolicy("ReactFrontEnd", p =>
+                if (builder.Environment.IsDevelopment())
                 {
-                    p.WithOrigins(EnvVariableService.GetCorsOriginsUrl());
-                    p.AllowAnyHeader();
-                    p.AllowAnyMethod();
-                });
+                    opt.AddPolicy("Any", p =>
+                    {
+                        p.AllowAnyOrigin();
+                        p.AllowAnyHeader();
+                        p.AllowAnyMethod();
+                    });
+                }
+                else
+                {
+                    opt.AddPolicy("ReactFrontEnd", p =>
+                    {
+                        p.WithOrigins(EnvVariableService.GetCorsOriginsUrl());
+                        p.AllowAnyHeader();
+                        p.AllowAnyMethod();
+                    });
+                }
             });
 
             var app = builder.Build();
@@ -247,8 +260,18 @@ namespace API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            string corsPolicy = string.Empty;
 
-            app.UseCors("ReactFrontEnd");
+            if (builder.Environment.IsDevelopment())
+            {
+                corsPolicy = "Any";
+            }
+            else
+            {
+                corsPolicy = "ReactFrontEnd";
+            }
+
+            app.UseCors(corsPolicy);
 
             app.UseHttpsRedirection();
 
@@ -268,7 +291,7 @@ namespace API
             {
                 var roleManager = (RoleManager<IdentityRole>)scope.ServiceProvider.GetRequiredService(typeof(RoleManager<IdentityRole>));
                 var userManager = (UserManager<BugUser>)scope.ServiceProvider.GetRequiredService(typeof(UserManager<BugUser>));
-                var dbContext = (TrackerDbContext) scope.ServiceProvider.GetRequiredService(typeof(TrackerDbContext));
+                var dbContext = (TrackerDbContext)scope.ServiceProvider.GetRequiredService(typeof(TrackerDbContext));
 
                 var initializer = new Initializer(roleManager, userManager, builder.Configuration, dbContext);
 
