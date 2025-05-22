@@ -20,7 +20,7 @@ namespace UnitTests.Utilities
                 string userId = envVars["SQL_USER"];
                 string password = envVars["SA_PASSWORD"];
 
-                string cleanDbString = "Server={0};Database={1}TestDb;User ID={2};Password={3};MultipleActiveResultSets=true";
+                string cleanDbString = "Server={0};Database={1}TestDb;User ID={2};Password={3};MultipleActiveResultSets=true;TrustServerCertificate=true";
 
                 return string.Format(cleanDbString, server, database, userId, password);
             }
@@ -95,6 +95,6 @@ namespace UnitTests.Utilities
 
                 context.SaveChanges();
             }
-        }        
+        }
     }
 }
