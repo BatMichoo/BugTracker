@@ -14,6 +14,7 @@ namespace Core.Services.UserService
         Task<List<UserViewModel>> RetrieveUserList();
         Task<T> RegisterNewUserWithPassword(RegisterUserModel newUser);
         Task<bool> SignInUserWithPassword(T user, string password);
+        Task<bool> ChangePassword(T user, string oldPassword, string newPassword);
         Task SignOut();
 
         Task<List<string>> GetAllUserRoles();

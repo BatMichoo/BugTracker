@@ -63,7 +63,7 @@ namespace API.Controllers
                 {
                     user = await _userService.RegisterNewUserWithPassword(newUser);
                 }
-                catch (ArgumentException ex) 
+                catch (ArgumentException ex)
                 {
                     return BadRequest(ex.Message);
                 }
@@ -185,6 +185,47 @@ namespace API.Controllers
                 errorMessage = string.Format(ErrorMessage.Users.CouldNotAssignRole, role),
                 role
             });
+        }
+
+        [HttpGet("profile")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetProfile(string userId)
+        {
+            return Ok();
+        }
+
+        [HttpPost("change-password")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            var user = await _userService.RetrieveUserById(model.Id);
+            string loggedInUserId = (await _userService.RetrieveUser()).Id;
+
+            if (user.Id != loggedInUserId)
+            {
+                return Unauthorized();
+            }
+
+            if (user is null)
+            {
+                return BadRequest(string.Format(ErrorMessage.Users.NotFound, model.Id));
+            }
+
+            try
+            {
+                bool success = await _userService.ChangePassword(user, model.OldPassword, model.NewPassword);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok("Password change successful!");
         }
     }
 }

@@ -77,6 +77,18 @@ namespace Core.Services.UserService
             return result.Succeeded;
         }
 
+        public async Task<bool> ChangePassword(T user, string oldPassword, string newPassword)
+        {
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
+
+            throw new ArgumentException(string.Join(Environment.NewLine, result.Errors.Select(r => r.Description)));
+        }
+
         public async Task SignOut()
         {
             await _signInManager.SignOutAsync();
