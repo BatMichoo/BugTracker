@@ -63,12 +63,3 @@ This project uses environment variables for configuration. For local development
 3.  **Adjust `SQL_SERVER_HOST`:** If you are running SQL Server directly on your machine (not via a Docker service from the main repository's `docker-compose.yml`), **change `SQL_SERVER_HOST=sqlserver` to `SQL_SERVER_HOST=localhost`** in your `.env.development` file.
 
 ---
-
-## ⚙️ Makefile Commands
-
-The root of the main `BugTracker` repository often contains a `Makefile` to streamline common development tasks across both backend and frontend. While this specific Backend project uses `dotnet CLI` for core tasks, you might use `make` commands from the parent directory.
-
-* **`make help`**: This command (run from the *main repository's root*) displays a comprehensive list of all available commands for the entire project, including backend, frontend, and Docker-related operations, along with their brief descriptions. It's the primary entry point to understand common workflows.
-
----
-
