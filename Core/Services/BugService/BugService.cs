@@ -13,5 +13,11 @@ namespace Core.Services.BugService
             : base(repository, mapper)
         {
         }
+
+        public async Task<string?> GetAssigneeId(int bugId) {
+            string? assigneeId = (await _repository.GetById(bugId))?.AssigneeId;
+
+            return assigneeId;
+        }
     }
 }

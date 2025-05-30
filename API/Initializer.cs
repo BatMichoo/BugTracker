@@ -43,8 +43,8 @@ namespace API
                 }
             }
 
-            string adminEmail = Config["RootAdmin:Email"];
-            string adminUserName = Config["RootAdmin:UserName"];
+            string adminEmail = Config["RootAdmin:Email"]!;
+            string adminUserName = Config["RootAdmin:UserName"]!;
             var rootUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (rootUser == null)
@@ -56,7 +56,7 @@ namespace API
                     Name = adminUserName
                 };
 
-                var result = await userManager.CreateAsync(user, Config["RootAdmin:Password"]);
+                var result = await userManager.CreateAsync(user, Config["RootAdmin:Password"]!);
 
                 if (result.Succeeded)
                 {

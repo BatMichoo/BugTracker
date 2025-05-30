@@ -1,5 +1,4 @@
-﻿using API.ResponseModels;
-using API.Utilities.ErrorMessages;
+﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs;
 using Core.DTOs.Bugs;
@@ -12,6 +11,7 @@ using Core.Services.BugService;
 using Core.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Controllers
 {
@@ -20,13 +20,15 @@ namespace API.Controllers
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BugsController : BaseController
     {
-        private readonly IBugService _bugService;        
+        private readonly IBugService _bugService;
         private readonly IUserService<BugUser> _userService;
-        private readonly IMapper _mapper;        
+        private readonly IMapper _mapper;
         private readonly IBugQueryParametersFactory _queryFactory;
+        private readonly IHubContext<NotificationHub> _notificationHub;
 
-        public BugsController(IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
+        public BugsController(IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
         {
+            _notificationHub = notificationHub;
             _bugService = bugService;
             _userService = userService;
             _mapper = mapper;
@@ -118,6 +120,19 @@ namespace API.Controllers
                 editModel.LastUpdatedById = userId;
                 editModel.LastUpdatedOn = DateTime.Now;
 
+                string? oldAssigneeId = await _bugService.GetAssigneeId(editBugViewModel.Id);
+
+                if (!string.IsNullOrWhiteSpace(editBugViewModel.AssigneeId) && oldAssigneeId != editBugViewModel.AssigneeId
+                        && editBugViewModel.AssigneeId != userId) 
+                {
+                    var notification = new {
+                        BugId = editBugViewModel.Id,
+                        AssignedBy = userId,
+                    };
+
+                    await _notificationHub.Clients.User(editBugViewModel.AssigneeId).SendAsync("new-assigned-bug", notification);
+                }
+
                 var updatedModel = await _bugService.Update(editModel);
 
                 return Ok(_mapper.Map<BugViewModel>(updatedModel));
@@ -151,7 +166,7 @@ namespace API.Controllers
                     userId
                 });
             }
-            
+
             var queryParameters = _queryFactory.CreateAssignedToUserQuery(userId);
 
             var userWithBugs = await _bugService.Fetch(queryParameters);

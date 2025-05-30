@@ -50,7 +50,8 @@ namespace Infrastructure.Repositories
 
         public virtual Task<List<T>> GetAll()
         {
-            var entityList = _dbSet.ToListAsync();
+            var entityList = _dbSet.AsNoTracking()
+                .ToListAsync();
 
             return entityList;
         }

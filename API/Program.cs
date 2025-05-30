@@ -43,14 +43,13 @@ namespace API
 
             // Add services to the container.
 
-
             if (builder.Environment.IsDevelopment())
             {
                 var envVars = Env.Load("../.env.development").ToDotEnvDictionary();
 
                 EnvVariableService.LoadEnvironmentVariables(envVars);
 
-                string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"];
+                string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"]!;
 
                 EnvVariableService.SetConnectionString(dbConnStringDev);
             }
@@ -108,6 +107,9 @@ namespace API
                         {
                             string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
                             context.Token = token;
+                        }
+                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken)) {
+                            context.Token = accessToken;
                         }
 
                         return Task.CompletedTask;
@@ -201,6 +203,8 @@ namespace API
 
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddSignalR();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(opt =>
             {
@@ -231,26 +235,28 @@ namespace API
             });
 
             builder.Services.AddCors(opt =>
-            {
-                if (builder.Environment.IsDevelopment())
                 {
-                    opt.AddPolicy("Any", p =>
+                    if (builder.Environment.IsDevelopment())
                     {
-                        p.AllowAnyOrigin();
-                        p.AllowAnyHeader();
-                        p.AllowAnyMethod();
-                    });
-                }
-                else
-                {
-                    opt.AddPolicy("ReactFrontEnd", p =>
+                        opt.AddPolicy("Any", p =>
+                        {
+                            p.WithOrigins("http://localhost:5173");
+                            p.AllowAnyHeader();
+                            p.AllowAnyMethod();
+                            p.AllowCredentials();
+                        });
+                    }
+                    else
                     {
-                        p.WithOrigins(EnvVariableService.GetCorsOriginsUrl());
-                        p.AllowAnyHeader();
-                        p.AllowAnyMethod();
-                    });
-                }
-            });
+                        opt.AddPolicy("ReactFrontEnd", p =>
+                        {
+                            p.WithOrigins(EnvVariableService.GetCorsOriginsUrl());
+                            p.AllowAnyHeader();
+                            p.AllowAnyMethod();
+                            p.AllowCredentials();
+                        });
+                    }
+                });
 
             var app = builder.Build();
 
@@ -278,9 +284,13 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllers();
-
             await Initialize(builder, app);
+
+            app.MapControllers();
+            app.MapHub<NotificationHub>("/notifications", options =>
+            {
+                options.CloseOnAuthenticationExpiration = true;
+            });
 
             app.Run();
         }
