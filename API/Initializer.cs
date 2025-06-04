@@ -33,7 +33,7 @@ namespace API
 
         private async Task InitializeRoles()
         {
-            var roles = Config.GetSection("Roles:UserRoles").Get<string[]>();
+            var roles = Config.GetSection("Roles:UserRoles").Get<string[]>()!;
 
             foreach (var role in roles) 
             {

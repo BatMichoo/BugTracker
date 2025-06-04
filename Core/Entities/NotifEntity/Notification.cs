@@ -1,0 +1,10 @@
+namespace Core.Entities.NotifEntity
+{
+    public class Notif : BaseModel
+    {
+        public string AssignedById { get; set; } = null!;
+        public string AssigneeId { get; set; } = null!;
+        public int BugId { get; set; }
+        public bool IsRead { get; set; }
+    }
+}

@@ -9,6 +9,8 @@ using Core.Models.Bugs.BugEnums;
 using Core.Other;
 using Core.Services.BugService;
 using Core.Services.UserService;
+using Core.Repositories;
+using Core.Entities.NotifEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -25,14 +27,16 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IBugQueryParametersFactory _queryFactory;
         private readonly IHubContext<NotificationHub> _notificationHub;
+        private readonly INotifRepository _notifRepo;
 
-        public BugsController(IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
+        public BugsController(INotifRepository notifRepository, IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
         {
             _notificationHub = notificationHub;
             _bugService = bugService;
             _userService = userService;
             _mapper = mapper;
             _queryFactory = queryFactory;
+            _notifRepo = notifRepository;
         }
 
         [HttpGet("{id}")]
@@ -85,6 +89,21 @@ namespace API.Controllers
 
                 var bugViewModel = _mapper.Map<BugViewModel>(bug);
 
+                string userId = _userService.RetrieveUserId();
+
+                if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo.Id) && bugViewModel.AssignedTo.Id != userId) 
+                {
+                    var notification = new Notif {
+                        BugId = bugViewModel.Id,
+                        AssignedById = userId,
+                        AssigneeId = bugViewModel.AssignedTo.Id
+                    };
+
+                    await _notifRepo.Create(notification);
+
+                    await _notificationHub.Clients.User(bugViewModel.AssignedTo.Id).SendAsync("new-assigned-bug", notification);
+                }
+
                 return Created(uri, bugViewModel);
             }
 
@@ -125,10 +144,13 @@ namespace API.Controllers
                 if (!string.IsNullOrWhiteSpace(editBugViewModel.AssigneeId) && oldAssigneeId != editBugViewModel.AssigneeId
                         && editBugViewModel.AssigneeId != userId) 
                 {
-                    var notification = new {
+                    var notification = new Notif {
                         BugId = editBugViewModel.Id,
-                        AssignedBy = userId,
+                        AssignedById = userId,
+                        AssigneeId = editBugViewModel.AssigneeId
                     };
+
+                    await _notifRepo.Create(notification);
 
                     await _notificationHub.Clients.User(editBugViewModel.AssigneeId).SendAsync("new-assigned-bug", notification);
                 }

@@ -181,6 +181,8 @@ namespace API
             builder.Services.AddScoped<IReplyFilterFactory, ReplyFilterFactory>();
             builder.Services.AddScoped<IReplySortingOptionFactory, ReplySortingOptionsFactory>();
 
+            builder.Services.AddScoped<INotifRepository, NotifRepository>();
+
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
 
@@ -287,7 +289,7 @@ namespace API
             await Initialize(builder, app);
 
             app.MapControllers();
-            app.MapHub<NotificationHub>("/notifications", options =>
+            app.MapHub<NotificationHub>("/notifs", options =>
             {
                 options.CloseOnAuthenticationExpiration = true;
             });
