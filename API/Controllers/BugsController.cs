@@ -89,13 +89,11 @@ namespace API.Controllers
 
                 var bugViewModel = _mapper.Map<BugViewModel>(bug);
 
-                string userId = _userService.RetrieveUserId();
-
-                if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo.Id) && bugViewModel.AssignedTo.Id != userId) 
+                if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo?.Id) && bugViewModel.AssignedTo?.Id != newBugModel.CreatorId) 
                 {
                     var notification = new Notif {
                         BugId = bugViewModel.Id,
-                        AssignedById = userId,
+                        AssignedById = newBugModel.CreatorId,
                         AssigneeId = bugViewModel.AssignedTo.Id
                     };
 

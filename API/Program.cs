@@ -108,7 +108,8 @@ namespace API
                             string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
                             context.Token = token;
                         }
-                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken)) {
+                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
+                        {
                             context.Token = accessToken;
                         }
 
