@@ -35,7 +35,7 @@ namespace API
         {
             var roles = Config.GetSection("Roles:UserRoles").Get<string[]>()!;
 
-            foreach (var role in roles) 
+            foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {
