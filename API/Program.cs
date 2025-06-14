@@ -1,4 +1,3 @@
-using API.AutoMapper;
 using Core.AutoMapper;
 using Core.Entities.UserEntity;
 using Core.EntitiesQueryUtilities.Bugs;

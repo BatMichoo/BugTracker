@@ -4,7 +4,7 @@ using Core.DTOs.Bugs;
 using Core.DTOs.Users;
 using Core.Entities.BugEntity;
 
-namespace API.AutoMapper
+namespace Core.AutoMapper
 {
     public class BugProfile : Profile
     {

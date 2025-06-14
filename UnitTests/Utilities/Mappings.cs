@@ -1,5 +1,4 @@
-﻿using API.AutoMapper;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.AutoMapper;
 
 namespace UnitTests.Utilities
