@@ -23,4 +23,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~P:Core.Entities.UserEntity.BugUser.AssignedBugs")]
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~P:Core.Entities.UserEntity.BugUser.Comments")]
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~P:Core.Entities.UserEntity.BugUser.CreatedBugs")]
-
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Core.Services.UserService.UserService`1.GenerateLoginResponse(`0)~System.Threading.Tasks.Task{Core.DTOs.Users.LoginResponseModel}")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Core.Services.UserService.UserService`1.RegisterNewUserWithPassword(Core.DTOs.Users.RegisterUserModel)~System.Threading.Tasks.Task{`0}")]

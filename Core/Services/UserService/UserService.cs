@@ -2,6 +2,7 @@
 using Core.DTOs.Users;
 using Core.Entities.UserEntity;
 using Core.Other;
+using Core.Services.SearchesService;
 using Core.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,16 +19,18 @@ namespace Core.Services.UserService
         private readonly UserManager<T> _userManager;
         private readonly SignInManager<T> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ISearchesService _searchesService;
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
+        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager, ISearchesService searchesService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
             _claimsPrincipal = httpContextAccessor.HttpContext.User;
             _roleManager = roleManager;
+            _searchesService = searchesService;
         }
 
         public string RetrieveUserId()
@@ -43,6 +46,8 @@ namespace Core.Services.UserService
 
             if (result.Succeeded)
             {
+                await _searchesService.CreateDefaultSavedSearches(toBeCreated.Id);
+
                 var roleSucceeded = await AddRolesToUser(toBeCreated, new List<string>() { UserRoles.User });
 
                 if (roleSucceeded)
@@ -114,7 +119,7 @@ namespace Core.Services.UserService
                 .AsNoTracking()
                 .ToListAsync();
 
-            if (users.Any())
+            if (users.Count > 0)
             {
                 return _mapper.Map<List<UserViewModel>>(users);
             }
@@ -124,9 +129,9 @@ namespace Core.Services.UserService
 
         public async Task<List<string>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => r.Name!).ToListAsync();
 
-            if (roles.Any())
+            if (roles.Count > 0)
             {
                 return roles;
             }

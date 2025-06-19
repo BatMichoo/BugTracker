@@ -1,5 +1,6 @@
 ﻿using Core.Entities.BugEntity;
 using Core.Entities.CommentEntity;
+using Core.Entities.SearchEntity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Entities.UserEntity
@@ -10,5 +11,6 @@ namespace Core.Entities.UserEntity
         public ICollection<Bug> CreatedBugs { get; set; } = new List<Bug>();
         public ICollection<Bug> AssignedBugs { get; set; } = new List<Bug>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Search> SavedSearches { get; set; } = new List<Search>();
     }
 }

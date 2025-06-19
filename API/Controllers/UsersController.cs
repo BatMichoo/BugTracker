@@ -1,8 +1,10 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
 using Core.DTOs.Users;
+using Core.Entities.SearchEntity;
 using Core.Entities.UserEntity;
 using Core.Other;
+using Core.Services.SearchesService;
 using Core.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +18,13 @@ namespace API.Controllers
     {
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
+        private readonly ISearchesService _searchesService;
 
-        public UsersController(IUserService<BugUser> userService, IMapper mapper)
+        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService)
         {
             _userService = userService;
             _mapper = mapper;
+            _searchesService = searchesService;
         }
 
         [HttpPost("login")]
@@ -226,6 +230,44 @@ namespace API.Controllers
             }
 
             return Ok("Password change successful!");
+        }
+
+        [HttpGet("searches")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSavedSearches()
+        {
+            string userId = _userService.RetrieveUserId();
+
+            var searches = await _searchesService.GetForUser(userId);
+
+            return Ok(searches);
+        }
+
+        [HttpGet("searches/{id}")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSavedSearch(int id)
+        {
+            var search = await _searchesService.GetById(id);
+
+            return Ok(search);
+        }
+
+        [HttpPost("searches")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreateSavedSearch(Search createModel)
+        {
+            string userId = _userService.RetrieveUserId();
+
+            createModel.CreatedById = userId;
+
+            var search = await _searchesService.Create(createModel);
+
+            string uri = Url.Action(nameof(GetSavedSearch), "Users", new { search.Id })!;
+
+            return Created(uri, search);
         }
     }
 }

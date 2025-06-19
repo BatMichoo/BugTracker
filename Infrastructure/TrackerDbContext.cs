@@ -3,6 +3,7 @@ using Core.Entities.CommentEntity;
 using Core.Entities.ReplyEntity;
 using Core.Entities.UserEntity;
 using Core.Entities.NotifEntity;
+using Core.Entities.SearchEntity;
 using Infrastructure.EntityConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ namespace Infrastructure
 {
     public class TrackerDbContext : IdentityDbContext<BugUser>
     {
-        public TrackerDbContext(DbContextOptions<TrackerDbContext> options) : base(options) 
+        public TrackerDbContext(DbContextOptions<TrackerDbContext> options) : base(options)
         {
         }
 
@@ -19,6 +20,7 @@ namespace Infrastructure
         public DbSet<Comment> Comments { get; set; } = null!;
         public DbSet<Reply> Replies { get; set; } = null!;
         public DbSet<Notif> Notifications { get; set; } = null!;
+        public DbSet<Search> SavedSearches { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,7 @@ namespace Infrastructure
             modelBuilder.ApplyConfiguration(new ReplyConfiguration());
             modelBuilder.ApplyConfiguration(new BugUserConfiguration());
             modelBuilder.ApplyConfiguration(new NotifConfiguration());
+            modelBuilder.ApplyConfiguration(new SearchConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

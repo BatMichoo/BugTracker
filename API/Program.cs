@@ -12,6 +12,7 @@ using Core.Repositories;
 using Core.Services.BugService;
 using Core.Services.CommentService;
 using Core.Services.ReplyService;
+using Core.Services.SearchesService;
 using Core.Services.UserService;
 using Core.Utilities;
 using Core.Utilities.JsonConverters;
@@ -182,6 +183,8 @@ namespace API
             builder.Services.AddScoped<IReplySortingOptionFactory, ReplySortingOptionsFactory>();
 
             builder.Services.AddScoped<INotifRepository, NotifRepository>();
+            builder.Services.AddScoped<ISearchesRepository, SearchesRepository>();
+            builder.Services.AddScoped<ISearchesService, SearchesService>();
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
