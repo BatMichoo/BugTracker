@@ -26,9 +26,33 @@ namespace API
             await InitializeRoles();
         }
 
-        private async Task InitializeDatabase()
+        private async Task InitializeDatabase(int retries = 0)
         {
-            await _dbContext.Database.MigrateAsync();
+            bool canConnetct = await _dbContext.Database.CanConnectAsync();
+
+            if (canConnetct)
+            {
+                string connString = _dbContext.Database.GetConnectionString();
+                Console.WriteLine($"====> Conn String is ${connString}");
+
+                try
+                {
+                    await _dbContext.Database.MigrateAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else if (retries < 3)
+            {
+                retries++;
+                await InitializeDatabase(retries);
+            }
+            else
+            {
+                throw new Exception("Couldn't establish database");
+            }
         }
 
         private async Task InitializeRoles()
