@@ -1,4 +1,5 @@
 ﻿using Core.Entities.UserEntity;
+using Core.Services.SearchesService;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,17 +8,19 @@ namespace API
 {
     public class Initializer
     {
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly UserManager<BugUser> userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<BugUser> _userManager;
         private readonly IConfiguration Config;
         private readonly TrackerDbContext _dbContext;
+        private readonly ISearchesService _searchesService;
 
-        public Initializer(RoleManager<IdentityRole> roleManager, UserManager<BugUser> userManager, IConfiguration config, TrackerDbContext dbContext)
+        public Initializer(RoleManager<IdentityRole> roleManager, UserManager<BugUser> userManager, IConfiguration config, TrackerDbContext dbContext, ISearchesService searchesService)
         {
-            this.roleManager = roleManager;
-            this.userManager = userManager;
+            _roleManager = roleManager;
+            _userManager = userManager;
             Config = config;
             _dbContext = dbContext;
+            _searchesService = searchesService;
         }
 
         public async Task Initialize()
@@ -26,32 +29,15 @@ namespace API
             await InitializeRoles();
         }
 
-        private async Task InitializeDatabase(int retries = 0)
+        private async Task InitializeDatabase()
         {
-            bool canConnetct = await _dbContext.Database.CanConnectAsync();
-
-            if (canConnetct)
+            try
             {
-                string connString = _dbContext.Database.GetConnectionString();
-                Console.WriteLine($"====> Conn String is ${connString}");
-
-                try
-                {
-                    await _dbContext.Database.MigrateAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                await _dbContext.Database.MigrateAsync();
             }
-            else if (retries < 3)
+            catch (Exception ex)
             {
-                retries++;
-                await InitializeDatabase(retries);
-            }
-            else
-            {
-                throw new Exception("Couldn't establish database");
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -61,15 +47,15 @@ namespace API
 
             foreach (var role in roles)
             {
-                if (!await roleManager.RoleExistsAsync(role))
+                if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await _roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 
             string adminEmail = Config["RootAdmin:Email"]!;
             string adminUserName = Config["RootAdmin:UserName"]!;
-            var rootUser = await userManager.FindByEmailAsync(adminEmail);
+            var rootUser = await _userManager.FindByEmailAsync(adminEmail);
 
             if (rootUser == null)
             {
@@ -80,11 +66,12 @@ namespace API
                     Name = adminUserName
                 };
 
-                var result = await userManager.CreateAsync(user, Config["RootAdmin:Password"]!);
+                var result = await _userManager.CreateAsync(user, Config["RootAdmin:Password"]!);
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, "Admin");
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                    await _searchesService.CreateDefaultSavedSearches(user.Id);
                 }
             }
         }
