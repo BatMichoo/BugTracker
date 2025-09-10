@@ -1,5 +1,6 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
+using Core.DTOs.Searches;
 using Core.DTOs.Users;
 using Core.Entities.SearchEntity;
 using Core.Entities.UserEntity;
@@ -204,32 +205,24 @@ namespace API.Controllers
         [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
-            var user = await _userService.RetrieveUserById(model.Id);
-            string loggedInUserId = (await _userService.RetrieveUser()).Id;
-
-            if (user.Id != loggedInUserId)
-            {
-                return Unauthorized();
-            }
-
-            if (user is null)
-            {
-                return BadRequest(string.Format(ErrorMessage.Users.NotFound, model.Id));
-            }
+            var user = await _userService.RetrieveUser();
 
             try
             {
                 bool success = await _userService.ChangePassword(user, model.OldPassword, model.NewPassword);
+                if (success)
+                {
+                    return Ok("Password change successful!");
+                }
+
+                return BadRequest("Couldn't change password.");
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return Ok("Password change successful!");
         }
 
         [HttpGet("searches")]
@@ -257,17 +250,32 @@ namespace API.Controllers
         [HttpPost("searches")]
         [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateSavedSearch(Search createModel)
+        public async Task<IActionResult> CreateSavedSearch(CreateSearchModel createModel)
         {
             string userId = _userService.RetrieveUserId();
 
-            createModel.CreatedById = userId;
+            var search = new Search
+            {
+                Name = createModel.Name,
+                CreatedById = userId,
+                QueryString = createModel.QueryString
+            };
 
-            var search = await _searchesService.Create(createModel);
+            var createdSearch = await _searchesService.Create(search);
 
-            string uri = Url.Action(nameof(GetSavedSearch), "Users", new { search.Id })!;
+            string uri = Url.Action(nameof(GetSavedSearch), "Users", new { createdSearch.Id })!;
 
-            return Created(uri, search);
+            return Created(uri, createdSearch);
+        }
+
+        [HttpDelete("searches/{id}")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteSavedSearch(int id)
+        {
+            await _searchesService.Delete(id);
+
+            return Ok();
         }
     }
 }

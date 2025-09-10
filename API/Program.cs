@@ -41,8 +41,6 @@ namespace API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             if (builder.Environment.IsDevelopment())
             {
                 var envVars = Env.Load("../.env.development").ToDotEnvDictionary();
@@ -53,6 +51,8 @@ namespace API
 
                 EnvVariableService.SetConnectionString(dbConnStringDev);
             }
+
+            // Add services to the container.
 
             string dbConnString = EnvVariableService.GetConnectionString();
 

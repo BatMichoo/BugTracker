@@ -1,4 +1,6 @@
-﻿namespace Core.DTOs.Comments
+﻿using Core.DTOs.Replies;
+
+namespace Core.DTOs.Comments
 {
     public class CommentViewModel
     {
@@ -9,5 +11,6 @@
         public DateTime LastUpdatedOn { get; set; }
         public int BugId { get; set; }
         public string AuthorName { get; set; } = null!;
+        public List<ReplyViewModel> Replies { get; set;} = [];
     }
 }

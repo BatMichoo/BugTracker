@@ -4,7 +4,7 @@ namespace Core.Repositories
 {
     public interface IRepository<T> where T : BaseModel
     {
-        Task<T?> GetById(int id);
+        Task<T?> GetById(int id, bool isFullyIncluded = false);
         abstract Task<List<T>> GetAll();
         Task<bool> DoesExist(int id);
 

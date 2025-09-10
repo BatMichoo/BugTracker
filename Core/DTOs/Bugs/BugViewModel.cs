@@ -16,6 +16,6 @@ namespace Core.DTOs.Bugs
         public UserViewModel LastUpdatedBy { get; set; } = null!;
         public bool IsAssigned => AssignedTo != null;
         public UserViewModel AssignedTo { get; set; } = null!;
-        public List<CommentViewModel>? Comments { get; set; } = new List<CommentViewModel>();
+        public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

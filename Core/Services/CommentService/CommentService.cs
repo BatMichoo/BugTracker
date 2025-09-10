@@ -14,9 +14,9 @@ namespace Core.Services.CommentService
         {
         }
 
-        public async Task<List<CommentModel>> GetByBugId(int bugId)
+        public async Task<List<CommentModel>> GetByBugId(int bugId, bool isFullyIncluded)
         {
-            var comments = await ((ICommentRepository) _repository).GetByBugId(bugId);
+            var comments = await ((ICommentRepository) _repository).GetByBugId(bugId, isFullyIncluded);
 
             var models = _mapper.Map<List<CommentModel>>(comments);
 

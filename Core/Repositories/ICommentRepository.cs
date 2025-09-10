@@ -4,6 +4,6 @@ namespace Core.Repositories
 {
     public interface ICommentRepository : IRepository<Comment>
     {
-        Task<List<Comment>> GetByBugId(int bugId);
+        Task<List<Comment>> GetByBugId(int bugId, bool isFullyIncluded);
     }
 }

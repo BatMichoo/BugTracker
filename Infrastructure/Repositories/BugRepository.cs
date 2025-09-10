@@ -22,7 +22,9 @@ namespace Infrastructure.Repositories
             if (isFullyIncluded) 
             {
                 query = query
-                    .Include(b => b.Comments);
+                    .Include(b => b.Comments)
+                    .ThenInclude(c => c.Replies)
+                    .ThenInclude(r => r.Author);
             }
 
             return query.AsSplitQuery();

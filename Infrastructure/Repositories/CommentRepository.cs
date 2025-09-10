@@ -11,16 +11,16 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<List<Comment>> GetByBugId(int bugId)
+        public async Task<List<Comment>> GetByBugId(int bugId, bool isFullyIncluded)
         {
-            var entities = await AddInclusions(AsQueryable())
+            var entities = await AddInclusions(AsQueryable(), isFullyIncluded)
                 .Where(c => c.BugId == bugId)
                 .ToListAsync();
 
             return entities;
         }
 
-        protected override IQueryable<Comment> AddInclusions(IQueryable<Comment> query, bool isFullyIncluded = false)
+        protected override IQueryable<Comment> AddInclusions(IQueryable<Comment> query, bool isFullyIncluded)
             => query.Include(c => c.Author);
     }
 }

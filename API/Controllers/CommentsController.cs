@@ -58,9 +58,9 @@ namespace API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommentViewModel>> GetCommentsByBugId(int bugId)
+        public async Task<ActionResult<CommentViewModel>> GetCommentsByBugId(int bugId, bool isFullyIncluded)
         {
-            var comments = await _commentService.GetByBugId(bugId);
+            var comments = await _commentService.GetByBugId(bugId, isFullyIncluded);
 
             return Ok(_mapper.Map<List<CommentViewModel>>(comments));
         }

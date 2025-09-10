@@ -36,10 +36,8 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<T?> GetById(int id)
+        public async Task<T?> GetById(int id, bool isFullyIncluded = false)
         {
-            bool isFullyIncluded = true;
-
             var query = AddInclusions(AsQueryable(), isFullyIncluded);
 
             T? entity = await query

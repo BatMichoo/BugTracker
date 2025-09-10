@@ -26,8 +26,8 @@ namespace Core.Services.SearchesService
         {
             var defaultSearches = new List<Search>
             {
-                new Search { Name = "Created by me", CreatedById = userId, QueryString = $"assignedTo_{userId}"},
-                new Search { Name = "Assigned to me", CreatedById = userId, QueryString = $"createdBy_{userId}"},
+                new Search { Name = "Assigned to me", CreatedById = userId, QueryString = $"assignedTo_{userId}"},
+                new Search { Name = "Created by me", CreatedById = userId, QueryString = $"createdBy_{userId}"},
             };
 
             foreach (var search in defaultSearches)
@@ -56,7 +56,7 @@ namespace Core.Services.SearchesService
             return await _repository.GetAll();
         }
 
-        public async Task<Search?> GetById(int id)
+        public async Task<Search?> GetById(int id, bool isFullyIncluded)
         {
             return await _repository.GetById(id);
         }

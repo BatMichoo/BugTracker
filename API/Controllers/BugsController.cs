@@ -42,9 +42,9 @@ namespace API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<BugViewModel>> Get(int id)
+        public async Task<ActionResult<BugViewModel>> Get(int id, bool isFullyIncluded)
         {
-            var bug = await _bugService.GetById(id);
+            var bug = await _bugService.GetById(id, isFullyIncluded);
 
             if (bug is not null)
             {

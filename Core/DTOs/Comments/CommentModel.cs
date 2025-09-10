@@ -1,4 +1,5 @@
-﻿using Core.Entities.UserEntity;
+﻿using Core.DTOs.Replies;
+using Core.Entities.UserEntity;
 
 namespace Core.DTOs.Comments
 {
@@ -12,5 +13,6 @@ namespace Core.DTOs.Comments
         public string AuthorId { get; set; } = null!;
         public BugUser Author { get; set; } = null!;
         public DateTime LastUpdatedOn { get; set; }
+        public List<ReplyModel> Replies { get; set;} = [];
     }
 }

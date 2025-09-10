@@ -44,9 +44,9 @@ namespace Core.Services.EntityService
             return _mapper.Map<List<TModel>>(modelList);
         }
 
-        public async Task<TModel?> GetById(int id)
+        public async Task<TModel?> GetById(int id, bool isFullyIncluded)
         {
-            var entity = await _repository.GetById(id);
+            var entity = await _repository.GetById(id, isFullyIncluded);
 
             if (entity is not null)
             {
