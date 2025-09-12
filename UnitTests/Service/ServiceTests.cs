@@ -50,7 +50,7 @@ namespace UnitTests.Service
         {
             var idToGet = 1;
 
-            var result = await _service!.GetById(idToGet);
+            var result = await _service!.GetById(idToGet, isFullyIncluded: true);
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Id, Is.EqualTo(idToGet));
@@ -63,7 +63,7 @@ namespace UnitTests.Service
 
             await _service!.Delete(idToDelete);
 
-            var result = await _service.GetById(idToDelete);
+            var result = await _service.GetById(idToDelete, isFullyIncluded: false);
 
             Assert.That(result, Is.Null);
         }

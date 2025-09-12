@@ -49,7 +49,7 @@ namespace UnitTests.Repository
         {
             var idToGet = 1;
 
-            var result = await _repository!.GetById(idToGet);
+            var result = await _repository!.GetById(idToGet, isFullyIncluded: true);
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Id, Is.EqualTo(idToGet));
@@ -62,7 +62,7 @@ namespace UnitTests.Repository
 
             await _repository!.DeleteById(idToDelete);
 
-            var result = await _repository.GetById(idToDelete);
+            var result = await _repository.GetById(idToDelete, isFullyIncluded: false);
 
             Assert.That(result, Is.Null);
         }
@@ -120,7 +120,7 @@ namespace UnitTests.Repository
         public async Task DeleteByEntity_DeletesSaidEntity()
         {
             int idToGet = 2;
-            var entity = await _repository!.GetById(idToGet);
+            var entity = await _repository!.GetById(idToGet, isFullyIncluded: false);
 
             await _repository.Delete(entity!);
 
