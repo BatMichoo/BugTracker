@@ -47,156 +47,26 @@ namespace API
 
                 EnvVariableService.LoadEnvironmentVariables(envVars);
 
-                string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"]!;
+                string dbConnStringDev = builder.Configuration[$"ConnectionStrings:BugTracker"]!;
 
                 EnvVariableService.SetConnectionString(dbConnStringDev);
             }
 
             // Add services to the container.
+            builder.Services.AddDbWithIdentity(builder.Environment);
 
-            string dbConnString = EnvVariableService.GetConnectionString();
+            builder.Services.AddAppAuthentication();
+            builder.Services.AddAppAuthorization();
 
-            builder.Services.AddDbContext<TrackerDbContext>(opt =>
-            {
-                opt.UseSqlServer(dbConnString);
-            })
-                .AddIdentity<BugUser, IdentityRole>(opt =>
-                {
-                    opt.User.RequireUniqueEmail = true;
-                    opt.SignIn.RequireConfirmedAccount = false;
-                    opt.SignIn.RequireConfirmedEmail = false;
-
-                    if (builder.Environment.IsDevelopment())
-                    {
-                        opt.Password.RequireDigit = false;
-                        opt.Password.RequiredUniqueChars = 0;
-                        opt.Password.RequireNonAlphanumeric = false;
-                        opt.Password.RequireUppercase = false;
-                        opt.Password.RequireLowercase = false;
-                    }
-                })
-                .AddEntityFrameworkStores<TrackerDbContext>()
-                .AddDefaultTokenProviders()
-                .AddSignInManager<SignInManager<BugUser>>()
-                .AddUserManager<UserManager<BugUser>>()
-                .AddRoleManager<RoleManager<IdentityRole>>();
-
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                string jwtSecretKey = EnvVariableService.GetJwtSecretKey();
-
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = EnvVariableService.GetJwtIssuer(),
-                    ValidAudience = EnvVariableService.GetJwtAudience(),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
-                    RoleClaimType = ClaimTypes.Role,
-                    NameClaimType = ClaimTypes.Name,
-                };
-
-                opt.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
-                        {
-                            string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
-                            context.Token = token;
-                        }
-                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
-                        {
-                            context.Token = accessToken;
-                        }
-
-                        return Task.CompletedTask;
-                    },
-                    OnAuthenticationFailed = context =>
-                    {
-                        context.Response.ContentType = "application/json";
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-                        var errorMessage = new { error = "Authentication failed." };
-
-                        return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
-                    },
-                    OnForbidden = context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return Task.CompletedTask;
-                    }
-                };
-            });
-
-            builder.Services.AddAuthorization(opt =>
-            {
-                string[] rolesForUserPolicy = new[] { UserRoles.User, UserRoles.Manager, UserRoles.Admin };
-
-                var userPolicy = new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireRole(rolesForUserPolicy)
-                    .Build();
-
-                string[] rolesForManagerPolicy = new[] { UserRoles.Manager, UserRoles.Admin };
-
-                var managerPolicy = new AuthorizationPolicyBuilder()
-                    .Combine(userPolicy)
-                    .RequireRole(rolesForManagerPolicy)
-                    .Build();
-
-                string rolesForAdminPolicy = UserRoles.Admin;
-
-                var adminPolicy = new AuthorizationPolicyBuilder()
-                    .Combine(managerPolicy)
-                    .RequireRole(rolesForAdminPolicy)
-                    .Build();
-
-                opt.AddPolicy(AuthorizePolicy.UserAccess, userPolicy);
-                opt.AddPolicy(AuthorizePolicy.ManagerAccess, managerPolicy);
-                opt.AddPolicy(AuthorizePolicy.AdminAccess, adminPolicy);
-            });
-
-            builder.Services.AddScoped<IBugService, BugService>();
-            builder.Services.AddScoped<IBugRepository, BugRepository>();
-            builder.Services.AddScoped<IBugQueryableBuilder, BugQueryableBuilder>();
-            builder.Services.AddScoped<IBugQueryParametersFactory, BugQueryParametersFactory>();
-            builder.Services.AddScoped<IBugFilterFactory, BugFilterFactory>();
-            builder.Services.AddScoped<IBugSortingOptionsFactory, BugSortingOptionsFactory>();
-
-            builder.Services.AddScoped<ICommentService, CommentService>();
-            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-            builder.Services.AddScoped<ICommentQueryableBuilder, CommentQueryableBuilder>();
-            builder.Services.AddScoped<ICommentQueryParametersFactory, CommentQueryParametersFactory>();
-            builder.Services.AddScoped<ICommentFilterFactory, CommentFilterFactory>();
-            builder.Services.AddScoped<ICommentSortingOptionsFactory, CommentSortingOptionsFactory>();
-
-            builder.Services.AddScoped<IReplyService, ReplyService>();
-            builder.Services.AddScoped<IReplyRepository, ReplyRepository>();
-            builder.Services.AddScoped<IReplyQueryableBuilder, ReplyQueryableBuilder>();
-            builder.Services.AddScoped<IReplyQueryParametersFactory, ReplyQueryParametersFactory>();
-            builder.Services.AddScoped<IReplyFilterFactory, ReplyFilterFactory>();
-            builder.Services.AddScoped<IReplySortingOptionFactory, ReplySortingOptionsFactory>();
-
-            builder.Services.AddScoped<INotifRepository, NotifRepository>();
-            builder.Services.AddScoped<ISearchesRepository, SearchesRepository>();
-            builder.Services.AddScoped<ISearchesService, SearchesService>();
+            builder.Services.AddBugServices()
+                .AddCommentServices()
+                .AddReplyServices()
+                .AddMiscellaneousServices();
 
             builder.Services.AddScoped<IUserService<BugUser>, UserService<BugUser>>()
                 .AddHttpContextAccessor();
 
-            builder.Services.AddAutoMapper(opt =>
-            {
-                opt.AddProfile(typeof(BugProfile));
-                opt.AddProfile(typeof(BugUserProfile));
-                opt.AddProfile(typeof(CommentProfile));
-                opt.AddProfile(typeof(ReplyProfile));
-                opt.AddProfile(typeof(QueryProfile));
-            });
+            builder.Services.AddAutoMapperProfiles();
 
             builder.Services.AddControllers()
                 .AddJsonOptions(opt =>
@@ -205,8 +75,6 @@ namespace API
                     opt.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
                     opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
-
-            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddSignalR();
 
