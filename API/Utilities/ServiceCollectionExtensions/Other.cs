@@ -1,8 +1,4 @@
-using System.Text.Json.Serialization;
 using Core.AutoMapper;
-using Core.Entities.UserEntity;
-using Core.Services.UserService;
-using Core.Utilities.JsonConverters;
 
 public static class OtherServiceCollectionExtensions
 {

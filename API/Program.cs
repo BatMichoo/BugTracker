@@ -1,17 +1,5 @@
-using Core.AutoMapper;
+using API.Utilities.ServiceCollectionExtensions;
 using Core.Entities.UserEntity;
-using Core.EntitiesQueryUtilities.Bugs;
-using Core.EntitiesQueryUtilities.Comments;
-using Core.EntitiesQueryUtilities.QueryBuilders;
-using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
-using Core.EntitiesQueryUtilities.QueryParameters.Comments;
-using Core.EntitiesQueryUtilities.QueryParameters.Replies;
-using Core.EntitiesQueryUtilities.Replies;
-using Core.Other;
-using Core.Repositories;
-using Core.Services.BugService;
-using Core.Services.CommentService;
-using Core.Services.ReplyService;
 using Core.Services.SearchesService;
 using Core.Services.UserService;
 using Core.Utilities;
@@ -19,18 +7,8 @@ using Core.Utilities.JsonConverters;
 using DotNetEnv;
 using DotNetEnv.Extensions;
 using Infrastructure;
-using Infrastructure.QueryBuilders;
-using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Net;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace API
