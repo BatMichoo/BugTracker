@@ -8,7 +8,7 @@ public class NotificationHub : Hub
 {
     private readonly INotifRepository _repository;
 
-    public NotificationHub(INotifRepository repository) : base() 
+    public NotificationHub(INotifRepository repository) : base()
     {
         _repository = repository;
     }
@@ -19,15 +19,11 @@ public class NotificationHub : Hub
 
         var notifs = await _repository.GetUnRead(userId);
 
-        foreach (var notif in notifs) {
+        foreach (var notif in notifs)
+        {
             await Clients.User(notif.AssigneeId).SendAsync("new-assigned-bug", notif);
         }
 
         await base.OnConnectedAsync();
     }
-
-    // public override async Task OnDisconnectedAsync(Exception? exception)
-    // {
-    //     await base.OnDisconnectedAsync(exception);
-    // }
 }

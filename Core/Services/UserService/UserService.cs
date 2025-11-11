@@ -129,7 +129,7 @@ namespace Core.Services.UserService
 
         public async Task<List<string>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles.Select(r => r.Name!).ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => r.Name!).AsNoTracking().ToListAsync();
 
             if (roles.Count > 0)
             {

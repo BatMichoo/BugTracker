@@ -14,7 +14,6 @@ namespace UnitTests.FilterFactory
             _factory = new BugFilterFactory();
         }
 
-
         [Test]
         public void CreateFilter_Returns_AssignedToFilter()
         {
