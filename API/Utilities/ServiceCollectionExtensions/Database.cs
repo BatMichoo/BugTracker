@@ -1,3 +1,4 @@
+using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
 using Core.Utilities;
 using Infrastructure;
@@ -15,7 +16,7 @@ public static class IdentityServiceCollectionExtensions
             opt.UseSqlServer(dbConnString);
         });
 
-        services.AddIdentity<BugUser, IdentityRole>(opt =>
+        services.AddIdentity<BugUser, CustomRole>(opt =>
         {
             opt.User.RequireUniqueEmail = true;
             opt.SignIn.RequireConfirmedAccount = false;
@@ -34,7 +35,7 @@ public static class IdentityServiceCollectionExtensions
         .AddDefaultTokenProviders()
         .AddSignInManager<SignInManager<BugUser>>()
         .AddUserManager<UserManager<BugUser>>()
-        .AddRoleManager<RoleManager<IdentityRole>>();
+        .AddRoleManager<RoleManager<CustomRole>>();
 
         return services;
     }

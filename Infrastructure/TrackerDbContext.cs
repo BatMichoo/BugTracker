@@ -7,10 +7,11 @@ using Core.Entities.SearchEntity;
 using Infrastructure.EntityConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Core.Entities.CustomRole;
 
 namespace Infrastructure
 {
-    public class TrackerDbContext : IdentityDbContext<BugUser>
+    public class TrackerDbContext : IdentityDbContext<BugUser, CustomRole, string>
     {
         public TrackerDbContext(DbContextOptions<TrackerDbContext> options) : base(options)
         {

@@ -1,4 +1,5 @@
 using API.Utilities.ServiceCollectionExtensions;
+using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
 using Core.Services.SearchesService;
 using Core.Services.UserService;
@@ -149,7 +150,7 @@ namespace API
         {
             using (var scope = app.Services.CreateScope())
             {
-                var roleManager = (RoleManager<IdentityRole>)scope.ServiceProvider.GetRequiredService(typeof(RoleManager<IdentityRole>));
+                var roleManager = (RoleManager<CustomRole>)scope.ServiceProvider.GetRequiredService(typeof(RoleManager<CustomRole>));
                 var userManager = (UserManager<BugUser>)scope.ServiceProvider.GetRequiredService(typeof(UserManager<BugUser>));
                 var dbContext = (TrackerDbContext)scope.ServiceProvider.GetRequiredService(typeof(TrackerDbContext));
                 var searchesService = (SearchesService)scope.ServiceProvider.GetRequiredService(typeof(ISearchesService));

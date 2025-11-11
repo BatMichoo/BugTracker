@@ -17,7 +17,7 @@ namespace Core.Services.UserService
         Task<bool> ChangePassword(T user, string oldPassword, string newPassword);
         Task SignOut();
 
-        Task<List<string>> GetAllUserRoles();
+        Task<IEnumerable<object>> GetAllUserRoles();
         Task<LoginResponseModel> GenerateLoginResponse(T user);
     }
 }

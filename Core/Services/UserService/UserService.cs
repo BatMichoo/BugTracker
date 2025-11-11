@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Users;
+using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
 using Core.Other;
 using Core.Services.SearchesService;
@@ -18,12 +19,12 @@ namespace Core.Services.UserService
     {
         private readonly UserManager<T> _userManager;
         private readonly SignInManager<T> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<CustomRole> _roleManager;
         private readonly ISearchesService _searchesService;
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager, ISearchesService searchesService)
+        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<CustomRole> roleManager, ISearchesService searchesService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -127,16 +128,16 @@ namespace Core.Services.UserService
             return new List<UserViewModel>();
         }
 
-        public async Task<List<string>> GetAllUserRoles()
+        public async Task<IEnumerable<object>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles.Select(r => r.Name!).AsNoTracking().ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => new { r.Name, r.IsDeletable}).ToListAsync();
 
             if (roles.Count > 0)
             {
                 return roles;
             }
 
-            return new List<string>();
+            return new List<object>();
         }
 
         public async Task<T> RetrieveUserById(string id)

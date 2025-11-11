@@ -1,4 +1,5 @@
-﻿using Core.Entities.UserEntity;
+﻿using Core.Entities.CustomRole;
+using Core.Entities.UserEntity;
 using Core.Services.SearchesService;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -8,13 +9,13 @@ namespace API
 {
     public class Initializer
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<CustomRole> _roleManager;
         private readonly UserManager<BugUser> _userManager;
         private readonly IConfiguration Config;
         private readonly TrackerDbContext _dbContext;
         private readonly ISearchesService _searchesService;
 
-        public Initializer(RoleManager<IdentityRole> roleManager, UserManager<BugUser> userManager, IConfiguration config, TrackerDbContext dbContext, ISearchesService searchesService)
+        public Initializer(RoleManager<CustomRole> roleManager, UserManager<BugUser> userManager, IConfiguration config, TrackerDbContext dbContext, ISearchesService searchesService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -49,7 +50,7 @@ namespace API
             {
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await _roleManager.CreateAsync(new CustomRole(role, isDeletable: false));
                 }
             }
 
