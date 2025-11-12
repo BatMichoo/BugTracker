@@ -3,6 +3,7 @@ using Core.DTOs.Users;
 using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
 using Core.Other;
+using Core.Repositories;
 using Core.Services.SearchesService;
 using Core.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -21,10 +22,11 @@ namespace Core.Services.UserService
         private readonly SignInManager<T> _signInManager;
         private readonly RoleManager<CustomRole> _roleManager;
         private readonly ISearchesService _searchesService;
+        private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<CustomRole> roleManager, ISearchesService searchesService)
+        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<CustomRole> roleManager, ISearchesService searchesService, IRoleRepository roleRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -32,6 +34,7 @@ namespace Core.Services.UserService
             _claimsPrincipal = httpContextAccessor.HttpContext.User;
             _roleManager = roleManager;
             _searchesService = searchesService;
+            _roleRepository = roleRepository;
         }
 
         public string RetrieveUserId()
@@ -200,6 +203,13 @@ namespace Core.Services.UserService
             {
                 Token = tokenString,
             };
+        }
+
+        public async Task<CustomRole> CreateRole(CustomRole newRole)
+        {
+            var role = await _roleRepository.Create(newRole);
+
+            return role;
         }
     }
 }

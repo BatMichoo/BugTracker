@@ -1,7 +1,9 @@
 using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
+using Core.Repositories;
 using Core.Utilities;
 using Infrastructure;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +38,8 @@ public static class IdentityServiceCollectionExtensions
         .AddSignInManager<SignInManager<BugUser>>()
         .AddUserManager<UserManager<BugUser>>()
         .AddRoleManager<RoleManager<CustomRole>>();
+
+        services.AddScoped<IRoleRepository, RoleRepository>();
 
         return services;
     }

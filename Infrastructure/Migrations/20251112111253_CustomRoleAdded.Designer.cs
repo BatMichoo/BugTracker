@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(TrackerDbContext))]
-    [Migration("20251111143700_CustomRoleAdded")]
+    [Migration("20251112111253_CustomRoleAdded")]
     partial class CustomRoleAdded
     {
         /// <inheritdoc />

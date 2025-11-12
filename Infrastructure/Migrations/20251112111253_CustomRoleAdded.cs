@@ -10,13 +10,19 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDeletable",
+                table: "AspNetRoles",
+                nullable: false,
+                defaultValue: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.DropColumn(
+                name: "IsDeletable",
+                table: "AspNetRoles");
         }
     }
 }

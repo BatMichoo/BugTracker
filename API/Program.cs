@@ -26,7 +26,7 @@ namespace API
 
                 EnvVariableService.LoadEnvironmentVariables(envVars);
 
-                string dbConnStringDev = builder.Configuration[$"ConnectionStrings:BugTracker"]!;
+                string dbConnStringDev = builder.Configuration["ConnectionStrings:BugTracker"]!;
 
                 EnvVariableService.SetConnectionString(dbConnStringDev);
             }
@@ -138,10 +138,7 @@ namespace API
             await Initialize(builder, app);
 
             app.MapControllers();
-            app.MapHub<NotificationHub>("/notifs", options =>
-            {
-                options.CloseOnAuthenticationExpiration = true;
-            });
+            app.MapHub<NotificationHub>("/notifs", options => options.CloseOnAuthenticationExpiration = true);
 
             app.Run();
         }

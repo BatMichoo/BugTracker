@@ -25,9 +25,11 @@ namespace UnitTests.SortingOptionsFactory
             var expected = new BugSortingOptions(SortOrder.Ascending, BugSortBy.Status);
 
             var result = _factory!.CreateSortingOptions()[0];
-
-            Assert.That(result.SortingOn, Is.EqualTo(BugSortBy.Status.ToString()));
-            Assert.That(result.SortOrder, Is.EqualTo(SortOrder.Ascending));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.SortingOn, Is.EqualTo(BugSortBy.Status.ToString()));
+                Assert.That(result.SortOrder, Is.EqualTo(SortOrder.Ascending));
+            });
         }
 
         [Test]
@@ -42,9 +44,11 @@ namespace UnitTests.SortingOptionsFactory
             Assert.That(result, Has.Count.EqualTo(1));
             
             var option = (BugSortingOptions) result[0];
-
-            Assert.That(option.SortBy, Is.EqualTo(expected.SortBy));
-            Assert.That(option.SortOrder, Is.EqualTo(expected.SortOrder));
+            Assert.Multiple(() =>
+            {
+                Assert.That(option.SortBy, Is.EqualTo(expected.SortBy));
+                Assert.That(option.SortOrder, Is.EqualTo(expected.SortOrder));
+            });
         }
 
         [Test]
@@ -65,9 +69,11 @@ namespace UnitTests.SortingOptionsFactory
             for (int i = 0; i < results.Count; i++)
             {
                 var result = (BugSortingOptions) results[i];
-
-                Assert.That(result.SortBy, Is.EqualTo(expected[i].SortBy));
-                Assert.That(result.SortOrder, Is.EqualTo(expected[i].SortOrder));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(result.SortBy, Is.EqualTo(expected[i].SortBy));
+                    Assert.That(result.SortOrder, Is.EqualTo(expected[i].SortOrder));
+                });
             }
         }
     }

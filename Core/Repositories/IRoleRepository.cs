@@ -4,10 +4,11 @@ namespace Core.Repositories
 {
     public interface IRoleRepository
     {
-        CustomRole GetRoleById(string id);
-        CustomRole GetRoleByName(string name);
-        List<CustomRole> GetAllRoles();
-        bool Delete(string id);
-        CustomRole Update(CustomRole updatingRole);
+        Task<CustomRole?> GetRoleById(string id);
+        Task<CustomRole?> GetRoleByName(string name);
+        Task<List<CustomRole>> GetAllRoles();
+        Task<CustomRole?> Create(CustomRole newRole);
+        Task<bool> Delete(string id);
+        Task<CustomRole> Update(CustomRole updatingRole);
     }
 }

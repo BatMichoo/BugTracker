@@ -19,7 +19,6 @@ namespace UnitTests.Repository
         public void SetUp()
         {
             _dbContext = Database.Initializer.TestDatabase();
-
             Database.Seeder.WithBugs(_dbContext);
 
             _repository = new TestRepository(_dbContext, new BugQueryableBuilder());
@@ -75,14 +74,16 @@ namespace UnitTests.Repository
             var updatedEntity = new Bug { Id = bug.Id, Title = "Title5", AssigneeId = user.Id , Description = "test 1234 update", Priority = 2, Status = 3, LastUpdatedById = user.Id};
 
             var result = await _repository!.Update(updatedEntity);
-
-            Assert.That(result.Id!, Is.EqualTo(updatedEntity.Id));
-            Assert.That(result.AssigneeId!, Is.EqualTo(updatedEntity.AssigneeId));
-            Assert.That(result.CreatorId!, Is.EqualTo(updatedEntity.CreatorId));
-            Assert.That(result.Description!, Is.EqualTo(updatedEntity.Description));
-            Assert.That(result.Priority, Is.EqualTo(updatedEntity.Priority));
-            Assert.That(result.Status, Is.EqualTo(updatedEntity.Status));
-            Assert.That(result.LastUpdatedById, Is.EqualTo(updatedEntity.LastUpdatedById));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id!, Is.EqualTo(updatedEntity.Id));
+                Assert.That(result.AssigneeId!, Is.EqualTo(updatedEntity.AssigneeId));
+                Assert.That(result.CreatorId!, Is.EqualTo(updatedEntity.CreatorId));
+                Assert.That(result.Description!, Is.EqualTo(updatedEntity.Description));
+                Assert.That(result.Priority, Is.EqualTo(updatedEntity.Priority));
+                Assert.That(result.Status, Is.EqualTo(updatedEntity.Status));
+                Assert.That(result.LastUpdatedById, Is.EqualTo(updatedEntity.LastUpdatedById));
+            });
         }
 
         [Test]

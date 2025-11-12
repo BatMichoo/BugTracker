@@ -43,9 +43,11 @@ namespace UnitTests.QueryParametersFactory
 
             var queryParameters = _factory.CreateAssignedToUserQuery(userId);
             var result = await _repository.ExecuteQuery(queryParameters);
-
-            Assert.That(queryParameters.Filters.Count, Is.EqualTo(1));
-            Assert.That(result.Count, Is.AtLeast(1));
+            Assert.Multiple(() =>
+            {
+                Assert.That(queryParameters.Filters, Has.Count.EqualTo(1));
+                Assert.That(result, Has.Count.AtLeast(1));
+            });
             Assert.That(result.All(e => e.AssigneeId == userId), Is.True);
         }
 
@@ -57,9 +59,11 @@ namespace UnitTests.QueryParametersFactory
 
             var queryParameters = _factory.CreateMadeByUserQuery(userId);
             var result = await _repository.ExecuteQuery(queryParameters);
-
-            Assert.That(queryParameters.Filters.Count, Is.EqualTo(1));
-            Assert.That(result.Count, Is.AtLeast(1));
+            Assert.Multiple(() =>
+            {
+                Assert.That(queryParameters.Filters, Has.Count.EqualTo(1));
+                Assert.That(result, Has.Count.AtLeast(1));
+            });
             Assert.That(result.All(e => e.CreatorId == userId), Is.True);
         }
 
@@ -70,7 +74,7 @@ namespace UnitTests.QueryParametersFactory
 
             var result = await _repository.ExecuteQuery(queryParameters);
 
-            Assert.That(result.Count, Is.EqualTo(3));
+            Assert.That(result, Has.Count.EqualTo(3));
         }
 
         [Test]
@@ -82,7 +86,7 @@ namespace UnitTests.QueryParametersFactory
 
             var result = await _repository.ExecuteQuery(queryParams);
 
-            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result, Has.Count.EqualTo(2));
         }
 
         [Test]

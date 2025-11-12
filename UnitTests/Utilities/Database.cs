@@ -1,4 +1,5 @@
 ﻿using Core.Entities.BugEntity;
+using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
 using DotNetEnv;
 using DotNetEnv.Extensions;
@@ -93,6 +94,18 @@ namespace UnitTests.Utilities
 
                 context.Bugs.AddRange(bugList);
 
+                context.SaveChanges();
+            }
+
+            public static void WithRoles(TrackerDbContext context)
+            {
+                var roles = new List<CustomRole> {
+                    new CustomRole { Name = "NonDeletable", IsDeletable = false },
+                    new CustomRole { Name = "RoleA", IsDeletable = true},
+                    new CustomRole { Name = "RoleB", IsDeletable = true}
+                };
+
+                context.Roles.AddRange(roles);
                 context.SaveChanges();
             }
         }

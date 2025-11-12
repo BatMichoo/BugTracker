@@ -1,7 +1,9 @@
 ﻿using API.Utilities.ErrorMessages;
 using AutoMapper;
+using Core.DTOs.Roles;
 using Core.DTOs.Searches;
 using Core.DTOs.Users;
+using Core.Entities.CustomRole;
 using Core.Entities.SearchEntity;
 using Core.Entities.UserEntity;
 using Core.Other;
@@ -126,6 +128,18 @@ namespace API.Controllers
             var roles = await _userService.GetAllUserRoles();
 
             return Ok(roles);
+        }
+
+        [HttpPost("roles")]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateRole(string roleName)
+        {
+            var newRole = new CustomRole(roleName, isDeletable: true);
+            CustomRole role = await _userService.CreateRole(newRole);
+            var roleView = new RoleView { Name = role.Name, IsDeletable = role.IsDeletable };
+
+            return Ok(role);
         }
 
         [HttpPatch("assign-role")]

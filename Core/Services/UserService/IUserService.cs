@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.Users;
+using Core.Entities.CustomRole;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Services.UserService
@@ -19,5 +20,6 @@ namespace Core.Services.UserService
 
         Task<IEnumerable<object>> GetAllUserRoles();
         Task<LoginResponseModel> GenerateLoginResponse(T user);
+        Task<CustomRole> CreateRole(CustomRole newRole);
     }
 }
