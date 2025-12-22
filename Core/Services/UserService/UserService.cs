@@ -133,7 +133,9 @@ namespace Core.Services.UserService
 
         public async Task<IEnumerable<object>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles.Select(r => new { r.Name, r.IsDeletable}).ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => new { r.Name, r.IsDeletable })
+                .OrderBy(r => r.IsDeletable)
+                .ToListAsync();
 
             if (roles.Count > 0)
             {
@@ -205,11 +207,30 @@ namespace Core.Services.UserService
             };
         }
 
+        public async Task<CustomRole?> GetRoleByName(string roleName)
+        {
+            var role = await _roleRepository.GetRoleByName(roleName);
+
+            return role;
+        }
+
         public async Task<CustomRole> CreateRole(CustomRole newRole)
         {
             var role = await _roleRepository.Create(newRole);
 
             return role;
+        }
+
+        public async Task<bool> DeleteRole(CustomRole toDelete)
+        {
+            if (!string.IsNullOrWhiteSpace(toDelete.Id))
+            {
+                toDelete = await _roleRepository.GetRoleByName(toDelete.Name);
+            }
+
+            bool result = await _roleRepository.Delete(toDelete.Id);
+
+            return result;
         }
     }
 }

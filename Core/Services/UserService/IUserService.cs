@@ -20,6 +20,8 @@ namespace Core.Services.UserService
 
         Task<IEnumerable<object>> GetAllUserRoles();
         Task<LoginResponseModel> GenerateLoginResponse(T user);
+        Task<CustomRole?> GetRoleByName(string roleName);
         Task<CustomRole> CreateRole(CustomRole newRole);
+        Task<bool> DeleteRole(CustomRole newRole);
     }
 }

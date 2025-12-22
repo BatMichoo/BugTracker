@@ -139,7 +139,23 @@ namespace API.Controllers
             CustomRole role = await _userService.CreateRole(newRole);
             var roleView = new RoleView { Name = role.Name, IsDeletable = role.IsDeletable };
 
-            return Ok(role);
+            return Ok(roleView);
+        }
+
+        [HttpDelete("roles")]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteRole(string roleName)
+        {
+            var role = await _userService.GetRoleByName(roleName);
+            bool success = await _userService.DeleteRole(role);
+
+            if (!success)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
         [HttpPatch("assign-role")]
