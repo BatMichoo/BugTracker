@@ -1,3 +1,4 @@
+using API.CustomMiddlewares;
 using API.Utilities.ServiceCollectionExtensions;
 using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
@@ -120,6 +121,7 @@ namespace API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             string corsPolicy = string.Empty;
 
             if (builder.Environment.IsDevelopment())
@@ -130,6 +132,8 @@ namespace API
             {
                 corsPolicy = "ReactFrontEnd";
             }
+
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.UseRouting();
             app.UseCors(corsPolicy);
