@@ -14,6 +14,7 @@ using Core.Entities.NotifEntity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace API.Controllers
 {
@@ -28,8 +29,10 @@ namespace API.Controllers
         private readonly IBugQueryParametersFactory _queryFactory;
         private readonly IHubContext<NotificationHub> _notificationHub;
         private readonly INotifRepository _notifRepo;
+        private readonly IMemoryCache _cache;
+        private const string DefaultBugsCacheKey = "BugsDefault";
 
-        public BugsController(INotifRepository notifRepository, IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory)
+        public BugsController(INotifRepository notifRepository, IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory, IMemoryCache cache)
         {
             _notificationHub = notificationHub;
             _bugService = bugService;
@@ -37,6 +40,7 @@ namespace API.Controllers
             _mapper = mapper;
             _queryFactory = queryFactory;
             _notifRepo = notifRepository;
+            _cache = cache;
         }
 
         [HttpGet("{id}")]
@@ -63,11 +67,29 @@ namespace API.Controllers
         public async Task<IActionResult> Get(string? searchTerm, string? sortOptions, string? filter,
             int pageInput = PagingDefaults.StartingPageNumber, int pageSizeInput = PagingDefaults.ElementsPerPage)
         {
+            // Check if request is for the default, parameterless state
+            bool isDefaultRequest = string.IsNullOrEmpty(searchTerm) &&
+                                    string.IsNullOrEmpty(sortOptions) &&
+                                    string.IsNullOrEmpty(filter) &&
+                                    pageInput == PagingDefaults.StartingPageNumber &&
+                                    pageSizeInput == PagingDefaults.ElementsPerPage;
+
+            if (isDefaultRequest && _cache.TryGetValue(DefaultBugsCacheKey, out QueryViewModel<BugViewModel>? cachedResponse))
+            {
+                return Ok(cachedResponse);
+            }
+
             var queryParameters = await _queryFactory.ProcessQueryParametersInput(pageInput, pageSizeInput, searchTerm, sortOptions, filter);
-
             var bugs = await _bugService.Fetch(queryParameters);
-
             var response = _mapper.Map<QueryViewModel<BugViewModel>>(bugs);
+
+            if (isDefaultRequest)
+            {
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(20));
+
+                _cache.Set(DefaultBugsCacheKey, response, cacheOptions);
+            }
 
             return Ok(response);
         }
@@ -89,9 +111,10 @@ namespace API.Controllers
 
                 var bugViewModel = _mapper.Map<BugViewModel>(bug);
 
-                if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo?.Id) && bugViewModel.AssignedTo?.Id != newBugModel.CreatorId) 
+                if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo?.Id) && bugViewModel.AssignedTo?.Id != newBugModel.CreatorId)
                 {
-                    var notification = new Notif {
+                    var notification = new Notif
+                    {
                         BugId = bugViewModel.Id,
                         AssignedById = newBugModel.CreatorId,
                         AssigneeId = bugViewModel.AssignedTo.Id
@@ -101,6 +124,8 @@ namespace API.Controllers
 
                     await _notificationHub.Clients.User(bugViewModel.AssignedTo.Id).SendAsync("new-assigned-bug", notification);
                 }
+
+                _cache.Remove(DefaultBugsCacheKey);
 
                 return Created(uri, bugViewModel);
             }
@@ -139,10 +164,15 @@ namespace API.Controllers
 
                 string? oldAssigneeId = await _bugService.GetAssigneeId(editBugViewModel.Id);
 
+                var updatedModel = await _bugService.Update(editModel);
+
+                _cache.Remove(DefaultBugsCacheKey);
+
                 if (!string.IsNullOrWhiteSpace(editBugViewModel.AssigneeId) && oldAssigneeId != editBugViewModel.AssigneeId
-                        && editBugViewModel.AssigneeId != userId) 
+                        && editBugViewModel.AssigneeId != userId)
                 {
-                    var notification = new Notif {
+                    var notification = new Notif
+                    {
                         BugId = editBugViewModel.Id,
                         AssignedById = userId,
                         AssigneeId = editBugViewModel.AssigneeId
@@ -152,8 +182,6 @@ namespace API.Controllers
 
                     await _notificationHub.Clients.User(editBugViewModel.AssigneeId).SendAsync("new-assigned-bug", notification);
                 }
-
-                var updatedModel = await _bugService.Update(editModel);
 
                 return Ok(_mapper.Map<BugViewModel>(updatedModel));
             }
@@ -167,6 +195,8 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _bugService.Delete(id);
+
+            _cache.Remove(DefaultBugsCacheKey);
 
             return Ok();
         }

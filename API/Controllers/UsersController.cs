@@ -11,6 +11,7 @@ using Core.Services.SearchesService;
 using Core.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Net.Mime;
 
 namespace API.Controllers
@@ -22,12 +23,17 @@ namespace API.Controllers
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
         private readonly ISearchesService _searchesService;
+        private readonly IMemoryCache _cache;
 
-        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService)
+        private const string UserCacheKey = "users";
+        private const string RolesCacheKey = "roles";
+
+        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService, IMemoryCache cache)
         {
             _userService = userService;
             _mapper = mapper;
             _searchesService = searchesService;
+            _cache = cache;
         }
 
         [HttpPost("login")]
@@ -115,7 +121,15 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> RetrieveUserList()
         {
-            var users = await _userService.RetrieveUserList();
+            if (!_cache.TryGetValue(UserCacheKey, out var users))
+            {
+                users = await _userService.RetrieveUserList();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(20));
+
+                _cache.Set(UserCacheKey, users, cacheOptions);
+            }
 
             return Ok(users);
         }
@@ -125,7 +139,15 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RetrieveRoles()
         {
-            var roles = await _userService.GetAllUserRoles();
+            if (!_cache.TryGetValue(UserCacheKey, out var roles))
+            {
+                roles = await _userService.GetAllUserRoles();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(20));
+
+                _cache.Set(RolesCacheKey, roles, cacheOptions);
+            }
 
             return Ok(roles);
         }
@@ -138,6 +160,8 @@ namespace API.Controllers
             var newRole = new CustomRole(roleName, isDeletable: true);
             CustomRole role = await _userService.CreateRole(newRole);
             var roleView = new RoleView { Name = role.Name, IsDeletable = role.IsDeletable };
+
+            _cache.Remove(RolesCacheKey);
 
             return Ok(roleView);
         }
@@ -154,6 +178,8 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
+
+            _cache.Remove(RolesCacheKey);
 
             return Ok();
         }
