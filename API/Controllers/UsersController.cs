@@ -303,6 +303,26 @@ namespace API.Controllers
             return Ok(search);
         }
 
+        [HttpPut("searches")]
+        [Authorize(Policy = AuthorizePolicy.UserAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateSavedSearch(EditSearchModel editedSearch)
+        {
+            string userId = _userService.RetrieveUserId();
+
+            var search = new Search
+            {
+                Id = editedSearch.Id,
+                Name = editedSearch.Name,
+                QueryString = editedSearch.QueryString,
+                CreatedById = userId,
+            };
+
+            var updatedSearch = await _searchesService.Update(search);
+
+            return Ok(updatedSearch);
+        }
+
         [HttpPost("searches")]
         [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status201Created)]
