@@ -5,6 +5,7 @@ using Core.EntitiesQueryUtilities.QueryParameters.Bugs;
 using Core.EntitiesQueryUtilities.QueryParameters.Comments;
 using Core.EntitiesQueryUtilities.QueryParameters.Replies;
 using Core.EntitiesQueryUtilities.Replies;
+using Core.EntitiesQueryUtilities.SavedSearches;
 using Core.Repositories;
 using Core.Services.BugService;
 using Core.Services.CommentService;
@@ -64,6 +65,7 @@ namespace API.Utilities.ServiceCollectionExtensions
             services.AddScoped<INotifRepository, NotifRepository>();
             services.AddScoped<ISearchesRepository, SearchesRepository>();
             services.AddScoped<ISearchesService, SearchesService>();
+            services.AddScoped<SavedSearchFilterFactory>();
             return services;
         }
     }

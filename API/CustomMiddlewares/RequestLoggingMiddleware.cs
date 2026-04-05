@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace API.CustomMiddlewares
 {
     public class RequestLoggingMiddleware
@@ -13,20 +15,20 @@ namespace API.CustomMiddlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var startTime = DateTime.UtcNow;
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
             await _next(context);
 
-            var duration = DateTime.UtcNow - startTime;
-            var statusCode = context.Response.StatusCode;
+            stopWatch.Stop();
 
             _logger.LogInformation(
                 "HTTP {Method} {Path} {QueryString} responded {StatusCode} in {Duration} ms",
                 context.Request.Method,
                 context.Request.Path,
                 context.Request.QueryString,
-                statusCode,
-                duration.TotalMilliseconds);
+                context.Response.StatusCode,
+                stopWatch.ElapsedMilliseconds);
         }
     }
 }

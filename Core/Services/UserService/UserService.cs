@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using Core.DTOs.Users;
 using Core.Entities.CustomRole;
 using Core.Entities.UserEntity;
@@ -10,13 +13,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Core.Services.UserService
 {
-    public class UserService<T> : IUserService<T> where T : BugUser
+    public class UserService<T> : IUserService<T>
+        where T : BugUser
     {
         private readonly UserManager<T> _userManager;
         private readonly SignInManager<T> _signInManager;
@@ -26,7 +27,15 @@ namespace Core.Services.UserService
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public UserService(UserManager<T> userManager, SignInManager<T> signInManager, IMapper mapper, IHttpContextAccessor httpContextAccessor, RoleManager<CustomRole> roleManager, ISearchesService searchesService, IRoleRepository roleRepository)
+        public UserService(
+            UserManager<T> userManager,
+            SignInManager<T> signInManager,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            RoleManager<CustomRole> roleManager,
+            ISearchesService searchesService,
+            IRoleRepository roleRepository
+        )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -52,7 +61,10 @@ namespace Core.Services.UserService
             {
                 await _searchesService.CreateDefaultSavedSearches(toBeCreated.Id);
 
-                var roleSucceeded = await AddRolesToUser(toBeCreated, new List<string>() { UserRoles.User });
+                var roleSucceeded = await AddRolesToUser(
+                    toBeCreated,
+                    new List<string>() { UserRoles.User }
+                );
 
                 if (roleSucceeded)
                 {
@@ -62,7 +74,9 @@ namespace Core.Services.UserService
                 throw new ArgumentException("Roles could not be added.");
             }
 
-            throw new ArgumentException(string.Join(Environment.NewLine, result.Errors.Select(r => r.Description)));
+            throw new ArgumentException(
+                string.Join(Environment.NewLine, result.Errors.Select(r => r.Description))
+            );
         }
 
         public async Task<T> RetrieveUser()
@@ -77,6 +91,18 @@ namespace Core.Services.UserService
             var user = await _userManager.FindByEmailAsync(email);
 
             return user;
+        }
+
+        public async Task<bool> DeleteUser(T user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> UpdateUser(T user)
+        {
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
         }
 
         public async Task<bool> SignInUserWithPassword(T user, string password)
@@ -95,7 +121,9 @@ namespace Core.Services.UserService
                 return true;
             }
 
-            throw new ArgumentException(string.Join(Environment.NewLine, result.Errors.Select(r => r.Description)));
+            throw new ArgumentException(
+                string.Join(Environment.NewLine, result.Errors.Select(r => r.Description))
+            );
         }
 
         public async Task SignOut()
@@ -119,9 +147,7 @@ namespace Core.Services.UserService
 
         public async Task<List<UserViewModel>> RetrieveUserList()
         {
-            var users = await _userManager.Users
-                .AsNoTracking()
-                .ToListAsync();
+            var users = await _userManager.Users.AsNoTracking().ToListAsync();
 
             if (users.Count > 0)
             {
@@ -133,7 +159,8 @@ namespace Core.Services.UserService
 
         public async Task<IEnumerable<object>> GetAllUserRoles()
         {
-            var roles = await _roleManager.Roles.Select(r => new { r.Name, r.IsDeletable })
+            var roles = await _roleManager
+                .Roles.Select(r => new { r.Name, r.IsDeletable })
                 .OrderBy(r => r.IsDeletable)
                 .ToListAsync();
 
@@ -201,10 +228,7 @@ namespace Core.Services.UserService
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new LoginResponseModel()
-            {
-                Token = tokenString,
-            };
+            return new LoginResponseModel() { Token = tokenString };
         }
 
         public async Task<CustomRole?> GetRoleByName(string roleName)
