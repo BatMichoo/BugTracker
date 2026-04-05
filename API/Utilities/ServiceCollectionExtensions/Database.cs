@@ -7,40 +7,43 @@ using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-public static class IdentityServiceCollectionExtensions
+namespace API.Utilities.ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDbWithIdentity(this IServiceCollection services, IWebHostEnvironment environment)
+    public static class IdentityServiceCollectionExtensions
     {
-        string dbConnString = EnvVariableService.GetConnectionString();
-
-        services.AddDbContext<TrackerDbContext>(opt =>
+        public static IServiceCollection AddDbWithIdentity(this IServiceCollection services, IWebHostEnvironment environment)
         {
-            opt.UseSqlServer(dbConnString);
-        });
+            string dbConnString = EnvVariableService.GetConnectionString();
 
-        services.AddIdentity<BugUser, CustomRole>(opt =>
-        {
-            opt.User.RequireUniqueEmail = true;
-            opt.SignIn.RequireConfirmedAccount = false;
-            opt.SignIn.RequireConfirmedEmail = false;
-
-            if (environment.IsDevelopment())
+            services.AddDbContext<TrackerDbContext>(opt =>
             {
-                opt.Password.RequireDigit = false;
-                opt.Password.RequiredUniqueChars = 0;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequireLowercase = false;
-            }
-        })
-        .AddEntityFrameworkStores<TrackerDbContext>()
-        .AddDefaultTokenProviders()
-        .AddSignInManager<SignInManager<BugUser>>()
-        .AddUserManager<UserManager<BugUser>>()
-        .AddRoleManager<RoleManager<CustomRole>>();
+                opt.UseSqlServer(dbConnString);
+            });
 
-        services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddIdentity<BugUser, CustomRole>(opt =>
+            {
+                opt.User.RequireUniqueEmail = true;
+                opt.SignIn.RequireConfirmedAccount = false;
+                opt.SignIn.RequireConfirmedEmail = false;
 
-        return services;
+                if (environment.IsDevelopment())
+                {
+                    opt.Password.RequireDigit = false;
+                    opt.Password.RequiredUniqueChars = 0;
+                    opt.Password.RequireNonAlphanumeric = false;
+                    opt.Password.RequireUppercase = false;
+                    opt.Password.RequireLowercase = false;
+                }
+            })
+            .AddEntityFrameworkStores<TrackerDbContext>()
+            .AddDefaultTokenProviders()
+            .AddSignInManager<SignInManager<BugUser>>()
+            .AddUserManager<UserManager<BugUser>>()
+            .AddRoleManager<RoleManager<CustomRole>>();
+
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
+            return services;
+        }
     }
 }

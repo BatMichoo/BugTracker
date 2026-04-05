@@ -2,39 +2,42 @@ using Core.Other;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
-public static class AuthorizationServiceCollectionExtensions
+namespace API.Utilities.ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAppAuthorization(this IServiceCollection services)
+    public static class AuthorizationServiceCollectionExtensions
     {
-        services.AddAuthorization(opt =>
+        public static IServiceCollection AddAppAuthorization(this IServiceCollection services)
         {
-            string[] rolesForUserPolicy = new[] { UserRoles.User, UserRoles.Manager, UserRoles.Admin };
+            services.AddAuthorization(opt =>
+            {
+                string[] rolesForUserPolicy = new[] { UserRoles.User, UserRoles.Manager, UserRoles.Admin };
 
-            var userPolicy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .RequireRole(rolesForUserPolicy)
-                .Build();
+                var userPolicy = new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireRole(rolesForUserPolicy)
+                    .Build();
 
-            string[] rolesForManagerPolicy = new[] { UserRoles.Manager, UserRoles.Admin };
+                string[] rolesForManagerPolicy = new[] { UserRoles.Manager, UserRoles.Admin };
 
-            var managerPolicy = new AuthorizationPolicyBuilder()
-                .Combine(userPolicy)
-                .RequireRole(rolesForManagerPolicy)
-                .Build();
+                var managerPolicy = new AuthorizationPolicyBuilder()
+                    .Combine(userPolicy)
+                    .RequireRole(rolesForManagerPolicy)
+                    .Build();
 
-            string rolesForAdminPolicy = UserRoles.Admin;
+                string rolesForAdminPolicy = UserRoles.Admin;
 
-            var adminPolicy = new AuthorizationPolicyBuilder()
-                .Combine(managerPolicy)
-                .RequireRole(rolesForAdminPolicy)
-                .Build();
+                var adminPolicy = new AuthorizationPolicyBuilder()
+                    .Combine(managerPolicy)
+                    .RequireRole(rolesForAdminPolicy)
+                    .Build();
 
-            opt.AddPolicy(AuthorizePolicy.UserAccess, userPolicy);
-            opt.AddPolicy(AuthorizePolicy.ManagerAccess, managerPolicy);
-            opt.AddPolicy(AuthorizePolicy.AdminAccess, adminPolicy);
-        });
+                opt.AddPolicy(AuthorizePolicy.UserAccess, userPolicy);
+                opt.AddPolicy(AuthorizePolicy.ManagerAccess, managerPolicy);
+                opt.AddPolicy(AuthorizePolicy.AdminAccess, adminPolicy);
+            });
 
-        return services;
+            return services;
+        }
     }
 }

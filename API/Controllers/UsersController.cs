@@ -6,6 +6,8 @@ using Core.DTOs.Users;
 using Core.Entities.CustomRole;
 using Core.Entities.SearchEntity;
 using Core.Entities.UserEntity;
+using Core.EntitiesQueryUtilities;
+using Core.EntitiesQueryUtilities.SavedSearches;
 using Core.Other;
 using Core.Services.SearchesService;
 using Core.Services.UserService;
@@ -23,17 +25,19 @@ namespace API.Controllers
         private readonly IUserService<BugUser> _userService;
         private readonly IMapper _mapper;
         private readonly ISearchesService _searchesService;
+        private readonly SavedSearchFilterFactory _searchFilterFactory;
         private readonly IMemoryCache _cache;
 
         private const string UserCacheKey = "users";
         private const string RolesCacheKey = "roles";
 
-        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService, IMemoryCache cache)
+        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService, IMemoryCache cache, SavedSearchFilterFactory searchFilterFactory)
         {
             _userService = userService;
             _mapper = mapper;
             _searchesService = searchesService;
             _cache = cache;
+            _searchFilterFactory = searchFilterFactory;
         }
 
         [HttpPost("login")]
@@ -139,7 +143,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RetrieveRoles()
         {
-            if (!_cache.TryGetValue(UserCacheKey, out var roles))
+            if (!_cache.TryGetValue(RolesCacheKey, out var roles))
             {
                 roles = await _userService.GetAllUserRoles();
 
@@ -289,8 +293,29 @@ namespace API.Controllers
             string userId = _userService.RetrieveUserId();
 
             var searches = await _searchesService.GetForUser(userId);
+            var searchesView = searches.Select(s => new SearchViewModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                QueryString = s.QueryString,
+            }).ToList();
 
-            return Ok(searches);
+            var users = (await _userService.RetrieveUserList()).ToDictionary(u => u.Id, u => u);
+
+            foreach (var search in searchesView)
+            {
+                var filters = _searchFilterFactory.CreateFilters(search.QueryString);
+
+                foreach (var filter in filters)
+                {
+                    if (filter.Name == nameof(SearchFilterType.AssignedTo))
+                    {
+                        search.AssignedToName = users[filter.Value].Name;
+                    }
+                }
+            }
+
+            return Ok(searchesView);
         }
 
         [HttpGet("searches/{id}")]
@@ -352,6 +377,14 @@ namespace API.Controllers
             await _searchesService.Delete(id);
 
             return Ok();
+        }
+
+        private class SearchViewModel
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string QueryString { get; set; } = string.Empty;
+            public string AssignedToName { get; set; } = string.Empty;
         }
     }
 }

@@ -1,18 +1,21 @@
 using Core.AutoMapper;
 
-public static class OtherServiceCollectionExtensions
+namespace API.Utilities.ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+    public static class OtherServiceCollectionExtensions
     {
-        services.AddAutoMapper(opt =>
+        public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
-            opt.AddProfile(typeof(BugProfile));
-            opt.AddProfile(typeof(BugUserProfile));
-            opt.AddProfile(typeof(CommentProfile));
-            opt.AddProfile(typeof(ReplyProfile));
-            opt.AddProfile(typeof(QueryProfile));
-        });
+            services.AddAutoMapper(opt =>
+            {
+                opt.AddProfile(typeof(BugProfile));
+                opt.AddProfile(typeof(BugUserProfile));
+                opt.AddProfile(typeof(CommentProfile));
+                opt.AddProfile(typeof(ReplyProfile));
+                opt.AddProfile(typeof(QueryProfile));
+            });
 
-        return services;
+            return services;
+        }
     }
 }

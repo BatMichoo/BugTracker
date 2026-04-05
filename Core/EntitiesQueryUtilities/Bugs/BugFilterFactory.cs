@@ -69,6 +69,8 @@ namespace Core.EntitiesQueryUtilities.Bugs
             return filters;
         }
 
+
+        // NOTE: This is useless and needs to go
         private static IFilter<Bug> ProduceFilter(string[] filterInfo, BugFilterType type)
         {
             string propertyValue = filterInfo.Length > 1 ? filterInfo[1] : string.Empty;

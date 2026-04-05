@@ -6,61 +6,66 @@ using Core.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-public static class AuthenticationServiceCollectionExtensions
+namespace API.Utilities.ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAppAuthentication(this IServiceCollection services)
+    public static class AuthenticationServiceCollectionExtensions
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(opt =>
+        public static IServiceCollection AddAppAuthentication(this IServiceCollection services)
         {
-            string jwtSecretKey = EnvVariableService.GetJwtSecretKey();
-
-            opt.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = EnvVariableService.GetJwtIssuer(),
-                ValidAudience = EnvVariableService.GetJwtAudience(),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
-                RoleClaimType = ClaimTypes.Role,
-                NameClaimType = ClaimTypes.Name,
-            };
+                string jwtSecretKey = EnvVariableService.GetJwtSecretKey();
 
-            opt.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
+                opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = EnvVariableService.GetJwtIssuer(),
+                    ValidAudience = EnvVariableService.GetJwtAudience(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+                    RoleClaimType = ClaimTypes.Role,
+                    NameClaimType = ClaimTypes.Name,
+                };
+
+                opt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
                     {
-                        string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
-                        context.Token = token;
-                    }
-                    else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
+                        if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
+                        {
+                            string? token = authHeader.FirstOrDefault()?.Replace("Bearer ", "");
+                            context.Token = token;
+                        }
+                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
                     {
-                        context.Token = accessToken;
+                        context.HandleResponse();
+
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                        var errorMessage = new { error = "Authentication failed." };
+
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        return Task.CompletedTask;
                     }
+                };
+            });
 
-                    return Task.CompletedTask;
-                },
-                OnAuthenticationFailed = context =>
-                {
-                    context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-                    var errorMessage = new { error = "Authentication failed." };
-
-                    return context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
-                },
-                OnForbidden = context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-        return services;
+            return services;
+        }
     }
 }

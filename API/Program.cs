@@ -56,6 +56,8 @@ namespace API
                     opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
+            builder.Services.AddHealthChecks();
+
             builder.Services.AddSignalR();
 
             builder.Services.AddEndpointsApiExplorer();
@@ -144,6 +146,7 @@ namespace API
             await Initialize(builder, app);
 
             app.MapControllers();
+            app.MapHealthChecks("/health");
             app.MapHub<NotificationHub>("/notifs", options => options.CloseOnAuthenticationExpiration = true);
 
             app.Run();
