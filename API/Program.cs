@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using API.CustomMiddlewares;
 using API.Utilities.ServiceCollectionExtensions;
 using Core.Entities.CustomRole;
@@ -11,7 +12,6 @@ using DotNetEnv.Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
 
 namespace API
 {

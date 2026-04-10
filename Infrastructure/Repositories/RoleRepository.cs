@@ -41,9 +41,11 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<List<CustomRole>> GetAllRoles()
+        public async Task<List<CustomRole>> GetAllRoles(string userId)
         {
-            var roles = await _dbSet.AsNoTracking().ToListAsync();
+            var roles = await _dbContext.UserRoles.Where(u => u.UserId == userId)
+                .Select(r => new CustomRole { Id = r.RoleId })
+                .ToListAsync();
 
             return roles;
         }

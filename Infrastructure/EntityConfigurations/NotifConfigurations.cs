@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.EntityConfigurations
 {
-    public class NotifConfiguration : IEntityTypeConfiguration<Notif>
+    public class NotifConfiguration : IEntityTypeConfiguration<BugNotification>
     {
-        public void Configure(EntityTypeBuilder<Notif> builder)
+        public void Configure(EntityTypeBuilder<BugNotification> builder)
         {
             builder.HasKey(n => n.Id);
 

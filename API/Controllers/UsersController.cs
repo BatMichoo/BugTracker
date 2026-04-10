@@ -4,20 +4,23 @@ using Core.DTOs.Roles;
 using Core.DTOs.Searches;
 using Core.DTOs.Users;
 using Core.Entities.CustomRole;
+using Core.Entities.NotifEntity;
 using Core.Entities.SearchEntity;
 using Core.Entities.UserEntity;
-using Core.EntitiesQueryUtilities;
 using Core.EntitiesQueryUtilities.SavedSearches;
 using Core.Other;
+using Core.Repositories;
 using Core.Services.SearchesService;
 using Core.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net.Mime;
 
 namespace API.Controllers
 {
+    // TODO: Edit username/email endpoints
     [Route("users")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UsersController : BaseController
@@ -28,16 +31,21 @@ namespace API.Controllers
         private readonly SavedSearchFilterFactory _searchFilterFactory;
         private readonly IMemoryCache _cache;
 
+        private readonly IBugNotificationRepository _notifRepo;
+        private readonly IHubContext<NotificationHub> _notificationHub;
+
         private const string UserCacheKey = "users";
         private const string RolesCacheKey = "roles";
 
-        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService, IMemoryCache cache, SavedSearchFilterFactory searchFilterFactory)
+        public UsersController(IUserService<BugUser> userService, IMapper mapper, ISearchesService searchesService, IMemoryCache cache, SavedSearchFilterFactory searchFilterFactory, IBugNotificationRepository notifRepo, IHubContext<NotificationHub> hubContext)
         {
             _userService = userService;
             _mapper = mapper;
             _searchesService = searchesService;
             _cache = cache;
             _searchFilterFactory = searchFilterFactory;
+            _notifRepo = notifRepo;
+            _notificationHub = hubContext;
         }
 
         [HttpPost("login")]
@@ -120,6 +128,8 @@ namespace API.Controllers
             return Ok(_mapper.Map<UserViewModel>(user));
         }
 
+
+
         [HttpGet]
         [Authorize(Policy = AuthorizePolicy.UserAccess)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
@@ -156,14 +166,51 @@ namespace API.Controllers
             return Ok(roles);
         }
 
+        [HttpGet("roles/for/{userId}")]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RetrieveRoles(string userId)
+        {
+            var roles = await _userService.GetUserRoles(userId);
+
+            return Ok(roles);
+        }
+
         [HttpPost("roles")]
         [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateRole(string roleName)
         {
             var newRole = new CustomRole(roleName, isDeletable: true);
-            CustomRole role = await _userService.CreateRole(newRole);
-            var roleView = new RoleView { Name = role.Name, IsDeletable = role.IsDeletable };
+            bool success = await _userService.CreateRole(newRole);
+
+            if (!success)
+            {
+                return BadRequest();
+            }
+
+            var roleView = new RoleView { Id = newRole.Id, Name = newRole!.Name!, IsDeletable = newRole.IsDeletable };
+
+            _cache.Remove(RolesCacheKey);
+
+            return Ok(roleView);
+        }
+
+        [HttpPatch("roles")]
+        [Authorize(Policy = AuthorizePolicy.ManagerAccess)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateRole(string oldName, string roleName)
+        {
+            var oldRole = await _userService.GetRoleByName(oldName);
+            oldRole.Name = roleName;
+            var success = await _userService.UpdateRole(oldRole);
+
+            if (!success)
+            {
+                return BadRequest();
+            }
+
+            var roleView = new RoleView { Id = oldRole.Id, Name = oldRole!.Name!, IsDeletable = oldRole.IsDeletable };
 
             _cache.Remove(RolesCacheKey);
 
@@ -176,6 +223,12 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteRole(string roleName)
         {
             var role = await _userService.GetRoleByName(roleName);
+
+            if (role is null)
+            {
+                return Ok();
+            }
+
             bool success = await _userService.DeleteRole(role);
 
             if (!success)
@@ -210,6 +263,18 @@ namespace API.Controllers
 
             if (success)
             {
+                var assignedBy = await _userService.RetrieveUser();
+
+                var notification = new BugNotification
+                {
+                    AssignedById = assignedBy.Id,
+                    AssigneeId = userId
+                };
+
+                await _notifRepo.Create(notification);
+
+                await _notificationHub.Clients.User(userId).SendAsync("new-assigned-role", notification);
+
                 return Ok();
             }
 
@@ -247,7 +312,7 @@ namespace API.Controllers
 
             return BadRequest(new
             {
-                errorMessage = string.Format(ErrorMessage.Users.CouldNotAssignRole, role),
+                errorMessage = string.Format(ErrorMessage.Users.CouldNotUNAssignRole, role),
                 role
             });
         }

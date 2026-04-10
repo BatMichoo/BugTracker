@@ -28,6 +28,7 @@
             public const string NotFound = "User with Id {0} does not exist.";
             public const string LoginFailed = "Wrong email or password.";
             public const string CouldNotAssignRole = "Could not assign role {0} to user";
+            public const string CouldNotUNAssignRole = "Could not remove role {0} to user";
         }
     }
 }

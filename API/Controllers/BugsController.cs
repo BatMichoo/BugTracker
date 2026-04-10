@@ -28,11 +28,11 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IBugQueryParametersFactory _queryFactory;
         private readonly IHubContext<NotificationHub> _notificationHub;
-        private readonly INotifRepository _notifRepo;
+        private readonly IBugNotificationRepository _notifRepo;
         private readonly IMemoryCache _cache;
         private const string DefaultBugsCacheKey = "BugsDefault";
 
-        public BugsController(INotifRepository notifRepository, IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory, IMemoryCache cache)
+        public BugsController(IBugNotificationRepository notifRepository, IHubContext<NotificationHub> notificationHub, IBugService bugService, IUserService<BugUser> userService, IMapper mapper, IBugQueryParametersFactory queryFactory, IMemoryCache cache)
         {
             _notificationHub = notificationHub;
             _bugService = bugService;
@@ -113,7 +113,7 @@ namespace API.Controllers
 
                 if (!string.IsNullOrWhiteSpace(bugViewModel.AssignedTo?.Id) && bugViewModel.AssignedTo?.Id != newBugModel.CreatorId)
                 {
-                    var notification = new Notif
+                    var notification = new BugNotification
                     {
                         BugId = bugViewModel.Id,
                         AssignedById = newBugModel.CreatorId,
@@ -171,7 +171,7 @@ namespace API.Controllers
                 if (!string.IsNullOrWhiteSpace(editBugViewModel.AssigneeId) && oldAssigneeId != editBugViewModel.AssigneeId
                         && editBugViewModel.AssigneeId != userId)
                 {
-                    var notification = new Notif
+                    var notification = new BugNotification
                     {
                         BugId = editBugViewModel.Id,
                         AssignedById = userId,

@@ -62,7 +62,7 @@ namespace API.Utilities.ServiceCollectionExtensions
     {
         public static IServiceCollection AddMiscellaneousServices(this IServiceCollection services)
         {
-            services.AddScoped<INotifRepository, NotifRepository>();
+            services.AddScoped<IBugNotificationRepository, NotifRepository>();
             services.AddScoped<ISearchesRepository, SearchesRepository>();
             services.AddScoped<ISearchesService, SearchesService>();
             services.AddScoped<SavedSearchFilterFactory>();

@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class NotifRepository : Repository<Notif>, INotifRepository
+    public class NotifRepository : Repository<BugNotification>, IBugNotificationRepository
     {
         public NotifRepository(TrackerDbContext dbContext)
             : base(dbContext)
         {
         }
 
-        public async Task<List<Notif>> GetUnRead(string userId) 
+        public async Task<List<BugNotification>> GetUnRead(string userId)
         {
             var notifs = await AsQueryable()
                 .AsNoTracking()
@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
             return notifs;
         }
 
-        public async Task MarkRead(int id) 
+        public async Task MarkRead(int id)
         {
             var notif = await GetById(id);
 
@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
             Console.WriteLine($"INPUT ID IS {id}");
             Console.WriteLine($"NOTIF IS {notif?.Id}");
 
-            if (notif is not null) 
+            if (notif is not null)
             {
                 notif.IsRead = true;
                 await Update(notif);

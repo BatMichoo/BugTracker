@@ -160,7 +160,7 @@ namespace Core.Services.UserService
         public async Task<IEnumerable<object>> GetAllUserRoles()
         {
             var roles = await _roleManager
-                .Roles.Select(r => new { r.Name, r.IsDeletable })
+                .Roles.Select(r => new { r.Id, r.Name, r.IsDeletable })
                 .OrderBy(r => r.IsDeletable)
                 .ToListAsync();
 
@@ -238,23 +238,34 @@ namespace Core.Services.UserService
             return role;
         }
 
-        public async Task<CustomRole> CreateRole(CustomRole newRole)
+        public async Task<bool> CreateRole(CustomRole newRole)
         {
-            var role = await _roleRepository.Create(newRole);
+            var role = await _roleManager.CreateAsync(newRole);
 
-            return role;
+            return role.Succeeded;
         }
 
         public async Task<bool> DeleteRole(CustomRole toDelete)
         {
-            if (!string.IsNullOrWhiteSpace(toDelete.Id))
-            {
-                toDelete = await _roleRepository.GetRoleByName(toDelete.Name);
-            }
+            var result = await _roleManager.DeleteAsync(toDelete);
 
-            bool result = await _roleRepository.Delete(toDelete.Id);
+            return result.Succeeded;
+        }
 
-            return result;
+        public async Task<bool> UpdateRole(CustomRole role)
+        {
+            var updatedRole = await _roleRepository.Update(role);
+            // var result = await _roleManager.UpdateAsync(role!);
+
+            // return result.Succeeded;
+            return updatedRole is not null;
+        }
+
+        public async Task<List<CustomRole>> GetUserRoles(string userId)
+        {
+            var roles = await _roleRepository.GetAllRoles(userId);
+
+            return roles;
         }
     }
 }

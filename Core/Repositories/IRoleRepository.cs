@@ -6,7 +6,7 @@ namespace Core.Repositories
     {
         Task<CustomRole?> GetRoleById(string id);
         Task<CustomRole?> GetRoleByName(string name);
-        Task<List<CustomRole>> GetAllRoles();
+        Task<List<CustomRole>> GetAllRoles(string userId);
         Task<CustomRole?> Create(CustomRole newRole);
         Task<bool> Delete(string id);
         Task<CustomRole> Update(CustomRole updatingRole);

@@ -6,9 +6,9 @@ using Core.Repositories;
 [Authorize(Policy = AuthorizePolicy.UserAccess)]
 public class NotificationHub : Hub
 {
-    private readonly INotifRepository _repository;
+    private readonly IBugNotificationRepository _repository;
 
-    public NotificationHub(INotifRepository repository) : base()
+    public NotificationHub(IBugNotificationRepository repository) : base()
     {
         _repository = repository;
     }

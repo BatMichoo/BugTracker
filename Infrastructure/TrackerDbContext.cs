@@ -20,7 +20,7 @@ namespace Infrastructure
         public DbSet<Bug> Bugs { get; set; } = null!;
         public DbSet<Comment> Comments { get; set; } = null!;
         public DbSet<Reply> Replies { get; set; } = null!;
-        public DbSet<Notif> Notifications { get; set; } = null!;
+        public DbSet<BugNotification> Notifications { get; set; } = null!;
         public DbSet<Search> SavedSearches { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

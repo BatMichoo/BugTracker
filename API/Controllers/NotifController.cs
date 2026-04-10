@@ -6,9 +6,9 @@ namespace API.Controllers
     [Route("notifications")]
     public class NotifController : BaseController
     {
-        private readonly INotifRepository _repository;
+        private readonly IBugNotificationRepository _repository;
 
-        public NotifController(INotifRepository repository)
+        public NotifController(IBugNotificationRepository repository)
         {
             _repository = repository;
         }
